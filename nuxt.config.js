@@ -1,6 +1,9 @@
 require('dotenv').config()
 
-const API = '/api'
+console.log('papers API', process.env.API)
+
+//const { execFile } = require('child_process')
+//execFile('shellrun', ['http://localhost:3333'])
 
 module.exports = {
   mode: 'universal',
@@ -27,13 +30,17 @@ module.exports = {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['@/assets/css/global.scss'],
   /*
    ** Plugins to load before mounting the App
    */
   plugins: [
-    // Iznik $api setup
+    // $api setup
     { src: '~/plugins/api.js' },
+
+    // Some plugins are client-side features
+    { src: '~/plugins/localStorage.js', ssr: false },
+    { src: '~/plugins/vue-awesome.js', ssr: false },
   ],
   /*
    ** Nuxt.js dev-modules
@@ -74,12 +81,42 @@ module.exports = {
     'bootstrap-vue/nuxt',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    // Doc: https://auth.nuxtjs.org/
+    '@nuxtjs/auth',
+    // Doc: https://github.com/nuxt-community/recaptcha-module
+    '@nuxtjs/recaptcha'
   ],
+  recaptcha: {
+    /* reCAPTCHA options */
+    siteKey: process.env.RECAPTCHA_SITE_KEY,
+    version: 3
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    //proxy: true,
+    retry: {
+      // Retry failed requests to give a bit more resilience to flaky networks, especially on mobile.
+      // This also helps with server upgrades.
+      //
+      // Note that this doesn't retry requests that never complete.
+      retries: 1,
+      retryDelay: retryCount => {
+        return retryCount * 1000
+      },
+      // eslint-disable-next-line handle-callback-err
+      retryCondition: error => {
+        return true
+      },
+      shouldResetTimeout: true
+    }
+  },
+
+  //proxy: {
+  //  '/api/': process.env.API
+  //},
   /*
    ** Build configuration
    */
@@ -100,11 +137,13 @@ module.exports = {
           exclude: /(node_modules)/,
         })
       } */
+      config.resolve.alias['color-vars'] = 'assets/css/_color-vars.scss'
     },
   },
   env: {
-    API,
+    API: process.env.API,
     BUILD_DATE: new Date().toLocaleString('en-US'),
+    RECAPTCHA_BYPASS: process.env.RECAPTCHA_BYPASS,
   },
   // We only use some of bootstrap-vue, so by listing it explicitly we can reduce our bundle size.
   bootstrapVue: {
@@ -113,11 +152,31 @@ module.exports = {
     componentPlugins: [],
     directivePlugins: [],
   },
-  serverMiddleware: [
-    // https://nuxtjs.org/api/configuration-servermiddleware/#usage
-    // https://blog.lichter.io/posts/nuxt-with-an-api/
-    // API middleware
-    '~/server/index.js',
-    // { path: '/api', handler: '~/api/index.js' }
-  ],
+  // NO: api is now separate
+  // , serverMiddleware: [
+  //   // https://nuxtjs.org/api/configuration-servermiddleware/#usage
+  //   // https://blog.lichter.io/posts/nuxt-with-an-api/
+  //   // API middleware
+  //   '~/server/index.js',
+  // ],
+
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: process.env.API + '/user/login', method: 'post', propertyName: 'token' },
+          logout: { url: process.env.API +'/user/logout', method: 'delete'},
+          user: { url: process.env.API + '/user', method: 'get', propertyName: 'user' },
+          // register handled separately
+        },
+        tokenRequired: true,
+        tokenType: 'bearer',
+      },
+    },
+    redirect: {
+      home: false,
+      callback: false,
+      logout: false
+    }
+  },
 }

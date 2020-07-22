@@ -41,7 +41,6 @@
     <Content Include="components\Logo.vue" />
     <Content Include="components\README.md" />
     <Content Include="layouts\default.vue" />
-    <Content Include="layouts\README.md" />
     <Content Include="middleware\README.md" />
     <Content Include="package.json" />
     <Content Include="pages\index.vue" />
@@ -76,7 +75,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="plugins\axios.js" />
-    <Compile Include="server\index.js" />
+    <Compile Include="server\standalone.js" />
     <Compile Include="server\routes\users.js" />
     <Compile Include="store\index.js" />
     <Compile Include="store\users.js" />
