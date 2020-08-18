@@ -1,6 +1,6 @@
 # phdcc-papers
 
-*Papers*: [PHDCC journal/conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
+**Papers**: [PHDCC journal/conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
 
 To be used in conjuction with [phdcc-papers-api](https://github.com/chriscant/phdcc-papers-api).
 Please read the API set up instructions there.
@@ -14,7 +14,7 @@ RECAPTCHA_SITE_KEY='recaptcha site key'
 RECAPTCHA_BYPASS='Password to avoid recaptcha'
 ```
 
-If running in a dev environment at localhost using a website server API, specify the server API `RECAPTCHA_BYPASS` to bypass the authenication recaptcha.
+If running in a dev environment at localhost that calls a website server API, specify the server API `RECAPTCHA_BYPASS` to bypass the authenication recaptcha.
 
 ## Build Setup
 
