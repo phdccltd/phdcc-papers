@@ -3,9 +3,6 @@ const fs = require('fs')
 
 console.log('papers API', process.env.API)
 
-//const { execFile } = require('child_process')
-//execFile('shellrun', ['http://localhost:3333'])
-
 const packageJson = fs.readFileSync('./package.json')
 const version = JSON.parse(packageJson).version || 0
 console.log('version', version)
