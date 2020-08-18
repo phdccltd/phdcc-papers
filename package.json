@@ -1,7 +1,7 @@
 {
   "name": "phdcc-papers",
   "version": "0.1.0",
-  "description": "Conference abstract and paper submission and review system",
+  "description": "Journal/Conference abstract and paper submission and review system",
   "author": "chriscant",
   "private": true,
   "scripts": {

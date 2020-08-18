@@ -1,6 +1,6 @@
 # phdcc-papers
 
-Papers: [PHDCC conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
+*Papers*: [PHDCC journal/conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
 
 To be used in conjuction with [phdcc-papers-api](https://github.com/chriscant/phdcc-papers-api).
 Please read the API set up instructions there.
