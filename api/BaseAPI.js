@@ -26,18 +26,20 @@ export default class BaseAPI {
   }
 
   async $request(method, path, config, logError = true) {
+    //console.log('REQUEST ', method, process.env.API, path)
+
     let status = null
     let data = null
 
     try {
-      //console.log('BaseAPI A')
+      //console.log('BaseAPI A', config, process.env.API + path)
       // Don't touch this...
       const ret = await this.$axios.request({
         ...config,
         method,
         url: process.env.API + path,
-      });
-      ({ status, data } = ret)
+      })
+      ;({ status, data } = ret)
       //console.log('BaseAPI B', status, data)
 
       if (!status || !data) {
@@ -92,28 +94,16 @@ export default class BaseAPI {
     // - 999 can happen if people double-click, and we should just quietly drop it because the first click will
     //   probably do the right thing.
     // - otherwise throw an exception.
-    console.log('BaseAPI C', status, data.ret, data.status)
+    console.log('BaseAPI C', path, status, data.ret, data.status)
     if (
       status !== 200 ||
       !data ||
       (data.ret !== 0 &&
         !(data.ret === 1 && data.status === 'Not logged in') &&
-        !(path === '/session' && method === 'POST') &&
         data.ret !== 999)
     ) {
       const retstr = data && data.ret ? data.ret : 'Unknown'
       const statusstr = data && data.status ? data.status : 'Unknown'
-
-      // Whether or not we log this error to Sentry depends.  Most errors are worth logging, because they're unexpected.
-      // But some API calls are expected to fail, and throw an exception which is then handled in the code.  We don't
-      // want to log those, otherwise we will spend time investigating them in Sentry.  So we have a parameter which
-      // indicates whether we want to log this to Sentry - which can be a boolean or a function for more complex
-      // decisions.
-      const log = typeof logError === 'function' ? logError(data) : logError
-
-      if (log) {
-        // Log to Sentry
-      }
 
       const message = [
         'API Error',
@@ -145,6 +135,7 @@ export default class BaseAPI {
   }
 
   $get(path, params = {}, logError = true) {
+    //console.log('GET ', path)
     return this.$request('GET', path, { params }, logError)
   }
 

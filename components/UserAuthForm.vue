@@ -41,7 +41,7 @@
 </template>
 
 <script>
-  import validations from "@/utils/validations";
+  //import validations from "@/utils/validations";
   //import UserAuthPassword from '@/components/UserAuthPassword.vue';
 
   export default {

@@ -1,12 +1,18 @@
 require('dotenv').config()
+const fs = require('fs')
 
 console.log('papers API', process.env.API)
 
 //const { execFile } = require('child_process')
 //execFile('shellrun', ['http://localhost:3333'])
 
+const packageJson = fs.readFileSync('./package.json')
+const version = JSON.parse(packageJson).version || 0
+console.log('version', version)
+
 module.exports = {
-  mode: 'universal',
+  //mode: 'universal',
+  mode: 'spa',
   /*
    ** Headers of the page
    */
@@ -144,6 +150,7 @@ module.exports = {
     API: process.env.API,
     BUILD_DATE: new Date().toLocaleString('en-US'),
     RECAPTCHA_BYPASS: process.env.RECAPTCHA_BYPASS,
+    VERSION: version,
   },
   // We only use some of bootstrap-vue, so by listing it explicitly we can reduce our bundle size.
   bootstrapVue: {

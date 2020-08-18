@@ -1,10 +1,7 @@
 <template>
+  <!-- SITE HOME PAGE -->
   <div>
-    <h2 class="subtitle">
-      Publication abstract and paper submission and review system
-    </h2>
-    <div>
-      <b-btn variant="outline-success" to="/panel">Panel</b-btn>
+    <div v-html="content">
     </div>
   </div>
 </template>
@@ -17,13 +14,9 @@
 
   export default {
     components: {
-      //Logo,
     },
 
-    fetch() {
-      //console.log('+++++ index fetch...')
-      // DEPRECATED The `fetch` method is used to fill the store before rendering the page
-    },
+    //middleware: 'sitepages', // Client and Server
 
     asyncData({ req, res }) { // this (component) not available // Client and Server
       //console.log('+++++ index asyncData')
@@ -40,21 +33,31 @@
       return {
       }
     },
-    computed: {
-    },
+
     mounted() { // Client only
       //console.log('+++++ index MOUNTED')
+      this.$store.dispatch('sitepages/fetch')
       this.$store.commit("page/setTitle", page.title)
     },
 
+    computed: {
+      content() {
+        const sitepage = this.$store.getters['sitepages/get']('/')
+        if (sitepage) {
+          page.title = sitepage.title
+          return sitepage.content
+        }
+        return ''
+      }
+    },
+    methods: {
+    },
     head() { // Server-side: doesn't change rendered items // Client: does
       //console.log('+++++ index head')
       return {
         title: page.title,
       }
     },
-    methods: {
-    }
   }
 </script>
 

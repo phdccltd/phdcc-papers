@@ -1,4 +1,4 @@
-console.log('init store page')
+//console.log('init store page')
 export const state = () => ({
   title: '',
 })

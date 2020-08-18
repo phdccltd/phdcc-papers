@@ -1,10 +1,13 @@
 <template>
   <div>
-    <b-alert variant="danger" :show="error!=false">
+    <b-alert variant="danger" :show="error.length>0">
       {{error}}
     </b-alert>
-    <b-alert variant="success" :show="message!=false">
+    <b-alert variant="success" :show="message.length>0">
       {{message}}
+    </b-alert>
+    <b-alert variant="warning" :show="warning.length>0">
+      {{warning}}
     </b-alert>
   </div>
 </template>
@@ -12,10 +15,16 @@
   export default {
     props: {
       error: {
-        type: String
+        type: String,
+        default: '',
       },
       message: {
-        type: String
+        type: String,
+        default: '',
+      },
+      warning: {
+        type: String,
+        default: '',
       },
     },
   }

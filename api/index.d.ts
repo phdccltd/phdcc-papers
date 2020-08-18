@@ -11,11 +11,13 @@
 
 
 import pubAPI from './pubAPI.js'
+import sitepagesAPI from './sitepagesAPI.js'
 import submitAPI from './submitAPI.js'
 import userAPI from './userAPI.js'
 
 interface API {
   pub: pubAPI;
+  sitepages: sitepagesAPI;
   submit: submitAPI;
   user: userAPI;
 }

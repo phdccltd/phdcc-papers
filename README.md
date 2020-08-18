@@ -1,6 +1,6 @@
-# nuxt.papers
+# phdcc-papers
 
-Conference abstract and paper submission and review system
+Papers: phdcc abstract and paper editorial review system
 
 ## Build Setup
 

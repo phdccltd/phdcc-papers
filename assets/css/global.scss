@@ -359,7 +359,39 @@ form {
     color: $color-red;
   }
 
-  .form-group.is-invalid .invalid-feedback {
+.form-group.is-invalid .invalid-feedback {
     display: block;
   }
+}
+
+
+/* PHDCC */
+
+.bg-yellow{
+  background-color: lightyellow;
+}
+
+h3{
+  font-size: 1.5rem;
+}
+
+pre{
+  margin-bottom: 0;
+}
+
+
+
+form label,
+form .col-form-label{
+  margin-top: 0;
+}
+
+.container {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.formfieldview{
+  background-color: #F8F8F8;
+  font-weight: bold;
 }
