@@ -113,6 +113,11 @@ export const actions = {
     console.log('store action submits/fetchentry', entryid)
     try {
       const { entry } = await this.$api.submit.fetchentry({ entryid })
+      console.log('fetchentry',entry)
+      for (const field of entry.fields) {
+        field.message = ''
+      }
+      console.log('===fetchentry',entry)
       commit('addEntry', { entryid, entry })
     }
     catch (e) {
