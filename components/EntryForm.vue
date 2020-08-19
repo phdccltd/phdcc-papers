@@ -1,4 +1,16 @@
 <template>
+  <!--
+  Crucial component that displays a submission form (a) to edit or (b) to view - with organisers able to edit and/or delete the entry.
+  General hierarchy: publication -> flow -> submit -> entry
+  The form is used
+    (a) when displaying an entry
+    (b) when adding a new submit ie specify flowstageid to add as first of a new submit
+    (c) when adding an entry to an existing ie specify flowstageid to add to the submit
+
+  The computed property entry() crucially sets up the (existing or new) entry object with the right fields etc.
+  For case (a) above the data is received as entry.values but moved into the relevant field.val.
+  For case (b) the received entry fields contain empty values - as set ip in store/submits action fetchformfields.
+  -->
   <div>
     {{formtype}}
     <b-alert v-if="fatalerror" variant="warning" :show="true">
@@ -91,9 +103,9 @@
                        v-on:input="changed(field)"
                        v-model="field.val.integer" />
             <!--ADD ENTRY TO SUBMIT: {{field.val.string}} {{field.val.integer}}
-        <span v-if="field.val.newfile">
-          {{field.val.newfile.name}}
-        </span>-->
+            <span v-if="field.val.newfile">
+              {{field.val.newfile.name}}
+            </span>-->
           </b-container>
           <b-container v-if="editable">
             <b-form-row>
@@ -162,11 +174,9 @@
       this.$store.dispatch('pubs/fetch')
       this.$store.dispatch('submits/fetchpub', this.pubid)
       if (this.stageid) {
-        console.log('FETCH FORMFIELDS', this.stageid)
         this.$store.dispatch('submits/fetchformfields', this.stageid)
       }
       if (this.entryid) {
-        console.log('FETCH ENTRY', this.entryid)
         this.$store.dispatch('submits/fetchentry', this.entryid)
       }
     },
@@ -211,14 +221,12 @@
         if (this.stageid) {
           //console.log('###GET ENTRY VIA STAGEID')
           const entry = this.$store.getters['submits/stagefields'](this.stageid)
-          if (!entry) {
-            return false
-          }
+          if (!entry) return false
 
           const flows = this.$store.getters['submits/flows'](this.pubid)
           if (!flows) return false
           const flow = _.find(flows, flow => { return flow.id === this.flowid })
-          if (flow) return false
+          if (!flow) return false
           entry.stage = _.find(flow.stages, stage => { return stage.id === this.stageid })
 
           //console.log(entry)
@@ -240,6 +248,7 @@
           for (const field of entry.fields) {
             const val = _.find(entry.values, value => { return value.formfieldId === field.id })
             field.val = val || {}
+            field.val.newfile = null
           }
           //console.log(entry)
           return entry
@@ -250,7 +259,7 @@
       },
       sectionheading() {
         const stagename = this.entry.stage.name
-        return this.editable ? "Add " + stagename : stagename
+        return (this.editable ? (this.showeditviewbutton ? 'Edit ' : 'Add ') : '') + stagename
       },
     },
     methods: {
@@ -274,6 +283,7 @@
             stageid: this.stageid,
             values: [],
           }
+          if (this.entryid) entry.id = this.entryid
           // Repeat basic required validation and do requiredif validation
           let anyerror = false
           for (const field of this.entry.fields) {
@@ -284,9 +294,10 @@
               integer: field.val.integer,
               text: field.val.text,
               //file: field.val.newfile ? field.val.newfile.name : null,
-              file: field.val.newfile
+              existingfile: field.val.file,
+              file: field.val.newfile,
             }
-            if (field.val.newfile) {
+            if (field.val.newfile) { // View filename
               field.val.file = field.val.newfile.name
             }
             //console.log(field.id, field.type, field.required, field.requiredif, field.val)
@@ -348,19 +359,32 @@
             this.validationsummary = 'Please fix any issues to continue'
             return
           }
+
           this.submitstatus = 'Please wait: submitting'
-          //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
-          const entryid = await this.$api.submit.addEntry(entry)
-          this.submitstatus = false
-          this.editable = false
-          if (entryid) {
-            this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK' })
-            // OK: redirect so new entry displayed properly
-            this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
+          if (this.entryid) {
+            const returnedid = await this.$api.submit.editEntry(entry)
+            this.submitstatus = ''
+            if (returnedid) {
+              this.editable = false
+              this.message = 'Updated OK'
+            } else {
+              this.error = 'Save error'
+            }
+            return false
           } else {
-            this.error = 'Save error'
+            //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
+            const entryid = await this.$api.submit.addEntry(entry)
+            this.submitstatus = ''
+            this.editable = false
+            if (entryid) {
+              this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK' })
+              // OK: redirect so new entry displayed properly
+              this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
+            } else {
+              this.error = 'Save error'
+            }
+            // Could redirect here: /panel/2/1/3/<id>
           }
-          // Could redirect here: /panel/2/1/3/<id>
           return false
         } catch (e) {
           this.error = e.message

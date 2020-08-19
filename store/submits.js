@@ -20,7 +20,7 @@ export const mutations = {
     Vue.set(state.entries, item.entryid, item.entry)
   },
   addFormFieldEntry(state, item) {
-    console.log('addFormFieldEntry', item)
+    //console.log('addFormFieldEntry', item)
     Vue.set(state.flowfields, item.flowstageid, item.entry)
   },
   setError(state, error) {
@@ -95,6 +95,7 @@ export const actions = {
     try {
       //console.log('store fetchpub submits.actions', pubid)
       const { flows } = await this.$api.submit.fetchpub({ pubid })
+      // Set collapse visibility for flow and submits
       for (const flow of flows) {
         flow.submitsallvisible = true
         for (const submit of flow.submits) {
@@ -110,14 +111,12 @@ export const actions = {
   },
 
   async fetchentry({ commit}, entryid) {
-    console.log('store action submits/fetchentry', entryid)
+    //console.log('store action submits/fetchentry', entryid)
     try {
       const { entry } = await this.$api.submit.fetchentry({ entryid })
-      console.log('fetchentry',entry)
       for (const field of entry.fields) {
         field.message = ''
       }
-      console.log('===fetchentry',entry)
       commit('addEntry', { entryid, entry })
     }
     catch (e) {

@@ -59,10 +59,49 @@ export default class submitAPI extends BaseAPI {
     }
     console.log('addEntry returned', ret.data)
     return ret.data.id
+  }
 
+// PUT change whole entry, becomes:
+// POST edit: replace whole entry: use FormData not responsedata https://xhr.spec.whatwg.org/#interface-formdata
+// /submits/entry/24
+  async editEntry(entry) {
+    console.log('submitAPI editEntry', entry)
 
-    //const { id } = await this.$post('/submits/entry', entry)
-    //return id
+    const data = new FormData()
+    data.append('pubid', entry.pubid)
+    data.append('flowid', entry.flowid)
+    data.append('stageid', entry.stageid)
+    data.append('submitid', entry.submitid)
+    for (const fv of entry.values) {
+      if (fv.file) {
+        console.log('editEntry FILE', fv.file, fv.file.name)
+        data.append('file', fv.file, fv.file.name)
+        fv.file = fv.file.name
+      }
+      data.append('values', JSON.stringify(fv))
+    }
+    return false
+    const ret = await this.$axios.post(process.env.API + '/submits/entry/' + entry.id, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'X-HTTP-Method-Override': 'PUT',
+      },
+    })
+    //if (ret.status === 200 && ret.data.ret === 0) {
+    if (ret.data.ret !== 0) {
+      throw new APIError(
+        {
+          request: {},
+          response: {
+            status: ret.status,
+            data: ret.data,
+          },
+        },
+        ret.data.status
+      )
+    }
+    console.log('editEntry returned', ret.data)
+    return ret.data.id
   }
   async getFile(relpath) {
     console.log('submitAPI getFile', relpath)
@@ -80,6 +119,5 @@ export default class submitAPI extends BaseAPI {
     const { ok } = await this.$del('/submits/entry/'+entryid)
     return ok
   }
-  // PUT change whole entry
   // PATCH change part of entry
 }
