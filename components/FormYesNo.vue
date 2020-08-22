@@ -1,11 +1,10 @@
 <template>
   <div>
     <b-form-group v-if="edit" :label="labelreqd" label-cols-sm="3">
-      {{help}}
+      <div class="form-help">{{help}}</div>
       <b-form-radio-group :id="sid"
                           v-model="selection"
-                          :options="options"
-                          :required="reqd">
+                          :options="options">
       </b-form-radio-group>
       <div class="alert-warning">{{message}}</div>
     </b-form-group>
@@ -17,9 +16,9 @@
         {{yesno}}
       </b-col>
       <b-col sm="1" class="formfieldview text-right">
-        <abbr v-if="help" :title="help">
+        <span v-if="help" v-b-tooltip.hover.left :title="help">
           <v-icon name="info-circle" scale="1" />
-        </abbr>
+        </span>
       </b-col>
     </b-row>
   </div>

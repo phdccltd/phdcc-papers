@@ -44,6 +44,7 @@ module.exports = {
     // Some plugins are client-side features
     { src: '~/plugins/localStorage.js', ssr: false },
     { src: '~/plugins/vue-awesome.js', ssr: false },
+    { src: '~/plugins/vue-popper.js', ssr: false },
   ],
   /*
    ** Nuxt.js dev-modules

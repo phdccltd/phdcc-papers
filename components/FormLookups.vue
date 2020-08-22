@@ -1,13 +1,12 @@
 <template>
   <div>
     <b-form-group v-if="edit" :label="labelreqd" :label-for="sid" label-cols-sm="3">
-      {{help}}
+      <div class="form-help">{{help}}</div>
       <b-form-select :id="sid"
                      v-model="arrayvalues"
                      :options="options"
                      multiple
-                     :select-size="4"
-                     :required="reqd">
+                     :select-size="4">
       </b-form-select>
       <div class="alert-warning">{{message}}</div>
     </b-form-group>
@@ -19,9 +18,9 @@
         {{plainvalues}}
       </b-col>
       <b-col sm="1" class="formfieldview text-right">
-        <abbr v-if="help" :title="help">
+        <span v-if="help" v-b-tooltip.hover.left :title="help">
           <v-icon name="info-circle" scale="1" />
-        </abbr>
+        </span>
       </b-col>
     </b-row>
   </div>

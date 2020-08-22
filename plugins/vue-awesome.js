@@ -13,3 +13,4 @@ require('vue-awesome/icons/plus-square')
 require('vue-awesome/icons/minus-square')
 
 Vue.component('v-icon', Icon)
+

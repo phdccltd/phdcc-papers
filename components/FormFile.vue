@@ -2,12 +2,12 @@
   <div>
     <b-form-group v-if="edit" :label="labelreqd" :label-for="sid" label-cols-sm="3">
       {{existingfile}}
+      <div class="form-help">{{help}}</div>
       <b-form-file :id="sid"
                    v-bind:value="value"
                    v-on:input="$emit('input', $event)"
-                   accept=".txt,.pdf,.doc,.docx"
-                   :placeholder="help"
-                   :required="reqd">
+                   :accept="allowedfiletypes"
+                   :placeholder="reqd?'Required. ':''">
       </b-form-file>
       <div class="alert-warning">{{message}}</div>
     </b-form-group>
@@ -21,9 +21,9 @@
         </a>
       </b-col>
       <b-col sm="1" class="formfieldview text-right">
-        <abbr v-if="help" :title="help">
+        <span v-if="help" v-b-tooltip.hover.left :title="help">
           <v-icon name="info-circle" scale="1" />
-        </abbr>
+        </span>
       </b-col>
     </b-row>
   </div>
@@ -41,6 +41,7 @@
       label: { type: String },
       sid: { type: String },
       help: { type: String },
+      allowedfiletypes: { type: String },
       existingfile: { type: String },
       relpath: { type: String },
       value: { type: File },

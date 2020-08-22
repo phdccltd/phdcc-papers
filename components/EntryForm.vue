@@ -12,7 +12,6 @@
   For case (b) the received entry fields contain empty values - as set ip in store/submits action fetchformfields.
   -->
   <div>
-    {{formtype}}
     <b-alert v-if="fatalerror" variant="warning" :show="true">
       ERROR {{fatalerror}}
     </b-alert>
@@ -62,50 +61,60 @@
           <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 pl-0">
             <FormInput v-if="field.type=='email'" type="email" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
+                       :reqd="field.required"
                        :message="field.message"
                        v-on:input="changed(field)"
                        v-model="field.val.string" />
             <FormFile v-if="field.type.substring(0,4)=='file'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                       :class="fieldclass(field)"
+                       :reqd="field.required"
                       :message="field.message"
                       v-on:input="changed(field)"
+                      :allowedfiletypes="field.allowedfiletypes"
                       :existingfile="field.val.file"
                       :relpath="entry.id+'/'+field.val.id"
                       v-model="field.val.newfile" />
             <FormLookup v-if="field.type=='lookup'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                         :class="fieldclass(field)"
+                        :reqd="field.required"
                         :message="field.message"
                         v-on:input="changed(field)"
                         :publookupId="field.publookupId"
                         v-model="field.val.integer" />
             <FormLookups v-if="field.type=='lookups'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                          :class="fieldclass(field)"
+                         :reqd="field.required"
                          :message="field.message"
                          v-on:input="changed(field)"
                          :publookupId="field.publookupId"
                          v-model="field.val.string" />
             <FormInput v-if="field.type=='phone'" type="tel" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
+                       :reqd="field.required"
                        :message="field.message"
                        v-on:input="changed(field)"
                        v-model="field.val.string" />
             <FormInput v-if="field.type=='string'" type="text" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
+                       :reqd="field.required"
                        :message="field.message"
                        v-on:input="changed(field)"
                        v-model="field.val.string" />
             <FormText v-if="field.type=='text'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                       :class="fieldclass(field)"
+                      :reqd="field.required"
                       :message="field.message"
                       v-on:input="changed(field)"
                       v-model="field.val.text" />
             <FormYes v-if="field.type=='yes'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                      :class="fieldclass(field)"
+                     :reqd="field.required"
                      :message="field.message"
                      v-on:input="changed(field)"
                      v-model="field.val.integer" />
             <FormYesNo v-if="field.type=='yesno'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
+                       :reqd="field.required"
                        :message="field.message"
                        v-on:input="changed(field)"
                        v-model="field.val.integer" />
@@ -318,6 +327,7 @@
             }
             //console.log(field.id, field.type, field.required, field.requiredif, field.val)
             let got = true
+            //console.log(field.type, field.label, fv.string)
             switch (field.type) {
               case 'text':
                 got = fv.text !== null && fv.text.length > 0
@@ -335,7 +345,7 @@
                 got = fv.integer !== null
                 break
               case 'file':
-                got = fv.newfile !== null
+                got = fv.existingfile!=null || fv.file !== null
                 break
             }
             let flagerror = false
@@ -377,18 +387,20 @@
           }
 
           this.submitstatus = 'Please wait: submitting'
-          if (this.formtype == 'addsubmit') {
+          if (this.formtype == 'addsubmit') { // ADD SUBMIT AND ENTRY
             this.error = 'Placebo'
-          } else if (this.entryid) {
+            this.submitstatus = 'Placebo'
+          } else if (this.entryid) {  // EDIT ENTRY
             const returnedid = await this.$api.submit.editEntry(entry)
             this.submitstatus = ''
             if (returnedid) {
               this.editable = false
               this.message = 'Updated OK'
+              this.$store.dispatch('submits/fetchentry', this.entryid) // To get file relpath anew
             } else {
               this.error = 'Save error'
             }
-          } else {
+          } else { // ADD ENTRY
             //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
             const entryid = await this.$api.submit.addEntry(entry)
             this.submitstatus = ''
