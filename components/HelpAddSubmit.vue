@@ -6,7 +6,7 @@
         Hide this
       </b-btn>
       <p>
-        Add a new entry for this stage of the submission process
+        Please start a new submission.
       </p>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
@@ -24,7 +24,7 @@
     mixins: [helpBox],
     data: function () {
       return {
-        id: 'add'
+        id: 'addsubmit'
       }
     },
   }

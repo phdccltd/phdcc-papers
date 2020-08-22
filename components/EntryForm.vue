@@ -17,28 +17,34 @@
       ERROR {{fatalerror}}
     </b-alert>
     <div v-else>
-      <HelpAdd v-if="formtype=='addstage'" />
+      <HelpAddStage v-if="formtype=='addstage'" />
+      <HelpAddSubmit v-if="formtype=='addsubmit'" />
       <HelpEntry v-if="formtype=='showedit'" />
       <Messages :error="error" :message="message" />
 
-      <!-- SHOW SUBMIT SUMMARY -->
-      <h2>
-        <b-btn variant="link" @click="toggleSubmitShow(submit)">
-          <v-icon v-if="!submit.visible" name="minus-square" scale="2" />
-          <v-icon v-if="submit.visible" name="plus-square" scale="2" />
-        </b-btn>
-        {{submit.id}}: {{submit.name}} - <span class="status">{{ submit.status}}</span>
-      </h2>
+      <div v-if="submitid">
+        <!-- SHOW SUBMIT SUMMARY -->
+        <h2>
+          <b-btn variant="link" @click="toggleSubmitShow(submit)">
+            <v-icon v-if="!submit.visible" name="minus-square" scale="2" />
+            <v-icon v-if="submit.visible" name="plus-square" scale="2" />
+          </b-btn>
+          {{submit.id}}: {{submit.name}} - <span class="status">{{ submit.status}}</span>
+        </h2>
 
-      <div v-if="!submit.visible" class="mt-2">
-        <b-list-group class="entries">
-          <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
-            <PaperDate :dt="entry.dt" />
-            <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flowid+'/'+submit.id+'/'+entry.id">
-              {{entry.stage.name}}
-            </b-btn>
-          </b-list-group-item>
-        </b-list-group>
+        <div v-if="!submit.visible" class="mt-2">
+          <b-list-group class="entries">
+            <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
+              <PaperDate :dt="entry.dt" />
+              <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flowid+'/'+submit.id+'/'+entry.id">
+                {{entry.stage.name}}
+              </b-btn>
+            </b-list-group-item>
+          </b-list-group>
+        </div>
+      </div>
+      <div v-else>
+        <h2>{{flow.name}}</h2>
       </div>
 
       <!-- SHOW EXISTING OR NEW ENTRY -->
@@ -64,6 +70,7 @@
                       :message="field.message"
                       v-on:input="changed(field)"
                       :existingfile="field.val.file"
+                      :relpath="entry.id+'/'+field.val.id"
                       v-model="field.val.newfile" />
             <FormLookup v-if="field.type=='lookup'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                         :class="fieldclass(field)"
@@ -103,9 +110,9 @@
                        v-on:input="changed(field)"
                        v-model="field.val.integer" />
             <!--ADD ENTRY TO SUBMIT: {{field.val.string}} {{field.val.integer}}
-            <span v-if="field.val.newfile">
-              {{field.val.newfile.name}}
-            </span>-->
+        <span v-if="field.val.newfile">
+          {{field.val.newfile.name}}
+        </span>-->
           </b-container>
           <b-container v-if="editable">
             <b-form-row>
@@ -124,7 +131,8 @@
 </template>
 <script>
   const _ = require('lodash/core')
-  import HelpAdd from '~/components/HelpAdd'
+  import HelpAddStage from '~/components/HelpAddStage'
+  import HelpAddSubmit from '~/components/HelpAddSubmit'
   import HelpEntry from '~/components/HelpEntry'
   import Messages from '~/components/Messages'
   import PaperDate from '~/components/PaperDate'
@@ -138,14 +146,12 @@
   import { page } from '@/utils/phdcc'
 
   export default {
-    components: { HelpAdd, HelpEntry, Messages, PaperDate, FormFile, FormInput, FormLookup, FormLookups, FormText, FormYes, FormYesNo },
+    components: { HelpAddStage, HelpAddSubmit, HelpEntry, Messages, PaperDate, FormFile, FormInput, FormLookup, FormLookups, FormText, FormYes, FormYesNo },
     data() {
       return {
         error: '',
         message: '',
         editable: false,
-        //fixededitable: false,
-        editbtntext: 'Edit',
         validationsummary: '',
         submitstatus: '',
         showeditviewbutton: false,
@@ -160,11 +166,14 @@
         case 'showedit':
           this.showeditviewbutton = true // TODO: only set if admin
           this.showdeletebutton = true // TODO: only set if admin
-          //this.fixededitable = false // TODO: only set false if admin
+          break
+        case 'addsubmit':
+          this.editable = true
+          this.showeditviewbutton = false
+          this.showdeletebutton = false
           break
         case 'addstage':
           this.editable = true
-          //this.fixededitable = true
         default:
       }
       this.error = ''
@@ -201,6 +210,15 @@
         const error2 = this.$store.getters['submits/error']
         return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
       },
+      editbtntext() {
+        return this.editable ? 'View' : 'Edit'
+      },
+      flow() {
+        const flows = this.$store.getters['submits/flows'](this.pubid)
+        if (!flows) return false
+        const flow = _.find(flows, flow => { return flow.id === this.flowid })
+        return flow
+      },
       submit() {
         //console.log('###GET SUBMIT')
         // Naughtily get pub here
@@ -223,9 +241,7 @@
           const entry = this.$store.getters['submits/stagefields'](this.stageid)
           if (!entry) return false
 
-          const flows = this.$store.getters['submits/flows'](this.pubid)
-          if (!flows) return false
-          const flow = _.find(flows, flow => { return flow.id === this.flowid })
+          const flow = this.flow
           if (!flow) return false
           entry.stage = _.find(flow.stages, stage => { return stage.id === this.stageid })
 
@@ -361,7 +377,9 @@
           }
 
           this.submitstatus = 'Please wait: submitting'
-          if (this.entryid) {
+          if (this.formtype == 'addsubmit') {
+            this.error = 'Placebo'
+          } else if (this.entryid) {
             const returnedid = await this.$api.submit.editEntry(entry)
             this.submitstatus = ''
             if (returnedid) {
@@ -370,7 +388,6 @@
             } else {
               this.error = 'Save error'
             }
-            return false
           } else {
             //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
             const entryid = await this.$api.submit.addEntry(entry)
@@ -409,7 +426,6 @@
       },
       toggleEdit() {
         this.editable = !this.editable
-        this.editbtntext = this.editable ? 'View' : 'Edit'
       },
       async deleteEntry() {
         try {

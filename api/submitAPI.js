@@ -3,18 +3,21 @@ import { APIError } from './BaseAPI';
 
 
 export default class submitAPI extends BaseAPI {
+  /////////////
   fetchpub(params) {
     //console.log('submitAPI fetchpub')
     if (params && 'pubid' in params) return this.$get('/submits/pub/' + params.pubid)
     return false
     //return this.$get('/submits', params)
   }
+  /////////////
   fetchentry(params) {
     //console.log('submitAPI fetchentry')
     if (params && 'entryid' in params) return this.$get('/submits/entry/' + params.entryid)
     return false
     //return this.$get('/submits', params)
   }
+  /////////////
   fetchformfields(params) {
     //console.log('submitAPI fetchentry')
     if (params && 'flowstageid' in params) return this.$get('/submits/formfields/' + params.flowstageid)
@@ -22,6 +25,7 @@ export default class submitAPI extends BaseAPI {
     //return this.$get('/submits', params)
   }
 
+  /////////////
   // POST add whole entry: use FormData not responsedata https://xhr.spec.whatwg.org/#interface-formdata
   async addEntry(entry) {
     console.log('submitAPI addEntry', entry)
@@ -61,12 +65,14 @@ export default class submitAPI extends BaseAPI {
     return ret.data.id
   }
 
-// PUT change whole entry, becomes:
-// POST edit: replace whole entry: use FormData not responsedata https://xhr.spec.whatwg.org/#interface-formdata
-// /submits/entry/24
+  /////////////
+  // Edit entry
+  // Use POST with X-HTTP-Method-Override PUT at /submits/entry/<id>
+  // Replace whole entry
   async editEntry(entry) {
     console.log('submitAPI editEntry', entry)
 
+    // Use FormData as it may contain a file https://xhr.spec.whatwg.org/#interface-formdata
     const data = new FormData()
     data.append('pubid', entry.pubid)
     data.append('flowid', entry.flowid)
@@ -80,7 +86,6 @@ export default class submitAPI extends BaseAPI {
       }
       data.append('values', JSON.stringify(fv))
     }
-    return false
     const ret = await this.$axios.post(process.env.API + '/submits/entry/' + entry.id, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -103,6 +108,8 @@ export default class submitAPI extends BaseAPI {
     console.log('editEntry returned', ret.data)
     return ret.data.id
   }
+
+  /////////////
   async getFile(relpath) {
     console.log('submitAPI getFile', relpath)
     // https://morioh.com/p/f4d331b62cda
@@ -113,6 +120,8 @@ export default class submitAPI extends BaseAPI {
     console.log('submitAPI getFile GOT', ret)
     return ret
   }
+
+  /////////////
   // DELETE entry
   async deleteEntry(entryid) {
     console.log('submitAPI deleteEntry')
