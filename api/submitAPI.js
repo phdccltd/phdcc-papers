@@ -140,4 +140,12 @@ export default class submitAPI extends BaseAPI {
     return ok
   }
   // PATCH change part of entry
+
+  /////////////
+  // DELETE submit
+  async deleteSubmit(submitid) {
+    console.log('submitAPI deleteSubmit')
+    const { ok } = await this.$del('/submits/' + submitid)
+    return ok
+  }
 }

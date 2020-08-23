@@ -1,6 +1,6 @@
 <template>
   <!--
-  Crucial component that displays a submission form (a) to edit or (b) to view - with organisers able to edit and/or delete the entry.
+  Crucial component that displays a form to add or view - with organisers able to edit and/or delete the entry.
   General hierarchy: publication -> flow -> submit -> entry
   The form is used
     (a) when displaying an entry
@@ -9,7 +9,7 @@
 
   The computed property entry() crucially sets up the (existing or new) entry object with the right fields etc.
   For case (a) above the data is received as entry.values but moved into the relevant field.val.
-  For case (b) the received entry fields contain empty values - as set ip in store/submits action fetchformfields.
+  For cases (b) and (c) the received entry fields contain empty values - as set ip in store/submits action fetchformfields.
   -->
   <div>
     <b-alert v-if="fatalerror" variant="warning" :show="true">

@@ -13,9 +13,12 @@
         <b-list-group class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">
             <h3>
-              <b-btn variant="link" @click="toggleSubmitShow(submit)" data-hello="brian">
+              <b-btn variant="link" @click="toggleSubmitShow(submit)">
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
                 <v-icon v-if="!submit.visible" name="plus-square" scale="2" />
+              </b-btn>
+              <b-btn v-if="showdeletebutton" variant="outline-warning" class="float-right" @click="deleteSubmit(submit.id)">
+                Delete
               </b-btn>
 
               {{ submit.id }}:
@@ -83,6 +86,7 @@
       return {
         noflows: false,
         nowtavailable: false,
+        showdeletebutton: true,
       }
     },
     computed: {
@@ -164,6 +168,23 @@
       },
       toggleSubmitShow(submit) {
         submit.visible = !submit.visible
+      },
+      async deleteSubmit(submitid) {
+        try {
+          console.log('deleteSubmit',submitid)
+          const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this submission and all its entries?')
+          if (!OK) return
+          const deleted = await this.$api.submit.deleteSubmit(submitid)
+          console.log('deleteSubmitted', deleted)
+          if (!deleted) {
+            await this.$bvModal.msgBoxOk('Could not delete this submission')
+            return
+          }
+          await this.$bvModal.msgBoxOk('Submission deleted')
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+        } catch (e) {
+          this.error = e.message
+        }
       },
     },
   }
