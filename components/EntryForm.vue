@@ -57,7 +57,15 @@
             Delete
           </b-btn>
         </h2>
-        <b-form @submit="onSubmit" :xvalidated="true" @submit.stop.prevent>
+        <b-form @submit="onSubmit" @submit.stop.prevent>
+          <div v-if="formtype=='addsubmit'" class="mt-2 pl-0 container" >
+            <FormInput type="text" :edit="editable" label="Title" sid="field0" help=""
+                       :class="fieldclass(submittitle)"
+                       :reqd="submittitle.required"
+                       :message="submittitle.message"
+                       v-on:input="changed(submittitle)"
+                       v-model="submittitle.val" />
+           </div>
           <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 pl-0">
             <FormInput v-if="field.type=='email'" type="email" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
@@ -67,7 +75,7 @@
                        v-model="field.val.string" />
             <FormFile v-if="field.type.substring(0,4)=='file'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                       :class="fieldclass(field)"
-                       :reqd="field.required"
+                      :reqd="field.required"
                       :message="field.message"
                       v-on:input="changed(field)"
                       :allowedfiletypes="field.allowedfiletypes"
@@ -118,10 +126,6 @@
                        :message="field.message"
                        v-on:input="changed(field)"
                        v-model="field.val.integer" />
-            <!--ADD ENTRY TO SUBMIT: {{field.val.string}} {{field.val.integer}}
-        <span v-if="field.val.newfile">
-          {{field.val.newfile.name}}
-        </span>-->
           </b-container>
           <b-container v-if="editable">
             <b-form-row>
@@ -165,6 +169,11 @@
         submitstatus: '',
         showeditviewbutton: false,
         showdeletebutton: false,
+        submittitle: {
+          required: true,
+          message: '',
+          val: '',
+        }
       }
     },
     props: {
@@ -309,8 +318,14 @@
             values: [],
           }
           if (this.entryid) entry.id = this.entryid
-          // Repeat basic required validation and do requiredif validation
+          // Do required validation and do requiredif validation
           let anyerror = false
+          if (this.formtype == 'addsubmit') {
+            if (this.submittitle.val.length == 0) {
+              this.submittitle.message = 'This field is required'
+              anyerror = true
+            }
+          }
           for (const field of this.entry.fields) {
             field.message = ''
             const fv = {
@@ -348,10 +363,8 @@
                 got = fv.existingfile!=null || fv.file !== null
                 break
             }
-            let flagerror = false
             if (field.required) {
               if (!got) {
-                flagerror = true
                 anyerror = true
                 field.message = 'This field is required'
               }
@@ -372,7 +385,6 @@
                   }
                 }
                 if (!checkok) {
-                  flagerror = true
                   anyerror = true
                   field.message = 'This field is required'
                 }
@@ -388,8 +400,20 @@
 
           this.submitstatus = 'Please wait: submitting'
           if (this.formtype == 'addsubmit') { // ADD SUBMIT AND ENTRY
-            this.error = 'Placebo'
-            this.submitstatus = 'Placebo'
+            entry.submitid = 0
+            entry.title = this.submittitle.val
+            const data = await this.$api.submit.addSubmitEntry(entry, this.flowid)
+            console.log('RECEIVED',data)
+            const entryid = data.rv.id
+            this.submitstatus = ''
+            if (entryid) {
+              this.editable = false
+              this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK' })
+              // OK: redirect so new entry displayed properly
+              this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + data.rv.submitid + '/' + entryid)
+            } else {
+              this.error = 'Save error'
+            }
           } else if (this.entryid) {  // EDIT ENTRY
             const returnedid = await this.$api.submit.editEntry(entry)
             this.submitstatus = ''
@@ -402,10 +426,11 @@
             }
           } else { // ADD ENTRY
             //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
-            const entryid = await this.$api.submit.addEntry(entry)
+            const data = await this.$api.submit.addEntry(entry)
+            const entryid = data.rv.id
             this.submitstatus = ''
-            this.editable = false
             if (entryid) {
+              this.editable = false
               this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK' })
               // OK: redirect so new entry displayed properly
               this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
