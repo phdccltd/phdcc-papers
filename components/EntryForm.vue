@@ -133,7 +133,7 @@
                 <b-btn variant="success" type="submit">
                   Submit
                 </b-btn>
-                <Messages :message="submitstatus" :warning="validationsummary" />
+                <Messages :message="submitstatus" :warning="validationsummary" :error="submiterror" />
               </b-col>
             </b-form-row>
           </b-container>
@@ -167,6 +167,7 @@
         editable: false,
         validationsummary: '',
         submitstatus: '',
+        submiterror: '',
         showeditviewbutton: false,
         showdeletebutton: false,
         submittitle: {
@@ -255,7 +256,7 @@
       },
       entry() { // Called every time for all user input changes
         if (this.stageid) {
-          //console.log('###GET ENTRY VIA STAGEID')
+          console.log('###GET ENTRY VIA STAGEID')
           const entry = this.$store.getters['submits/stagefields'](this.stageid)
           if (!entry) return false
 
@@ -267,7 +268,7 @@
           return entry
         }
         if (this.entryid) {
-          //console.log('###GET ENTRY VIA ENTRYID')
+          console.log('###GET ENTRY VIA ENTRYID')
           const flows = this.$store.getters['submits/flows'](this.pubid)
           if (!flows) return false
 
@@ -283,6 +284,7 @@
             const val = _.find(entry.values, value => { return value.formfieldId === field.id })
             field.val = val || {}
             field.val.newfile = null
+            console.log("NEWFILE SET TO NULL")
           }
           //console.log(entry)
           return entry
@@ -342,6 +344,7 @@
             }
             //console.log(field.id, field.type, field.required, field.requiredif, field.val)
             let got = true
+            let lengthalreadywarned = false
             //console.log(field.type, field.label, fv.string)
             switch (field.type) {
               case 'text':
@@ -366,7 +369,31 @@
             if (field.required) {
               if (!got) {
                 anyerror = true
-                field.message = 'This field is required'
+                field.message = 'This field is required. '
+              }
+            }
+            if (field.maxchars || field.maxwords) {
+              let tocheckmax = false
+              if (field.type === 'string') {
+                if (fv.string !== null) tocheckmax = fv.string
+              }
+              if (field.type === 'text') {
+                if (fv.text !== null) tocheckmax = fv.text
+              }
+              if (field.maxchars && tocheckmax) {
+                if (tocheckmax.length > field.maxchars) {
+                  field.message += 'You have ' + tocheckmax.length + ' characters - the maximum is ' + field.maxchars + '. '
+                  anyerror = true
+                  lengthalreadywarned = true
+                }
+              }
+              if (field.maxwords && tocheckmax) {
+                const matches = tocheckmax.match(/\S+/g);
+                if (matches && (matches.length > field.maxwords)) {
+                  field.message += 'You have ' + matches.length + ' words - the maximum is ' + field.maxwords + '. '
+                  anyerror = true
+                  lengthalreadywarned = true
+                }
               }
             }
             if (field.requiredif && !got) { // Only copes with: required if <fieldid>=<integer>
@@ -386,9 +413,13 @@
                 }
                 if (!checkok) {
                   anyerror = true
-                  field.message = 'This field is required'
+                  field.message = 'This field is required. '
                 }
               }
+            }
+            if ((fv.string !== null) && (!lengthalreadywarned) && (fv.string.length > 255)) { // String simply truncated to 255 in API
+              anyerror = true
+              field.message = 'The maximum string length is 255 characters. '
             }
             entry.values.push(fv)
           }
@@ -399,6 +430,7 @@
           }
 
           this.submitstatus = 'Please wait: submitting'
+          this.submiterror = ''
           if (this.formtype == 'addsubmit') { // ADD SUBMIT AND ENTRY
             entry.submitid = 0
             entry.title = this.submittitle.val
@@ -423,6 +455,7 @@
               this.$store.dispatch('submits/fetchentry', this.entryid) // To get file relpath anew
             } else {
               this.error = 'Save error'
+              this.submiterror = 'Save error'
             }
           } else { // ADD ENTRY
             //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
@@ -436,12 +469,15 @@
               this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
             } else {
               this.error = 'Save error'
+              this.submiterror = 'Save error'
             }
             // Could redirect here: /panel/2/1/3/<id>
           }
           return false
         } catch (e) {
           this.error = e.message
+          this.submiterror = e.message
+          this.submitstatus = ''
         }
       },
       toggleSubmit() {
@@ -474,7 +510,7 @@
             this.error = 'Could not delete this entry'
             return
           }
-          await this.$bvModal.msgBoxOk('Entry deleted')
+          await this.$bvModal.msgBoxOk('Note: no statuses removed', { title: 'Entry deleted' })
           this.$router.push('/panel/' + this.pubid)
         } catch (e) {
           this.error = e.message

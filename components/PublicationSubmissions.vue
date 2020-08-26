@@ -128,26 +128,40 @@
           flow.filteredsubmits = []
           for (const submit of flow.submits) {
             if (!this.submitid || this.submitid === submit.id) flow.filteredsubmits.push(submit)
-            if( !submit.visible) anysubmithidden = true
+            if (!submit.visible) anysubmithidden = true
+            // Find most recent status and what next stage is possible
             submit.status = 'Status not set'
             let statusid = false
+            let cansubmitflowstageId = false
             if (submit.statuses.length > 0) {
               statusid = submit.statuses[submit.statuses.length - 1].flowstatusId
               const status = _.find(flow.statuses, status => { return status.id === statusid })
-              if (status) submit.status = status.status
+              if (status) {
+                submit.status = status.status
+                cansubmitflowstageId = status.cansubmitflowstageId
+              }
             }
+            console.log('Most recent status:', statusid, submit.status)
             for (const entry of submit.entries) {
               entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
             }
-            if (statusid) {
+            // If we've got a most-recent-status (which we should) then check that cansubmitflowstageId allowed
+            if (statusid && cansubmitflowstageId) {
               for (const accepting of flow.acceptings) {
-                if (accepting.flowstatusId == statusid && accepting.open) {
-                  const addstage = _.find(flow.stages, stage => { return stage.id === accepting.flowstageId })
-                  if (addstage) {
-                    submit.addtype = addstage.name
-                    submit.addid = addstage.id
+                if (accepting.flowstatusId == statusid) {
+                  if (accepting.flowstageId !== cansubmitflowstageId) {
+                    console.log('OOPS: accepting.flowstageId !== cansubmitflowstageId', accepting.flowstageId, cansubmitflowstageId)
+                  } else {
+                    if (!accepting.open) cansubmitflowstageId = false
                   }
                 }
+              }
+            }
+            if (cansubmitflowstageId) {
+              const addstage = _.find(flow.stages, stage => { return stage.id === cansubmitflowstageId })
+              if (addstage) {
+                submit.addtype = addstage.name
+                submit.addid = addstage.id
               }
             }
           }
@@ -181,6 +195,7 @@
             return
           }
           await this.$bvModal.msgBoxOk('Submission deleted')
+          await this.$bvModal.msgBoxOk('NEED TO REMOVE STATUS, REVIEWS, ETC???')
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.error = e.message
