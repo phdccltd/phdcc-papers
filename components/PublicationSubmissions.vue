@@ -17,7 +17,7 @@
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
                 <v-icon v-if="!submit.visible" name="plus-square" scale="2" />
               </b-btn>
-              <b-btn v-if="showdeletebutton" variant="outline-warning" class="float-right" @click="deleteSubmit(submit.id)">
+              <b-btn v-if="showdeletebutton" variant="outline-warning" class="float-right" @click="deleteSubmit(submit)">
                 Delete
               </b-btn>
 
@@ -26,19 +26,39 @@
               <b-btn variant="link" @click="editSubmitName(submit)">
                 <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
               </b-btn>
-              - <span class="status">{{ submit.status}}</span>
             </h3>
-            <b-list-group class="entries" v-if="submit.visible">
-              <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
-                <PaperDate :dt="entry.dt" />
-                <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/'+entry.id">
-                  {{entry.stage.name}}
-                </b-btn>
-              </b-list-group-item>
-              <div v-if="submit.addtype">
-                <b-btn variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/add/'+submit.addid">Add {{submit.addtype}}</b-btn>
-              </div>
-            </b-list-group>
+            <b-container v-if="submit.visible">
+              <b-row no-gutters>
+                <b-col sm="6">
+                  <div v-if="admin">
+                    <div v-for="(submitstatus, index) in submit.statuses" :key="index">
+                      <PaperDate :dt="submitstatus.dt" />
+                      <span class="status">{{ submitstatus.status }}</span>
+                    </div>
+                    <div v-if="submit.statuses.length===0">
+                      No statuses set
+                    </div>
+                  </div>
+                  <div v-else>
+                    <PaperDate :dt="submit.dtstatus" />
+                    <span class="status">{{ submit.status}}</span>
+                  </div>
+                </b-col>
+                <b-col sm="6">
+                  <b-list-group class="entries">
+                    <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
+                      <PaperDate :dt="entry.dt" />
+                      <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/'+entry.id">
+                        {{entry.stage.name}}
+                      </b-btn>
+                    </b-list-group-item>
+                    <div v-if="submit.addtype">
+                      <b-btn variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/add/'+submit.addid">Add {{submit.addtype}}</b-btn>
+                    </div>
+                  </b-list-group>
+                </b-col>
+              </b-row>
+            </b-container>
           </b-list-group-item>
         </b-list-group>
       </b-list-group-item>
@@ -103,6 +123,7 @@
         showdeletebutton: true,
         submitbeingedited: false,
         newtitle: '',
+        admin: true,
       }
     },
     computed: {
@@ -147,16 +168,25 @@
             if (!submit.visible) anysubmithidden = true
             // Find most recent status and what next stage is possible
             submit.status = 'Status not set'
+            submit.dtstatus = null
             let statusid = false
             let cansubmitflowstageId = false
-            if (submit.statuses.length > 0) {
-              statusid = submit.statuses[submit.statuses.length - 1].flowstatusId
-              const status = _.find(flow.statuses, status => { return status.id === statusid })
-              if (status) {
-                submit.status = status.status
-                cansubmitflowstageId = status.cansubmitflowstageId
+            let foundvisible = false
+            for (const submitstatus of submit.statuses) {
+              submitstatus.status = 'Unknown'
+              const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submitstatus.flowstatusId })
+              if (flowstatus) {
+                submitstatus.status = flowstatus.status
+                if (!foundvisible && flowstatus.visibletoauthor) {
+                  statusid = flowstatus.id
+                  submit.status = flowstatus.status
+                  submit.dtstatus = submitstatus.dt
+                  cansubmitflowstageId = flowstatus.cansubmitflowstageId
+                  foundvisible = true
+                }
               }
             }
+
             console.log('Most recent status:', statusid, submit.status)
             for (const entry of submit.entries) {
               entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
@@ -199,19 +229,19 @@
       toggleSubmitShow(submit) {
         submit.visible = !submit.visible
       },
-      async deleteSubmit(submitid) {
+      async deleteSubmit(submit) {
         try {
-          console.log('deleteSubmit',submitid)
-          const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this submission and all its entries?')
+          console.log('deleteSubmit',submit.id)
+          const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this submission and all its entries?', { title: submit.name })
           if (!OK) return
-          const deleted = await this.$api.submit.deleteSubmit(submitid)
+          const deleted = await this.$api.submit.deleteSubmit(submit.id)
           console.log('deleteSubmitted', deleted)
           if (!deleted) {
             await this.$bvModal.msgBoxOk('Could not delete this submission')
             return
           }
           await this.$bvModal.msgBoxOk('Submission deleted')
-          await this.$bvModal.msgBoxOk('NEED TO REMOVE STATUS, REVIEWS, ETC???')
+          await this.$bvModal.msgBoxOk('NEED TO REMOVE REVIEWS, ETC???')
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.error = e.message
