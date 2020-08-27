@@ -4,8 +4,8 @@
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
         <h2 v-bind:class="submitid?'':'bg-yellow'">
           <b-btn variant="link" @click="toggleFlowShow(flow)">
-            <v-icon v-if="flow.submitsallvisible" name="minus-square" scale="2" />
-            <v-icon v-if="!flow.submitsallvisible" name="plus-square" scale="2" />
+            <v-icon v-if="flow.submitsallvisible" name="minus-square" scale="2" class="btn-outline-warning" />
+            <v-icon v-if="!flow.submitsallvisible" name="plus-square" scale="2" class="btn-outline-warning" />
           </b-btn>
           {{ flow.name }}
           <b-btn v-if="flow.addtype" variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/add/'+flow.addid">Add {{flow.addtype}}</b-btn>
@@ -13,7 +13,7 @@
         <b-list-group class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">
             <h3>
-              <b-btn variant="link" @click="toggleSubmitShow(submit)">
+              <b-btn variant="link" @click="toggleSubmitShow(submit)" style="margin-left: -0.6rem;">
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
                 <v-icon v-if="!submit.visible" name="plus-square" scale="2" />
               </b-btn>
@@ -201,7 +201,7 @@
               }
             }
 
-            console.log('Most recent status:', statusid, submit.status)
+            //console.log('Most recent status:', statusid, submit.status)
             for (const entry of submit.entries) {
               entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
             }
@@ -298,12 +298,14 @@
       },
       async addSubmitStatus(flow,submit) {
         try {
-          console.log('addSubmitStatus', submit.id, flow.id)
+          console.log('addSubmitStatus', submit.id, flow.id, submit.newstatusid)
+          if (!submit.newstatusid) return await this.$bvModal.msgBoxOk('Please choose a new status')
           const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submit.newstatusid })
           if (!flowstatus) return await this.$bvModal.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
           if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
           const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
           if (!submitstatus) return await this.$bvModal.msgBoxOk('Error adding status')
+          submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
