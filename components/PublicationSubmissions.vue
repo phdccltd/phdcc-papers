@@ -17,7 +17,7 @@
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
                 <v-icon v-if="!submit.visible" name="plus-square" scale="2" />
               </b-btn>
-              <b-btn v-if="showdeletebutton" variant="outline-warning" class="float-right" @click="deleteSubmit(submit)">
+              <b-btn v-if="showdeletebutton" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
                 Delete
               </b-btn>
 
@@ -31,9 +31,16 @@
               <b-row no-gutters>
                 <b-col sm="6">
                   <div v-if="admin">
+                    <form ref="form" @submit.stop.prevent="submitTitleEdited">
+                      <b-form-select v-model="submit.newstatusid" :options="flow.newstatuses" size="sm" style="width:auto;"></b-form-select>
+                      <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
+                    </form>
                     <div v-for="(submitstatus, index) in submit.statuses" :key="index">
                       <PaperDate :dt="submitstatus.dt" />
                       <span class="status">{{ submitstatus.status }}</span>
+                      <b-btn variant="link" @click="deleteSubmitStatus(submitstatus)">
+                        <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
+                      </b-btn>
                     </div>
                     <div v-if="submit.statuses.length===0">
                       No statuses set
@@ -149,7 +156,13 @@
         let countsubmits = 0
         for (const flow of flows) {
           const anysubmithidden = false
-          if (!this.flowid || this.flowid===flow.id) filteredflows.push(flow)
+          if (!this.flowid || this.flowid === flow.id) filteredflows.push(flow)
+          flow.newstatuses = []
+
+          for (const flowstatus of flow.statuses) {
+            flow.newstatuses.push({ value: flowstatus.id, text: flowstatus.status })
+          }
+
           flow.addtype = false
           if (!this.submitid) {
             for (const accepting of flow.acceptings) {
@@ -169,6 +182,7 @@
             // Find most recent status and what next stage is possible
             submit.status = 'Status not set'
             submit.dtstatus = null
+            submit.newstatusid = null
             let statusid = false
             let cansubmitflowstageId = false
             let foundvisible = false
@@ -269,6 +283,30 @@
           })
         } catch (e) {
           this.$bvModal.msgBoxOk('Error changing title: '+e.message)
+        }
+      },
+      async deleteSubmitStatus(submitstatus) {
+        try {
+          console.log('deleteSubmitStatus', submitstatus.id)
+          if( !await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this status?', { title: submitstatus.status })) return
+          const OK = await this.$api.submit.deleteSubmitStatus(submitstatus.id)
+          if (!OK) return await this.$bvModal.msgBoxOk('Error deleting status')
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error deleting status: ' + e.message)
+        }
+      },
+      async addSubmitStatus(flow,submit) {
+        try {
+          console.log('addSubmitStatus', submit.id, flow.id)
+          const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submit.newstatusid })
+          if (!flowstatus) return await this.$bvModal.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
+          if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
+          const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
+          if (!submitstatus) return await this.$bvModal.msgBoxOk('Error adding status')
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
         }
       },
     },

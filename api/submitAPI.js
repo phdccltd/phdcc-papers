@@ -157,4 +157,21 @@ export default class submitAPI extends BaseAPI {
     const { ok } = await this.$patch('/submits/' + submit.id, data)
     return ok
   }
+
+  /////////////
+  // DELETE submit status
+  async deleteSubmitStatus(submitstatusid) {
+    console.log('submitAPI deleteSubmitStatus', submitstatusid)
+    const { ok } = await this.$del('/submits/status/' + submitstatusid)
+    return ok
+  }
+
+  /////////////
+  // POST new submit status
+  async addSubmitStatus(submitid, newstatusid) {
+    console.log('submitAPI addSubmitStatus', submitid, newstatusid)
+    const data = { newstatusid }
+    const { submitstatus } = await this.$postOverride('POST', '/submits/status/' + submitid, data)
+    return submitstatus
+  }
 }
