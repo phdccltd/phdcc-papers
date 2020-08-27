@@ -22,9 +22,10 @@
               </b-btn>
 
               {{ submit.id }}:
-              <!--nuxt-link :to="'/panel/'+pubid+'/'+submit.id"-->
               {{ submit.name }}
-              <!--/nuxt-link-->
+              <b-btn variant="link" @click="editSubmitName(submit)">
+                <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
+              </b-btn>
               - <span class="status">{{ submit.status}}</span>
             </h3>
             <b-list-group class="entries" v-if="submit.visible">
@@ -48,6 +49,19 @@
     <div v-if="nowtavailable" class="mt-2">
       <strong>Nothing submitted yet</strong>
     </div>
+
+    <b-modal id="bv-modal-edit-submit-title" centered @ok="okTitleEdited">
+      <template v-slot:modal-title>
+        Edit submission title
+      </template>
+      <form ref="form" @submit.stop.prevent="submitTitleEdited">
+        <b-form-group label="Title"
+                      label-for="new-title"
+                      invalid-feedback="Title is required">
+          <b-form-input id="new-title" required v-model="newtitle"></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -87,6 +101,8 @@
         noflows: false,
         nowtavailable: false,
         showdeletebutton: true,
+        submitbeingedited: false,
+        newtitle: '',
       }
     },
     computed: {
@@ -199,6 +215,30 @@
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.error = e.message
+        }
+      },
+      editSubmitName(submit) {
+        this.newtitle = submit.name
+        this.submitbeingedited = submit
+        this.$bvModal.show('bv-modal-edit-submit-title')
+      },
+      okTitleEdited(bvModalEvt) {
+        bvModalEvt.preventDefault()
+        this.submitTitleEdited()
+      },
+      async submitTitleEdited() {
+        try {
+          const newtitle = this.newtitle.trim()
+          if (newtitle.length === 0) return await this.$bvModal.msgBoxOk('No new title given!')
+
+          const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle)
+          if (!amended) return await this.$bvModal.msgBoxOk('Error changing title')
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+          this.$nextTick(() => {
+            this.$bvModal.hide('bv-modal-edit-submit-title')
+          })
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error changing title: '+e.message)
         }
       },
     },

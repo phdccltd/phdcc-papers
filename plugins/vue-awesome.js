@@ -11,6 +11,7 @@ require('vue-awesome/icons/home')
 require('vue-awesome/icons/sign-out-alt')
 require('vue-awesome/icons/plus-square')
 require('vue-awesome/icons/minus-square')
+require('vue-awesome/icons/edit')
 
 Vue.component('v-icon', Icon)
 

@@ -148,4 +148,13 @@ export default class submitAPI extends BaseAPI {
     const { ok } = await this.$del('/submits/' + submitid)
     return ok
   }
+
+  /////////////
+  // PATCH submit title
+  async changeSubmitTitle(submit, newtitle) {
+    console.log('submitAPI changeSubmitTitle', submit.id, newtitle)
+    const data = { newtitle }
+    const { ok } = await this.$patch('/submits/' + submit.id, data)
+    return ok
+  }
 }
