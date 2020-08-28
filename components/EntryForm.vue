@@ -31,7 +31,7 @@
           {{submit.id}}: {{submit.name}} - <span class="status">{{ submit.status}}</span>
         </h2>
 
-        <div v-if="!submit.visible" class="mt-2">
+        <div v-if="submit.visible" class="mt-2">
           <b-list-group class="entries">
             <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
               <PaperDate :dt="entry.dt" />

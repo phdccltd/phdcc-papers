@@ -408,3 +408,15 @@ form .col-form-label{
   border-width: medium;
   padding: 0.5rem;
 }
+
+.publist-submit-h3{
+  margin-bottom: 0;
+}
+.publist-current-status {
+  margin-left: 54px;
+}
+@media only screen and (max-width: 600px) {
+  .publist-current-status {
+    margin-left: 0;
+  }
+}

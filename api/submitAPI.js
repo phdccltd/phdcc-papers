@@ -48,8 +48,8 @@ export default class submitAPI extends BaseAPI {
     if (entry.title) data.append('title', entry.title)
     for (const fv of entry.values) {
       if (fv.file) {
-        //console.log('addEntry FILE', fv.file, fv.file.name)
-        data.append('file', fv.file, fv.file.name)
+        const GivenFilename = fv.formfieldid + '-' + fv.file.name
+        data.append('files', fv.file, GivenFilename)
         fv.file = fv.file.name
       }
       data.append('values', JSON.stringify(fv))
@@ -91,8 +91,9 @@ export default class submitAPI extends BaseAPI {
     data.append('submitid', entry.submitid)
     for (const fv of entry.values) {
       if (fv.file) {
-        console.log('editEntry FILE', fv.file, fv.file.name)
-        data.append('file', fv.file, fv.file.name)
+        //console.log('editEntry FILE', fv.file, fv.file.name)
+        const GivenFilename = fv.formfieldid + '-' + fv.file.name
+        data.append('files', fv.file, GivenFilename)
         fv.file = fv.file.name
       }
       data.append('values', JSON.stringify(fv))

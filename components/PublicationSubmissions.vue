@@ -12,7 +12,7 @@
         </h2>
         <b-list-group class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">
-            <h3>
+            <h3 class="publist-submit-h3">
               <b-btn variant="link" @click="toggleSubmitShow(submit)" style="margin-left: -0.6rem;">
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
                 <v-icon v-if="!submit.visible" name="plus-square" scale="2" />
@@ -27,6 +27,10 @@
                 <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
               </b-btn>
             </h3>
+            <div class="publist-current-status">
+              <PaperDate :dt="submit.dtstatus" />
+              <span class="status">{{ submit.status}}</span>
+            </div>
             <b-container v-if="submit.visible">
               <b-row no-gutters>
                 <b-col sm="6">
@@ -36,19 +40,15 @@
                       <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
                     </form>
                     <div v-for="(submitstatus, index) in submit.statuses" :key="index">
+                      <b-link @click="deleteSubmitStatus(submitstatus)">
+                        <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
+                      </b-link>
                       <PaperDate :dt="submitstatus.dt" />
                       <span class="status">{{ submitstatus.status }}</span>
-                      <b-btn variant="link" @click="deleteSubmitStatus(submitstatus)">
-                        <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
-                      </b-btn>
                     </div>
                     <div v-if="submit.statuses.length===0">
                       No statuses set
                     </div>
-                  </div>
-                  <div v-else>
-                    <PaperDate :dt="submit.dtstatus" />
-                    <span class="status">{{ submit.status}}</span>
                   </div>
                 </b-col>
                 <b-col sm="6">

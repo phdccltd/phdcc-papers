@@ -97,9 +97,9 @@ export const actions = {
       const { flows } = await this.$api.submit.fetchpub({ pubid })
       // Set collapse visibility for flow and submits
       for (const flow of flows) {
-        flow.submitsallvisible = true
+        flow.submitsallvisible = false
         for (const submit of flow.submits) {
-          submit.visible = true
+          submit.visible = false
         }
       }
       commit('addPubFlow', { pubid, flows })
