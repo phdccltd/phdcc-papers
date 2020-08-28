@@ -21,8 +21,10 @@
                 Delete
               </b-btn>
 
-              {{ submit.id }}:
-              {{ submit.name }}
+              <b-link @click="toggleSubmitShow(submit)">
+                {{ submit.id }}:
+                {{ submit.name }}
+              </b-link>
               <b-btn variant="link" @click="editSubmitName(submit)">
                 <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
               </b-btn>
