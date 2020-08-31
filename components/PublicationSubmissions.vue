@@ -8,7 +8,7 @@
             <v-icon v-if="!flow.submitsallvisible" name="plus-square" scale="2" class="btn-outline-warning" />
           </b-btn>
           {{ flow.name }}
-          <b-btn v-if="flow.addtype" variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/add/'+flow.addid">Add {{flow.addtype}}</b-btn>
+          <b-btn class="float-right" v-if="flow.addtype" variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/add/'+flow.addid">Add {{flow.addtype}}</b-btn>
         </h2>
         <b-list-group class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">
@@ -32,6 +32,7 @@
             <div class="publist-current-status">
               <PaperDate :dt="submit.dtstatus" />
               <span class="status">{{ submit.status}}</span>
+              <b-btn v-if="submit.addtype" variant="success" class="float-right" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/add/'+submit.addid">Add {{submit.addtype}}</b-btn>
             </div>
             <b-container v-if="submit.visible">
               <b-row no-gutters>
@@ -61,9 +62,6 @@
                         {{entry.stage.name}}
                       </b-btn>
                     </b-list-group-item>
-                    <div v-if="submit.addtype">
-                      <b-btn variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/add/'+submit.addid">Add {{submit.addtype}}</b-btn>
-                    </div>
                   </b-list-group>
                 </b-col>
               </b-row>

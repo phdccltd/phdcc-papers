@@ -126,6 +126,9 @@
                        :message="field.message"
                        v-on:input="changed(field)"
                        v-model="field.val.integer" />
+            <div v-if="field.type.substring(0,4)=='file'">
+              NEWFILE {{field.val.newfile}}
+            </div>
           </b-container>
           <b-container v-if="editable">
             <b-form-row>
