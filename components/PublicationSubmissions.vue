@@ -179,7 +179,9 @@
           for (const submit of flow.submits) {
             if (!this.submitid || this.submitid === submit.id) flow.filteredsubmits.push(submit)
             if (!submit.visible) anysubmithidden = true
-            // Find most recent status and what next stage is possible
+
+            // Find most recent status and what next stage is possible // CODE ALSO IN store/submits.js - submit(state)
+            // TOD: When only ones visibletoauthor returned in API "GET submits for publication" then simplify here
             submit.status = 'Status not set'
             submit.dtstatus = null
             submit.newstatusid = null

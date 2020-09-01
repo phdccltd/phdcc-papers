@@ -74,8 +74,11 @@ export const getters = {
                 entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
               }
               submit.status = 'Status not set'
+              //console.log('SUBMIT', submit.id, submit.statuses.length)
+              // See also code in components/PublicationSubmissions.vue
+              // TODO: When only ones visibletoauthor returned in API "GET submits for publication" then simplify here
               if (submit.statuses.length > 0) {
-                const statusid = submit.statuses[submit.statuses.length - 1].flowstatusId
+                const statusid = submit.statuses[0].flowstatusId
                 const status = _.find(flow.statuses, status => { return status.id === statusid })
                 if (status) submit.status = status.status
               }
