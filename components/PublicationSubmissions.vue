@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-if="pub.isowner" class="mt-1 mb-1">
+      <b-btn variant="success" :to="'/panel/'+pubid+'/admin'">Admin</b-btn>
+      <b-btn variant="outline-danger" class="float-right" @click="toggleEditDelete()">Toggle Edit/Delete</b-btn>
+    </div>
     <b-list-group class="flows">
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
         <h2 v-bind:class="submitid?'':'bg-yellow'">
@@ -17,7 +21,7 @@
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
                 <v-icon v-if="!submit.visible" name="plus-square" scale="2" />
               </b-btn>
-              <b-btn v-if="showdeletebutton" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
+              <b-btn v-if="enableditdelete" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
                 Delete
               </b-btn>
 
@@ -25,7 +29,7 @@
                 {{ submit.id }}:
                 {{ submit.name }}
               </b-link>
-              <b-btn variant="link" @click="editSubmitName(submit)">
+              <b-btn v-if="enableditdelete" variant="link" @click="editSubmitName(submit)">
                 <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
               </b-btn>
             </h3>
@@ -127,27 +131,27 @@
       return {
         noflows: false,
         nowtavailable: false,
-        showdeletebutton: true,
         submitbeingedited: false,
+        enableditdelete: false,
         newtitle: '',
         admin: true,
       }
     },
     computed: {
+      pub() {
+        const pub = this.$store.getters['pubs/getPub'](this.pubid)
+        if (!pub) {
+          setError('Invalid pubid')
+          return false
+        }
+        page.title = pub.name
+        document.title = pub.name
+        this.$store.commit("page/setTitle", page.title)
+        return pub
+      },
       flows() {
         //console.log('PUB flows', this.pubid)
 
-        // Naughtily get pub title here
-        const pub = this.$store.getters['pubs/getPub'](this.pubid)
-        if (pub) {
-          page.title = pub.name
-          document.title = pub.name
-          this.$store.commit("page/setTitle", page.title)
-        } else {
-          this.setError('Invalid pubid')
-          return false
-        }
-        
         // Get flows and work out follow-on properties
         let flows = this.$store.getters['submits/flows'](this.pubid)
         if (!flows) flows = []
@@ -236,6 +240,9 @@
       },
     },
     methods: {
+      toggleEditDelete() {
+        this.enableditdelete = !this.enableditdelete
+      },
       toggleFlowShow(flow) {
         for (const submit of flow.submits) {
           submit.visible = !flow.submitsallvisible

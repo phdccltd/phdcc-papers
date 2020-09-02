@@ -3,7 +3,6 @@
   <div>
     <HelpPanel />
     <Messages :error="error" :message="message" />
-    <b-btn variant="success" :to="'/panel/'+pubid+'/admin'">Admin</b-btn>
     <PublicationSubmissions :pubid="pubid" :setError="setError" :setMessage="setMessage" />
   </div>
 </template>
