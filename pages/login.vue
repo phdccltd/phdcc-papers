@@ -22,6 +22,7 @@
       }
     },
     async mounted() {
+      page.title = 'Login'
       //console.log('login MOUNTED')
       if (this.$auth.loggedIn) {
         this.$router.push('/panel')

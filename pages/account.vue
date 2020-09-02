@@ -40,6 +40,7 @@
       }
     },
     async mounted() {
+      page.title = 'Account'
       //console.log('account MOUNTED')
       if (!this.$auth.loggedIn) {
         this.$router.push('/login')

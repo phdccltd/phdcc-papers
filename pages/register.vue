@@ -22,6 +22,7 @@
       }
     },
     async mounted() {
+      page.title = 'Register'
       //console.log('register MOUNTED')
       if (this.$auth.loggedIn) {
         this.$router.push('/panel')

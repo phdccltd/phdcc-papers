@@ -1,25 +1,22 @@
 <template>
-  <!-- OVERVIEW PANEL FOR ONE PUBLICATION -->
+  <!-- ADMIN PANEL FOR ONE PUBLICATION -->
   <div>
-    <HelpPanel />
+    <HelpAdmin />
     <Messages :error="error" :message="message" />
-    <b-btn variant="success" :to="'/panel/'+pubid+'/admin'">Admin</b-btn>
-    <PublicationSubmissions :pubid="pubid" :setError="setError" :setMessage="setMessage" />
   </div>
 </template>
 
 <script>
-  import HelpPanel from '~/components/HelpPanel'
+  import HelpAdmin from '~/components/HelpAdmin'
   import Messages from '~/components/Messages'
-  import PublicationSubmissions from '~/components/PublicationSubmissions'
   
   import { page } from '@/utils/phdcc'
 
-  page.title = ''
+  page.title = 'Publication admin'
 
   export default {
     middleware: 'authuser',
-    components: { Messages, HelpPanel, PublicationSubmissions },
+    components: { Messages, HelpAdmin },
     data({ app, params, store }) {
       //console.log('_id data')
       return {
@@ -28,11 +25,11 @@
       }
     },
     async mounted() { // Client only
+      page.title = 'Publication admin'
+      console.log('ADMIN',this.pubid)
       this.error = ''
       this.message = ''
       //console.log('_id mounted', this.pubid)
-      this.$store.dispatch('pubs/fetch')
-      this.$store.dispatch('submits/fetchpub', this.pubid)
     },
     computed: {
       pubid() {
