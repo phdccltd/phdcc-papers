@@ -9,6 +9,10 @@ export default class userAPI extends BaseAPI {
     return users
   }*/
 
+  getPubUsers(pubid) {
+    return this.$get('/users/pub/' + pubid)
+  }
+
   register(params) {
     console.log('userAPI register')
     return this.$post('/user/register', params)

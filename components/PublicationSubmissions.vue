@@ -2,7 +2,7 @@
   <div>
     <div v-if="pub.isowner" class="mt-1 mb-1">
       <b-btn variant="success" :to="'/panel/'+pubid+'/admin'">Admin</b-btn>
-      <b-btn variant="outline-danger" class="float-right" @click="toggleEditDelete()">Toggle Edit/Delete</b-btn>
+      <b-btn variant="outline-warning" class="float-right" @click="toggleEditDelete()">Toggle Edit/Delete</b-btn>
     </div>
     <b-list-group class="flows">
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
