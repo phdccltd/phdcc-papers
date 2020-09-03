@@ -32,6 +32,9 @@
               <strong>{{pubuser.id}} {{pubuser.name}}</strong>
             </b-col>
             <b-col sm="6">
+              <b-btn variant="link" class="float-right" @click="startAddUserRole(pubusers, pubuser)">
+                <v-icon name="plus-circle" scale="1.5" class="btn-outline-warning" />
+              </b-btn>
               <div v-for="(role, index) in pubuser.roles" :key="index" class="pubuserrole">
                 <b-link @click="deleteUserRole(pubuser,role)">
                   <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
@@ -42,6 +45,31 @@
           </b-row>
         </b-list-group-item>
       </b-list-group>
+
+      <b-modal id="bv-modal-add-role" centered @ok="addUserRole">
+        <template v-slot:modal-title>
+          Add role
+        </template>
+        <form ref="form" @submit.stop.prevent>
+          <b-form-group label="user"
+                        label-for="addroleusername"
+                        label-cols-sm="4">
+            <b-form-input id="addroleusername" disabled v-model="addroleusername"></b-form-input>
+          </b-form-group>
+          <b-form-group label="Role"
+                        label-for="new-role"
+                         label-cols-sm="4">
+            <b-form-select :options="this.availablenewroles"
+                           size="sm"
+                           v-model="newrole"
+                           style="width:auto;">
+              <template v-slot:first>
+                <b-form-select-option disabled value="0">Select a role</b-form-select-option>
+              </template>
+            </b-form-select>
+          </b-form-group>
+        </form>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -64,6 +92,10 @@
         error: '',
         message: '',
         selectedrole: 0,
+        addroleuserid: 0,
+        addroleusername: '',
+        newrole: 0,
+        availablenewroles: [],
       }
     },
     async mounted() { // Client only
@@ -104,6 +136,12 @@
       setMessage(msg) {
         this.message = msg
       },
+      hasRole(pubuser) {
+        const selectedrole = parseInt(this.selectedrole)
+        if (selectedrole === 0) return true
+        const hasrole = _.find(pubuser.roles, role => { return role.id === selectedrole })
+        return hasrole
+      },
       async deleteUserRole(pubuser, role) {
         //console.log('deleteUserRole', pubuser.id, role.id)
         const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
@@ -117,11 +155,35 @@
           this.$store.dispatch('users/fetchpubusers', this.pubid)
         }
       },
-      hasRole(pubuser) {
-        const selectedrole = parseInt(this.selectedrole)
-        if (selectedrole === 0) return true
-        const hasrole = _.find(pubuser.roles, role => { return role.id === selectedrole })
-        return hasrole
+      async startAddUserRole(pubusers, pubuser) {
+        this.addroleuserid = pubuser.id
+        this.addroleusername = pubuser.name
+        this.newrole = 0
+        this.availablenewroles = []
+        for (const pubrole of pubusers.pubroles) {
+          const hasrole = _.find(pubuser.roles, role => { return role.id === pubrole.id })
+          if (!hasrole) {
+            const opt = { value: pubrole.id, text: pubrole.name }
+            this.availablenewroles.push(opt)
+          }
+        }
+        if (this.availablenewroles.length === 0) {
+          await this.$bvModal.msgBoxOk('No more roles available!', { title: 'Add role' })
+          return
+        }
+        this.$bvModal.show('bv-modal-add-role')
+      },
+      async addUserRole(bvModalEvt) {
+        console.log('addUserRole', this.addroleuserid, this.newrole)
+        bvModalEvt.preventDefault()
+        try {
+          if (this.newrole == 0) return await this.$bvModal.msgBoxOk('No new role chosen!')
+          this.$nextTick(() => {
+            this.$bvModal.hide('bv-modal-add-role')
+          })
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error changing title: ' + e.message)
+        }
       },
     },
     head() {

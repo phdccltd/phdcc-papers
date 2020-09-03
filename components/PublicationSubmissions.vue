@@ -42,7 +42,7 @@
               <b-row no-gutters>
                 <b-col sm="6">
                   <div v-if="admin">
-                    <form ref="form" @submit.stop.prevent="submitTitleEdited">
+                    <form ref="form" @submit.stop.prevent>
                       <b-form-select v-model="submit.newstatusid" :options="flow.newstatuses" size="sm" style="width:auto;"></b-form-select>
                       <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
                     </form>
@@ -85,7 +85,7 @@
       <template v-slot:modal-title>
         Edit submission title
       </template>
-      <form ref="form" @submit.stop.prevent="submitTitleEdited">
+      <form ref="form" @submit.stop.prevent>
         <b-form-group label="Title"
                       label-for="new-title"
                       invalid-feedback="Title is required">

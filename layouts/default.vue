@@ -94,7 +94,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     display: inline;
-    white-space: nowrap;
+    NOwhite-space: nowrap;
   }
 
 
