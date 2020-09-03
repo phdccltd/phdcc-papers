@@ -13,6 +13,12 @@ export default class userAPI extends BaseAPI {
     return this.$get('/users/pub/' + pubid)
   }
 
+  async deleteUserRole(pubid, userid, roleid) {
+    console.log('deleteUserRole', pubid, userid, roleid)
+    const { ok } = await this.$del('/users/pub/' + pubid + '/' + userid + '/' + roleid)
+    return ok
+  }
+
   register(params) {
     console.log('userAPI register')
     return this.$post('/user/register', params)

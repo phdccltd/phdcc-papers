@@ -22,12 +22,11 @@
         </b-btn>
         <b-btn to="/admin" variant="outline-primary" class="mr-2" v-if="$auth.user && $auth.user.super">Users</b-btn>
         <h1 class="menu-title">
-          <nuxt-link v-if="pubid" :to="'/panel/'+pubid">
-            {{ title }}
-          </nuxt-link>
+          <nuxt-link v-if="pubid" :to="'/panel/'+pubid">{{ title }}</nuxt-link>
           <span v-else>
             {{ title }}
           </span>
+          {{ titlesuffix }}
         </h1>
       </div>
     </div>
@@ -66,6 +65,9 @@
         //} else {
         //  return page.title
         //}
+      },
+      titlesuffix() {
+        return this.$store.getters['page/titlesuffix'] // as changes reactively as we move about
       },
       pubid() {
         if ( 'pubid' in this.$route.params)
