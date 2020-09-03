@@ -105,14 +105,13 @@
         this.message = msg
       },
       async deleteUserRole(pubuser, role) {
-        this.message = ''
-        console.log('deleteUserRole', pubuser.id, role.id)
-        //const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
-        const ok = false
-        console.log('ok', ok)
+        //console.log('deleteUserRole', pubuser.id, role.id)
+        const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
         if (!ok) {
           this.$bvToast.toast('User role could not be deleted', {
-            //title: `Toaster`
+            title: 'Delete ' + role.name + ' for '+pubuser.name,
+            toaster: 'b-toaster-top-center',
+            variant: 'danger',
           })
         } else {
           this.$store.dispatch('users/fetchpubusers', this.pubid)
