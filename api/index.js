@@ -8,6 +8,7 @@
  *    --- DO NOT EDIT ---
  */
 
+import mailtemplatesAPI from './mailtemplatesAPI.js'
 import pubAPI from './pubAPI.js'
 import sitepagesAPI from './sitepagesAPI.js'
 import submitAPI from './submitAPI.js'
@@ -16,6 +17,7 @@ import userAPI from './userAPI.js'
 export default ({ $axios, store }) => {
   const options = { $axios, store }
   return {
+    mailtemplates: new mailtemplatesAPI(options),
     pub: new pubAPI(options),
     sitepages: new sitepagesAPI(options),
     submit: new submitAPI(options),

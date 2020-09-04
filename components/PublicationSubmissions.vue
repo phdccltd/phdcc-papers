@@ -3,7 +3,6 @@
     <div v-if="pub.isowner" class="mt-1 mb-1">
       <strong>ADMIN</strong>
       <b-btn variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
-      <b-btn variant="outline-success" :to="'/panel/'+pubid+'/admin-mail-templates'" class="ml-2">Mail templates</b-btn>
       <b-btn variant="outline-warning" class="float-right" @click="toggleEditDelete()">Toggle Edit/Delete</b-btn>
     </div>
     <b-list-group class="flows">
@@ -15,6 +14,7 @@
           </b-btn>
           {{ flow.name }}
           <b-btn class="float-right" v-if="flow.addtype" variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/add/'+flow.addid">Add {{flow.addtype}}</b-btn>
+          <b-btn class="float-right mr-2" v-if="pub.isowner" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
         </h2>
         <b-list-group class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">
