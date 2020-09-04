@@ -1,5 +1,5 @@
 <template>
-  <!-- ADMIN PANEL FOR ONE PUBLICATION -->
+  <!-- ADMIN USERS PANEL FOR ONE PUBLICATION -->
   <!-- Access check: correctly fails as API returns error if not allowed -->
   <div>
     <b-alert v-if="fatalerror" variant="warning" :show="true">
@@ -9,27 +9,37 @@
       You cannot administer this publication
     </div>
     <div v-else>
-      <HelpAdmin />
+      <HelpAdminUsers />
       <Messages :error="error" :message="message" />
-      <form ref="form" @submit.stop.prevent>
-        Filter:
-        <b-form-select :options="pubusers.pubroles"
-                       size="sm"
-                       value-field="id"
-                       text-field="name"
-                       v-model="selectedrole"
-                       style="width:auto;">
-          <template v-slot:first>
-            <b-form-select-option selected value="0">All roles</b-form-select-option>
-          </template>
-        </b-form-select>
-      </form>
-
+      <b-row no-gutters class="bg-yellow p-3">
+        <b-col sm="6">
+          <form ref="form" @submit.stop.prevent>
+            Filter:
+            <b-form-select :options="pubusers.pubroles"
+                           size="sm"
+                           value-field="id"
+                           text-field="name"
+                           v-model="selectedrole"
+                           style="width:auto;">
+              <template v-slot:first>
+                <b-form-select-option selected value="0">All roles</b-form-select-option>
+              </template>
+            </b-form-select>
+          </form>
+        </b-col>
+        <b-col sm="6">
+          TO DO??? Add user
+        </b-col>
+      </b-row>
       <b-list-group class="pubusers">
         <b-list-group-item v-for="(pubuser, index) in pubusers.users" :key="index" class="pubuser" v-if="hasRole(pubuser)">
           <b-row no-gutters>
             <b-col sm="6">
-              <strong>{{pubuser.id}} {{pubuser.name}}</strong>
+              <b-link @click="deletePubUser(pubuser)">
+                <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
+              </b-link>
+              <strong>{{pubuser.id}} {{pubuser.name}}</strong><br />
+              Submissions: {{pubuser.submits.length}}
             </b-col>
             <b-col sm="6">
               <b-btn variant="link" class="float-right" @click="startAddUserRole(pubusers, pubuser)">
@@ -61,7 +71,7 @@
                          label-cols-sm="4">
             <b-form-select :options="this.availablenewroles"
                            size="sm"
-                           v-model="newrole"
+                           v-model="chosennewrole"
                            style="width:auto;">
               <template v-slot:first>
                 <b-form-select-option disabled value="0">Select a role</b-form-select-option>
@@ -76,7 +86,7 @@
 
 <script>
   const _ = require('lodash/core')
-  import HelpAdmin from '~/components/HelpAdmin'
+  import HelpAdminUsers from '~/components/HelpAdminUsers'
   import Messages from '~/components/Messages'
   
   import { page } from '@/utils/phdcc'
@@ -85,7 +95,7 @@
 
   export default {
     middleware: 'authuser',
-    components: { Messages, HelpAdmin },
+    components: { Messages, HelpAdminUsers },
     data({ app, params, store }) {
       //console.log('_id data')
       return {
@@ -94,7 +104,7 @@
         selectedrole: 0,
         addroleuserid: 0,
         addroleusername: '',
-        newrole: 0,
+        chosennewrole: 0,
         availablenewroles: [],
       }
     },
@@ -114,7 +124,7 @@
         page.title = pub.name
         document.title = pub.name
         this.$store.commit("page/setTitle", page.title)
-        this.$store.commit("page/setTitleSuffix", 'ADMIN')
+        this.$store.commit("page/setTitleSuffix", 'ADMIN USERS')
         return pub
       },
       fatalerror() {
@@ -130,36 +140,70 @@
       },
     },
     methods: {
+      /* ************************ */
       setError(msg) {
         this.error = msg
       },
+      /* ************************ */
       setMessage(msg) {
         this.message = msg
       },
+      /* ************************ */
       hasRole(pubuser) {
         const selectedrole = parseInt(this.selectedrole)
         if (selectedrole === 0) return true
         const hasrole = _.find(pubuser.roles, role => { return role.id === selectedrole })
         return hasrole
       },
-      async deleteUserRole(pubuser, role) {
-        //console.log('deleteUserRole', pubuser.id, role.id)
-        if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this role?', { title: pubuser.name+': '+role.name })) return
-        const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
-        if (!ok) {
-          this.$bvToast.toast('User role could not be deleted', {
-            title: 'Delete ' + role.name + ' for '+pubuser.name,
-            toaster: 'b-toaster-top-center',
-            variant: 'danger',
-          })
-        } else {
-          this.$store.dispatch('users/fetchpubusers', this.pubid)
+      /* ************************ */
+      async deletePubUser(pubuser) {
+        try {
+          //console.log('deletePubUser', pubuser.id, this.$auth.user.id)
+          if (pubuser.id === this.$auth.user.id) {
+            if (!await this.$bvModal.msgBoxConfirm('THIS IS YOU. Do you want to continue?', { title: pubuser.name })) return
+          }
+          if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to stop this user accessing your publication/conference?  No submissions etc will be removed.', { title: pubuser.name })) return
+          const ok = await this.$api.user.removePubUser(this.pubid, pubuser.id)
+          if (!ok) {
+            this.$bvToast.toast('User could not be removed', {
+              title: 'Remove ' + pubuser.name,
+              toaster: 'b-toaster-top-center',
+              variant: 'danger',
+            })
+          } else {
+            this.$store.dispatch('users/fetchpubusers', this.pubid)
+          }
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error removing user: ' + e.message)
         }
       },
+      /* ************************ */
+      async deleteUserRole(pubuser, role) {
+        try {
+          //console.log('deleteUserRole', pubuser.id, role.id)
+          if (pubuser.id === this.$auth.user.id) {
+            if (!await this.$bvModal.msgBoxConfirm('THIS IS YOU. Do you want to continue?', { title: pubuser.name })) return
+          }
+          if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this role?', { title: pubuser.name+': '+role.name })) return
+          const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
+          if (!ok) {
+            this.$bvToast.toast('User role could not be deleted', {
+              title: 'Delete ' + role.name + ' for '+pubuser.name,
+              toaster: 'b-toaster-top-center',
+              variant: 'danger',
+            })
+          } else {
+            this.$store.dispatch('users/fetchpubusers', this.pubid)
+          }
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error removing user role: ' + e.message)
+        }
+      },
+      /* ************************ */
       async startAddUserRole(pubusers, pubuser) {
         this.addroleuserid = pubuser.id
         this.addroleusername = pubuser.name
-        this.newrole = 0
+        this.chosennewrole = 0
         this.availablenewroles = []
         for (const pubrole of pubusers.pubroles) {
           const hasrole = _.find(pubuser.roles, role => { return role.id === pubrole.id })
@@ -174,12 +218,18 @@
         }
         this.$bvModal.show('bv-modal-add-role')
       },
+      /* ************************ */
       async addUserRole(bvModalEvt) {
-        console.log('addUserRole', this.addroleuserid, this.newrole)
+        //console.log('addUserRole', this.addroleuserid, this.chosennewrole)
         bvModalEvt.preventDefault()
         try {
-          if (this.newrole == 0) return await this.$bvModal.msgBoxOk('No new role chosen!')
-          const ok = await this.$api.user.addUserRole(this.pubid, this.addroleuserid, this.newrole)
+          if (this.chosennewrole == 0) return await this.$bvModal.msgBoxOk('No new role chosen!')
+          const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
+          if (!roletoadd) return
+          if (roletoadd.isowner) {
+            if (!await this.$bvModal.msgBoxConfirm('This is an OWNER role. Do you want to continue?', { title: this.addroleusername })) return
+          }
+          const ok = await this.$api.user.addUserRole(this.pubid, this.addroleuserid, this.chosennewrole)
           if (ok) {
             this.$store.dispatch('users/fetchpubusers', this.pubid)
             this.$nextTick(() => {
@@ -187,17 +237,18 @@
             })
           } else {
             this.$bvToast.toast('User role could not be added', {
-              title: 'Add ' + role.name + ' for ' + pubuser.name,
+              title: 'Add ' + roletoadd.name + ' for ' + this.addroleusername,
               toaster: 'b-toaster-top-center',
               variant: 'danger',
             })
 
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error changing title: ' + e.message)
+          this.$bvModal.msgBoxOk('Error adding role: ' + e.message)
         }
       },
     },
+    /* ************************ */
     head() {
       return {
         title: page.title,

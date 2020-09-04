@@ -1,7 +1,9 @@
 <template>
   <div>
     <div v-if="pub.isowner" class="mt-1 mb-1">
-      <b-btn variant="success" :to="'/panel/'+pubid+'/admin'">Admin</b-btn>
+      <strong>ADMIN</strong>
+      <b-btn variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
+      <b-btn variant="outline-success" :to="'/panel/'+pubid+'/admin-mail-templates'" class="ml-2">Mail templates</b-btn>
       <b-btn variant="outline-warning" class="float-right" @click="toggleEditDelete()">Toggle Edit/Delete</b-btn>
     </div>
     <b-list-group class="flows">

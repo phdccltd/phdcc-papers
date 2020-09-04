@@ -6,10 +6,12 @@
         Hide this
       </b-btn>
       <p>
-        This page has admin options for your publication/conference
+        Use this page to administer your users
       </p>
       <ul>
-        <li>Edit user permissions</li>
+        <li>Add or remove roles for each user</li>
+        <li>Remove access for a user</li>
+        <li>Use the top filter to only see users who have a particualr role</li>
       </ul>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
@@ -27,7 +29,7 @@
     mixins: [helpBox],
     data: function () {
       return {
-        id: 'admin'
+        id: 'admin-users'
       }
     },
   }
