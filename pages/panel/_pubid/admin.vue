@@ -39,7 +39,7 @@
                 <b-link @click="deleteUserRole(pubuser,role)">
                   <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
                 </b-link>
-                {{role.name}} {{role.id}}
+                {{role.name}}
               </div>
             </b-col>
           </b-row>
@@ -144,6 +144,7 @@
       },
       async deleteUserRole(pubuser, role) {
         //console.log('deleteUserRole', pubuser.id, role.id)
+        if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this role?', { title: pubuser.name+': '+role.name })) return
         const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
         if (!ok) {
           this.$bvToast.toast('User role could not be deleted', {
@@ -178,9 +179,20 @@
         bvModalEvt.preventDefault()
         try {
           if (this.newrole == 0) return await this.$bvModal.msgBoxOk('No new role chosen!')
-          this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-add-role')
-          })
+          const ok = await this.$api.user.addUserRole(this.pubid, this.addroleuserid, this.newrole)
+          if (ok) {
+            this.$store.dispatch('users/fetchpubusers', this.pubid)
+            this.$nextTick(() => {
+              this.$bvModal.hide('bv-modal-add-role')
+            })
+          } else {
+            this.$bvToast.toast('User role could not be added', {
+              title: 'Add ' + role.name + ' for ' + pubuser.name,
+              toaster: 'b-toaster-top-center',
+              variant: 'danger',
+            })
+
+          }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error changing title: ' + e.message)
         }

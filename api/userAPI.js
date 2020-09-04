@@ -19,6 +19,12 @@ export default class userAPI extends BaseAPI {
     return ok
   }
 
+  async addUserRole(pubid, userid, roleid) {
+    console.log('addUserRole', pubid, userid, roleid)
+    const { ok } = await this.$post('/users/pub/' + pubid + '/' + userid + '/' + roleid)
+    return ok
+  }
+
   register(params) {
     console.log('userAPI register')
     return this.$post('/user/register', params)
