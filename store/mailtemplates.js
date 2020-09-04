@@ -10,7 +10,7 @@ export const state = () => ({
 
 export const mutations = {
   addFlowMailTemplate(state, fmtholder) {
-    console.log('addFlowMailTemplate', fmtholder)
+    //console.log('addFlowMailTemplate', fmtholder)
     Vue.set(state.flowmailtemplates, fmtholder.flowid, fmtholder.mailtemplates)
   },
   setError(state, error) {
@@ -21,7 +21,7 @@ export const mutations = {
 export const getters = {
   get(state) {
     return (flowid) => {
-      console.log('store mailtemplates getter get flowid', flowid)
+      //console.log('store mailtemplates getter get flowid', flowid)
       const mailtemplates = _.find(state.flowmailtemplates, (mailtemplates, thisflowid) => { return parseInt(thisflowid) === flowid })
       return mailtemplates
     }
@@ -32,8 +32,11 @@ export const getters = {
 export const actions = {
   async fetch({ commit }, flowid) {
     try {
-      console.log('store mailtemplates submits.fetch', flowid)
+      //console.log('store mailtemplates submits.fetch', flowid)
       const { mailtemplates } = await this.$api.mailtemplates.get(flowid)
+      for (const mailtemplate of mailtemplates) {
+        mailtemplate.visible = false
+      }
       commit('addFlowMailTemplate', { flowid, mailtemplates })
     }
     catch (e) {
