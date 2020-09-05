@@ -22,7 +22,7 @@
           <b-link @click="deleteAccepting(accepting)">
             <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
           </b-link>
-          {{accepting.flowstagename}} {{accepting.opentext}} {{ accepting.flowstatusname }}
+          {{accepting.flowstagename}} <strong>{{accepting.opentext}}</strong> {{ accepting.flowstatusname }}
           <b-btn variant="link" @click="startEditAccepting(accepting)">
             <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
           </b-btn>
@@ -48,6 +48,30 @@
             </template>
           </b-form-select>
         </b-form-group>
+        <b-form-group label="Open"
+                      label-for="open"
+                      label-cols-sm="2">
+          <b-form-checkbox id="open"
+                           v-model="chosenopen">
+            Open for submissions
+          </b-form-checkbox>
+        </b-form-group>
+        <div>
+          If a user's submission needs to be at a certain stage before they can submit this type of entry, select it here:
+        </div>
+        <b-form-group label="Status"
+                      label-for="status"
+                      label-cols-sm="2">
+          <b-form-select id="status"
+                         :options="this.availablestatuses"
+                         size="sm"
+                         v-model="chosenstatus"
+                         style="width:auto;">
+            <template v-slot:first>
+              <b-form-select-option value="0">No status needed</b-form-select-option>
+            </template>
+          </b-form-select>
+        </b-form-group>
       </form>
     </b-modal>
   </div>
@@ -70,6 +94,7 @@
         availablestages: [],
         availablestatuses: [],
         chosenstage: 0,
+        chosenopen: 0,
         chosenstatus: 0,
       }
     },
@@ -111,12 +136,19 @@
       },
       acceptings() {
         const flow = this.flow
-        const acceptings = flow.acceptings
+
+        // Not the best place, but fill availablestages here
         this.availablestages = []
         for (const stage of flow.stages) {
-          console.log(stage.name)
           this.availablestages.push({ value: stage.id, text: stage.name })
         }
+        // Not the best place, but fill availablestatuses here
+        this.availablestatuses = []
+        for (const status of flow.statuses) {
+          this.availablestatuses.push({ value: status.id, text: status.status })
+        }
+
+        const acceptings = flow.acceptings
         for (const accepting of acceptings) {
           accepting.opentext = accepting.open ? 'OPEN FOR SUBMISSIONS' : 'NOT OPEN FOR SUBMISSIONS'
 
@@ -146,34 +178,55 @@
       /* ************************ */
       startAddAccepting() {
         this.modaltitle = 'Add accepting'
-        this.availablestages = []
+        this.acceptingid = 0
         this.chosenstage = 0
+        this.chosenopen = false
         this.chosenstatus = 0
         this.$bvModal.show('bv-modal-accepting')
       },
       /* ************************ */
       startEditAccepting(accepting) {
         this.modaltitle = 'Edit accepting'
-        this.availablestages = []
+        this.acceptingid = accepting.id
         this.chosenstage = accepting.flowstageId
+        this.chosenopen = accepting.open
         this.chosenstatus = accepting.flowstatusId
         this.$bvModal.show('bv-modal-accepting')
       },
       /* ************************ */
-      okAccepting() {
+      async okAccepting(bvModalEvt) {
         bvModalEvt.preventDefault()
         try {
-          this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-accepting')
-          })
+          //console.log('okAccepting', this.chosenstage, this.chosenopen, this.chosenstatus)
+
+          if (this.chosenstage === 0) return await this.$bvModal.msgBoxOk('Please choose a stage')
+          
+          const ok = await this.$api.acceptings.addEditAccepting(this.flowid, this.acceptingid, this.chosenstage, this.chosenopen, this.chosenstatus)
+          if (ok) {
+            this.$store.dispatch('submits/fetchpub', this.pubid)
+            this.$bvToast.toast('Accepting added/edited', { toaster: 'b-toaster-top-center', variant: 'success', })
+            this.$nextTick(() => {
+              this.$bvModal.hide('bv-modal-accepting')
+            })
+          } else {
+            this.$bvToast.toast('Accepting could not be added/edited', { toaster: 'b-toaster-top-center', variant: 'danger', })
+          }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error adding accepting: ' + e.message)
+          this.$bvModal.msgBoxOk('Error adding/editing accepting: ' + e.message)
         }
       },
       /* ************************ */
-      deleteAccepting(accepting) {
+      async deleteAccepting(accepting) {
         try {
-          this.$bvModal.msgBoxOk('NOT IMPLEMENTED')
+          if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this accepting?', { title: accepting.flowstagename })) return
+
+          const ok = await this.$api.acceptings.deleteAccepting(this.flowid, accepting.id)
+          if (ok) {
+            this.$store.dispatch('submits/fetchpub', this.pubid)
+            this.$bvToast.toast('Accepting deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
+          } else {
+            this.$bvToast.toast('Accepting could not be deleted', { toaster: 'b-toaster-top-center', variant: 'danger', })
+          }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error deleting accepting: ' + e.message)
         }

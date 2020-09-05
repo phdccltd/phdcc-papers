@@ -241,7 +241,6 @@
               toaster: 'b-toaster-top-center',
               variant: 'danger',
             })
-
           }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error adding role: ' + e.message)
