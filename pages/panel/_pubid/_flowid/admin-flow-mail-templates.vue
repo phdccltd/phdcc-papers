@@ -11,12 +11,22 @@
     <div v-else>
       <HelpAdminFlowMailTemplates />
       <Messages :error="error" :message="message" />
-      <div class="bg-yellow p-3">
-        <strong>{{flow.name}}:</strong>
-        <b-btn variant="outline-success" @click="startAddMailTemplate()">
-          Add mail template
-        </b-btn>
-      </div>
+      <b-container class="bg-yellow p-3">
+        <b-row no-gutters>
+          <b-col sm="6">
+            <strong>{{flow.name}}:</strong>
+            <b-btn variant="outline-success" @click="startAddMailTemplate()">
+              Add mail template
+            </b-btn>
+          </b-col>
+          <b-col sm="6">
+            <b-btn variant="outline-success" @click="toggleShowSubstitutions()">
+              Show substitution strings
+            </b-btn>
+            <b-form-textarea v-if="showsubstitutions" plaintext :value="substitutions" max-rows="100" style="overflow-y: auto;"></b-form-textarea>
+          </b-col>
+        </b-row>
+      </b-container>
       <b-list-group class="mailtemplates">
         <b-list-group-item v-for="(mailtemplate, index) in mailtemplates" :key="index" class="pubuser">
           <h3 class="publist-submit-h3">
@@ -100,6 +110,7 @@
         templatename: '',
         templatesubject: '',
         templatebody: '',
+        showsubstitutions: false,
       }
     },
     async mounted() { // Client only
@@ -108,6 +119,12 @@
       this.$store.dispatch('mailtemplates/clearError')
       this.$store.dispatch('mailtemplates/fetch', this.flowid)
       this.$store.dispatch('pubs/fetch')
+      this.$store.dispatch('submits/fetchpub', this.pubid)
+      // TODO: Fix as this won't work first time round
+      const flow = this.flow
+      for (const stage of flow.stages) {
+        this.$store.dispatch('submits/fetchformfields', stage.id)
+      }
     },
     computed: {
       pub() {
@@ -142,6 +159,18 @@
       mailtemplates() {
         return this.$store.getters['mailtemplates/get'](this.flowid)
       },
+      substitutions() {
+        let substitutions = '{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r{{entry.id}}\r'
+        const flow = this.flow
+        for (const stage of flow.stages) {
+          substitutions += '\r' + stage.name + ':\r'
+          const entry = this.$store.getters['submits/stagefields'](stage.id)
+          for (const field of entry.fields) {
+            substitutions += '{{entry.field_' + field.id + '}} ' + field.label+'\r'
+          }
+        }
+        return substitutions
+      }
     },
     methods: {
       /* ************************ */
@@ -151,6 +180,10 @@
       /* ************************ */
       setMessage(msg) {
         this.message = msg
+      },
+      /* ************************ */
+      toggleShowSubstitutions() {
+        this.showsubstitutions = !this.showsubstitutions
       },
       /* ************************ */
       toggleTemplateShow(mailtemplate) {

@@ -58,7 +58,7 @@ export const getters = {
     return (flowstageid) => {
       //console.log('getter submits.stagefields flowstageid', flowstageid)
       const entry = _.find(state.flowfields, (entry, thisflowstageid) => { return parseInt(thisflowstageid) === flowstageid })
-      console.log('getter submits.stagefields entry', entry)
+      //console.log('getter submits.stagefields entry', entry)
       return entry
     }
   },
