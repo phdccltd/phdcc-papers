@@ -15,7 +15,7 @@
           {{ flow.name }}
           <b-btn class="float-right" v-if="flow.addtype" variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/add/'+flow.addid">Add {{flow.addtype}}</b-btn>
           <b-btn class="float-right mr-2" v-if="pub.isowner" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
-          <b-btn class="float-right mr-2" v-if="pub.isowner" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-acceptings'">Stage status</b-btn>
+          <b-btn class="float-right mr-2" v-if="pub.isowner" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
         </h2>
         <b-list-group class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">

@@ -63,7 +63,7 @@
     </div>
     <b-modal id="bv-modal-mail-template" size="xl" centered @ok="okMailTemplate">
       <template v-slot:modal-title>
-        Add mail template
+        {{modaltitle}}
       </template>
       <form ref="form" @submit.stop.prevent>
         <b-form-group label="Name"
@@ -106,6 +106,7 @@
       return {
         error: '',
         message: '',
+        modaltitle: 'UNSET',
         templateid: 0,
         templatename: '',
         templatesubject: '',
@@ -166,7 +167,7 @@
           substitutions += '\r' + stage.name + ':\r'
           const entry = this.$store.getters['submits/stagefields'](stage.id)
           for (const field of entry.fields) {
-            substitutions += '{{entry.field_' + field.id + '}} ' + field.label+'\r'
+            substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r'
           }
         }
         return substitutions
@@ -200,6 +201,7 @@
       },
       /* ************************ */
       startAddMailTemplate() {
+        this.modaltitle = 'Add mail template'
         this.templateid = 0
         this.templatename = ''
         this.templatesubject = ''
@@ -208,6 +210,7 @@
       },
       /* ************************ */
       startEditMailTemplate(mailtemplate) {
+        this.modaltitle = 'Edit mail template'
         this.templateid = mailtemplate.id
         this.templatename = mailtemplate.name
         this.templatesubject = mailtemplate.subject
