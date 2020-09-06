@@ -266,6 +266,7 @@
             await this.$bvModal.msgBoxOk('Could not delete this submission')
             return
           }
+          this.$bvToast.toast('Submission deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
           await this.$bvModal.msgBoxOk('Submission deleted')
           await this.$bvModal.msgBoxOk('NEED TO REMOVE REVIEWS, ETC???')
           this.$store.dispatch('submits/fetchpub', this.pubid)
@@ -289,6 +290,7 @@
 
           const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle)
           if (!amended) return await this.$bvModal.msgBoxOk('Error changing title')
+          this.$bvToast.toast('Title edited', { toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
           this.$nextTick(() => {
             this.$bvModal.hide('bv-modal-edit-submit-title')
@@ -299,10 +301,11 @@
       },
       async deleteSubmitStatus(submitstatus) {
         try {
-          console.log('deleteSubmitStatus', submitstatus.id)
+          //console.log('deleteSubmitStatus', submitstatus.id)
           if( !await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this status?', { title: submitstatus.status })) return
           const OK = await this.$api.submit.deleteSubmitStatus(submitstatus.id)
           if (!OK) return await this.$bvModal.msgBoxOk('Error deleting status')
+          this.$bvToast.toast('Status deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.$bvModal.msgBoxOk('Error deleting status: ' + e.message)
@@ -317,6 +320,7 @@
           if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
           const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
           if (!submitstatus) return await this.$bvModal.msgBoxOk('Error adding status')
+          this.$bvToast.toast('Status added', { toaster: 'b-toaster-top-center', variant: 'success', })
           submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {

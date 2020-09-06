@@ -38,7 +38,9 @@
               <b-link @click="deletePubUser(pubuser)">
                 <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
               </b-link>
-              <strong>{{pubuser.id}} {{pubuser.name}}</strong><br />
+              <strong>{{pubuser.id}} {{pubuser.name}}</strong>
+              {{pubuser.email}}
+              <br />
               Submissions: {{pubuser.submits.length}}
             </b-col>
             <b-col sm="6">

@@ -443,7 +443,7 @@
             this.submitstatus = ''
             if (entryid) {
               this.editable = false
-              this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK' })
+              this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
               // OK: redirect so new entry displayed properly
               this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + data.rv.submitid + '/' + entryid)
             } else {
@@ -467,7 +467,7 @@
             this.submitstatus = ''
             if (entryid) {
               this.editable = false
-              this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK' })
+              this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
               // OK: redirect so new entry displayed properly
               this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
             } else {
