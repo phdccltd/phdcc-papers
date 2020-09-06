@@ -2,8 +2,8 @@
   <div>
     <div v-if="pub.isowner" class="mt-1 mb-1">
       <strong>ADMIN</strong>
-      <b-btn variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
-      <b-btn variant="outline-warning" class="float-right" @click="toggleEditDelete()">Toggle Edit/Delete</b-btn>
+      <b-btn variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-btn>
+      <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
     </div>
     <b-list-group class="flows">
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
@@ -14,8 +14,8 @@
           </b-btn>
           {{ flow.name }}
           <b-btn class="float-right" v-if="flow.addtype" variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/add/'+flow.addid">Add {{flow.addtype}}</b-btn>
-          <b-btn class="float-right mr-2" v-if="pub.isowner" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
-          <b-btn class="float-right mr-2" v-if="pub.isowner" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
+          <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
+          <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
         </h2>
         <b-list-group class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">
@@ -24,7 +24,7 @@
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
                 <v-icon v-if="!submit.visible" name="plus-square" scale="2" />
               </b-btn>
-              <b-btn v-if="enableditdelete" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
+              <b-btn v-if="showingadminoptions" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
                 Delete
               </b-btn>
 
@@ -32,7 +32,7 @@
                 {{ submit.id }}:
                 {{ submit.name }}
               </b-link>
-              <b-btn v-if="enableditdelete" variant="link" @click="editSubmitName(submit)">
+              <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
                 <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
               </b-btn>
             </h3>
@@ -135,7 +135,7 @@
         noflows: false,
         nowtavailable: false,
         submitbeingedited: false,
-        enableditdelete: false,
+        showingadminoptions: false,
         newtitle: '',
         admin: true,
       }
@@ -243,8 +243,8 @@
       },
     },
     methods: {
-      toggleEditDelete() {
-        this.enableditdelete = !this.enableditdelete
+      toggleShowAdminOptions() {
+        this.showingadminoptions = !this.showingadminoptions
       },
       toggleFlowShow(flow) {
         for (const submit of flow.submits) {
