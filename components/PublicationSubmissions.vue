@@ -29,7 +29,7 @@
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
         </h2>
         <b-list-group class="flows">
-          <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" class="submit">
+          <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" :class="'submit ' + (submit.ismine?'':'submitnotmine')">
             <h3 class="publist-submit-h3">
               <b-btn variant="link" @click="toggleSubmitShow(submit)" style="margin-left: -0.6rem;">
                 <v-icon v-if="submit.visible" name="minus-square" scale="2" />
@@ -43,6 +43,7 @@
                 {{ submit.id }}:
                 {{ submit.name }}
               </b-link>
+              {{submit.user}}
               <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
                 <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
               </b-btn>
@@ -50,11 +51,8 @@
             <div class="publist-current-status">
               <PaperDate :dt="submit.dtstatus" />
               <span class="status">{{ submit.status}}</span>
-              <b-btn v-if="submit.addtype" variant="success" class="float-right" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/add/'+submit.addid">Add {{submit.addtype}}</b-btn>
-              <br />
               <span v-for="submitaction in submit.actions">
-                <b-btn class="float-right" variant="success">{{submitaction.name}}</b-btn>
-                {{submitaction}}
+                <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
               </span>
             </div>
             <b-container v-if="submit.visible">
@@ -196,8 +194,6 @@
             submit.status = 'Status not set'
             submit.dtstatus = null
             submit.newstatusid = null
-            let statusid = false
-            let cansubmitflowstageId = false
             let foundvisible = false
             for (const submitstatus of submit.statuses) {
               submitstatus.status = 'Unknown'
@@ -205,37 +201,15 @@
               if (flowstatus) {
                 submitstatus.status = flowstatus.status
                 if (!foundvisible && flowstatus.visibletoauthor) {
-                  statusid = flowstatus.id
                   submit.status = flowstatus.status
                   submit.dtstatus = submitstatus.dt
-                  cansubmitflowstageId = flowstatus.cansubmitflowstageId
                   foundvisible = true
                 }
               }
             }
 
-            //console.log('Most recent status:', statusid, submit.status)
             for (const entry of submit.entries) {
               entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
-            }
-            // If we've got a most-recent-status (which we should) then check that cansubmitflowstageId allowed
-            if (statusid && cansubmitflowstageId) {
-              for (const accepting of flow.acceptings) {
-                if (accepting.flowstatusId == statusid) {
-                  if (accepting.flowstageId !== cansubmitflowstageId) {
-                    console.log('OOPS: accepting.flowstageId !== cansubmitflowstageId', accepting.flowstageId, cansubmitflowstageId)
-                  } else {
-                    if (!accepting.open) cansubmitflowstageId = false
-                  }
-                }
-              }
-            }
-            if (cansubmitflowstageId) {
-              const addstage = _.find(flow.stages, stage => { return stage.id === cansubmitflowstageId })
-              if (addstage) {
-                submit.addtype = addstage.name
-                submit.addid = addstage.id
-              }
             }
           }
           countsubmits += flow.submits.length
