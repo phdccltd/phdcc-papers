@@ -10,7 +10,7 @@
     <div class="pl-1">
       Roles
       <strong v-if="$auth.user.super">SUPERADMIN</strong>
-      <span v-for="myrole in pub.myroles" :key="index">
+      <span v-for="myrole in pub.myroles">
         - {{myrole.name}}
       </span>
     </div>
@@ -22,7 +22,9 @@
             <v-icon v-if="!flow.submitsallvisible" name="plus-square" scale="2" class="btn-outline-warning" />
           </b-btn>
           {{ flow.name }}
-          <b-btn class="float-right" v-if="flow.addtype" variant="success" :to="'/panel/'+pubid+'/'+flow.id+'/add/'+flow.addid">Add {{flow.addtype}}</b-btn>
+          <span v-for="flowaction in flow.actions">
+            <b-btn class="float-right" variant="success" :to="flowaction.route">{{flowaction.name}}</b-btn>
+          </span>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
         </h2>
@@ -49,6 +51,11 @@
               <PaperDate :dt="submit.dtstatus" />
               <span class="status">{{ submit.status}}</span>
               <b-btn v-if="submit.addtype" variant="success" class="float-right" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/add/'+submit.addid">Add {{submit.addtype}}</b-btn>
+              <br />
+              <span v-for="submitaction in submit.actions">
+                <b-btn class="float-right" variant="success">{{submitaction.name}}</b-btn>
+                {{submitaction}}
+              </span>
             </div>
             <b-container v-if="submit.visible">
               <b-row no-gutters>
@@ -179,18 +186,6 @@
             flow.newstatuses.push({ value: flowstatus.id, text: flowstatus.status })
           }
 
-          flow.addtype = false
-          if (!this.submitid) {
-            for (const accepting of flow.acceptings) {
-              if (_.isNull(accepting.flowstatusId) && accepting.open) {
-                const addstage = _.find(flow.stages, stage => { return stage.id === accepting.flowstageId })
-                if (addstage) {
-                  flow.addtype = addstage.name
-                  flow.addid = addstage.id
-                }
-              }
-            }
-          }
           flow.filteredsubmits = []
           for (const submit of flow.submits) {
             if (!this.submitid || this.submitid === submit.id) flow.filteredsubmits.push(submit)
