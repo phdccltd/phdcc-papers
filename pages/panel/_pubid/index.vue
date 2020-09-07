@@ -1,9 +1,14 @@
 <template>
   <!-- OVERVIEW PANEL FOR ONE PUBLICATION -->
   <div>
-    <HelpPanel />
-    <Messages :error="error" :message="message" />
-    <PublicationSubmissions :pubid="pubid" :setError="setError" :setMessage="setMessage" />
+    <b-alert v-if="fatalerror" variant="warning" :show="true">
+      ERROR {{fatalerror}}
+    </b-alert>
+    <div v-else>
+      <HelpPanel />
+      <Messages :error="error" :message="message" />
+      <PublicationSubmissions :pubid="pubid" :setError="setError" :setMessage="setMessage" />
+    </div>
   </div>
 </template>
 
@@ -30,6 +35,8 @@
       this.error = ''
       this.message = ''
       //console.log('_id mounted', this.pubid)
+      this.$store.dispatch('pubs/clearError')
+      this.$store.dispatch('submits/clearError')
       this.$store.dispatch('pubs/fetch')
       this.$store.dispatch('submits/fetchpub', this.pubid)
     },
@@ -37,6 +44,11 @@
       pubid() {
         //console.log('PUB pubid')
         return parseInt(this.$route.params.pubid)
+      },
+      fatalerror() {
+        const error1 = this.$store.getters['pubs/error']
+        const error2 = this.$store.getters['submits/error']
+        return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
       },
     },
     methods: {

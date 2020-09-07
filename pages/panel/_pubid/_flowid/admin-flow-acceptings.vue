@@ -101,6 +101,8 @@
     async mounted() { // Client only
       this.error = ''
       this.message = ''
+      this.$store.dispatch('pubs/clearError')
+      this.$store.dispatch('submits/clearError')
       this.$store.dispatch('pubs/fetch')
       this.$store.dispatch('submits/fetchpub', this.pubid)
     },

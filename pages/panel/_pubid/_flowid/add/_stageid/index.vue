@@ -18,12 +18,6 @@
       return {
       }
     },
-    async mounted() { // Client only
-    },
-    computed: {
-    },
-    methods: {
-    },
     head() {
       return {
         title: page.title,

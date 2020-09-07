@@ -1,9 +1,18 @@
 <template>
+  <!-- Main code to display all user's submits etc for a publication, ie for all flows -->
+  <!-- Seems to have submitid optional param but now never called that way -->
   <div>
-    <div v-if="pub.isowner" class="mt-1 mb-1">
+    <div v-if="pub.isowner" class="pl-1 mt-1 mb-1">
       <strong>ADMIN</strong>
       <b-btn variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
+    </div>
+    <div class="pl-1">
+      Roles
+      <strong v-if="$auth.user.super">SUPERADMIN</strong>
+      <span v-for="myrole in pub.myroles" :key="index">
+        - {{myrole.name}}
+      </span>
     </div>
     <b-list-group class="flows">
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">

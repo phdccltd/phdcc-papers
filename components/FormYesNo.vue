@@ -43,8 +43,6 @@
       value: { type: Number },
       message: { type: String },
     },
-    mounted() {
-    },
     computed: {
       labelreqd() {
         return this.reqd ? this.label + ' *' : this.label

@@ -69,6 +69,7 @@
     mounted() { // Client only
       this.error = ''
       //console.log('PANEL MOUNTED')
+      this.$store.dispatch('pubs/clearError')
       this.$store.dispatch('pubs/fetch')
       this.$store.commit("page/setTitle", page.title)
     },
