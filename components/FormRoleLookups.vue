@@ -39,7 +39,7 @@
       sid: { type: String },
       help: { type: String },
       value: { type: String },
-      publookupId: { type: Number },
+      pubroleId: { type: Number },
       message: { type: String },
     },
     computed: {
@@ -60,11 +60,12 @@
       plainvalues() {
         if (!this.value) return ''
         const avalues = this.value.split(',')
-        //console.log(avalues)
+        console.log(avalues)
         const atext = []
+        console.log(this.options)
         for (const option of this.options) {
           for (const av of avalues) {
-            if (option.id === parseInt(av)) {
+            if (option.value === parseInt(av)) {
               atext.push(option.text)
             }
           }
@@ -73,18 +74,28 @@
       },
       options() {
         const pubid = parseInt(this.$route.params.pubid)
+        console.log('FormRoleLookups pubid', pubid)
         const pub = this.$store.getters['pubs/getPub'](pubid)
         if (!pub) return []
 
-        const publookup = _.find(pub.publookups, publookup => { return publookup.id === this.publookupId })
-        if (!publookup) return []
-        console.log('publookup', publookup)
-        if (publookup && publookup.values) {
-          publookup.values.forEach(v => {
-            v.value = v.id
-          })
+        let entry = false
+        if (this.$route.params.stageid) {
+          const stageid = parseInt(this.$route.params.stageid)
+          entry = this.$store.getters['submits/stagefields'](stageid)
         }
-        return publookup.values
+        if (this.$route.params.entryid) {
+          const entryid = parseInt(this.$route.params.entryid)
+          entry = this.$store.getters['submits/entry'](entryid)
+        }
+        if (!entry) return []
+
+        console.log('FormRoleLookups this.pubroleId', this.pubroleId)
+        const pubrolelookup = _.find(entry.pubrolelookups, pubrolelookup => { return pubrolelookup.pubroleId === this.pubroleId })
+        if (!pubrolelookup) {
+          console.log('FormRoleLookups NOPE')
+          return []
+        }
+        return pubrolelookup.users
       }
     }
   }

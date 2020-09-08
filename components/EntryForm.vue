@@ -96,6 +96,13 @@
                          v-on:input="changed(field)"
                          :publookupId="field.publookupId"
                          v-model="field.val.string" />
+            <FormRoleLookups v-if="field.type=='rolelookups'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
+                         :class="fieldclass(field)"
+                         :reqd="field.required"
+                         :message="field.message"
+                         v-on:input="changed(field)"
+                         :pubroleId="field.pubroleId"
+                         v-model="field.val.string" />
             <FormInput v-if="field.type=='phone'" type="tel" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
                        :reqd="field.required"
@@ -156,13 +163,14 @@
   import FormInput from '~/components/FormInput'
   import FormLookup from '~/components/FormLookup'
   import FormLookups from '~/components/FormLookups'
+  import FormRoleLookups from '~/components/FormRoleLookups'
   import FormText from '~/components/FormText'
   import FormYes from '~/components/FormYes'
   import FormYesNo from '~/components/FormYesNo'
   import { page } from '@/utils/phdcc'
 
   export default {
-    components: { HelpAddStage, HelpAddSubmit, HelpEntry, Messages, PaperDate, FormFile, FormInput, FormLookup, FormLookups, FormText, FormYes, FormYesNo },
+    components: { HelpAddStage, HelpAddSubmit, HelpEntry, Messages, PaperDate, FormFile, FormInput, FormLookup, FormLookups, FormRoleLookups, FormText, FormYes, FormYesNo },
     data() {
       return {
         error: '',
@@ -237,13 +245,6 @@
         return this.editable ? 'View' : 'Edit'
       },
       flow() {
-        const flows = this.$store.getters['submits/flows'](this.pubid)
-        if (!flows) return false
-        const flow = _.find(flows, flow => { return flow.id === this.flowid })
-        return flow
-      },
-      submit() {
-        //console.log('###GET SUBMIT')
         // Naughtily get pub here
         const pub = this.$store.getters['pubs/getPub'](this.pubid)
         if (pub) {
@@ -255,6 +256,12 @@
           return false
         }
 
+        const flows = this.$store.getters['submits/flows'](this.pubid)
+        if (!flows) return false
+        const flow = _.find(flows, flow => { return flow.id === this.flowid })
+        return flow
+      },
+      submit() {
         const submit = this.$store.getters['submits/submit'](this.pubid, this.submitid)
         return submit
       },
@@ -357,6 +364,7 @@
               case 'string':
               case 'phone':
               case 'email':
+              case 'rolelookups':
               case 'lookups':
                 got = fv.string !== null && fv.string.length > 0; break
               case 'yes':
