@@ -74,13 +74,22 @@ export const getters = {
                 entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
               }
               submit.status = 'Status not set'
-              //console.log('SUBMIT', submit.id, submit.statuses.length)
+              submit.dtstatus = false
               // See also code in components/PublicationSubmissions.vue
-              // TODO: When only ones visibletoauthor returned in API "GET submits for publication" then simplify here
-              if (submit.statuses.length > 0) {
-                const statusid = submit.statuses[0].flowstatusId
-                const status = _.find(flow.statuses, status => { return status.id === statusid })
-                if (status) submit.status = status.status
+              console.log("SET STATUS STUFF")
+              let foundvisible = false
+              for (const submitstatus of submit.statuses) {
+                submitstatus.status = 'Unknown'
+                const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submitstatus.flowstatusId })
+                if (flowstatus) {
+                  submitstatus.status = flowstatus.status
+                  if (!foundvisible) {
+                    //if (!foundvisible && flowstatus.visibletoauthor) {  // Not now needed as filtered by API
+                    submit.status = flowstatus.status
+                    submit.dtstatus = submitstatus.dt
+                    foundvisible = true
+                  }
+                }
               }
               return submit
             }

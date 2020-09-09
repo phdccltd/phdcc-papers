@@ -18,9 +18,9 @@
         <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
       </b-btn>
     </h3>
-    <div class="publist-current-status">
+    <div class="publist-current-status clearfix">
       <PaperDate :dt="submit.dtstatus" />
-      <span class="status">{{ submit.status}}</span>
+      <span class="status">{{ submit.status }}</span>
       <span v-for="submitaction in submit.actions">
         <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
       </span>
@@ -31,7 +31,7 @@
         <b-col sm="6">
           <div v-if="pub.isowner">
             <form ref="form" @submit.stop.prevent>
-              <b-form-select v-model="submit.newstatusid" :options="flow.newstatuses" size="sm" style="width:auto;"></b-form-select>
+              <b-form-select v-model="submit.newstatusid" :options="newstatusoptions" size="sm" style="width:auto;"></b-form-select>
               <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
             </form>
             <div v-for="(submitstatus, index) in submit.statuses" :key="index">
@@ -87,7 +87,6 @@
       },
       editSubmitName: {
         type: Function,
-        required: true,
       },
     },
     data: function () {
@@ -95,6 +94,13 @@
       }
     },
     computed: {
+      newstatusoptions() {
+        const options = []
+        for (const flowstatus of this.flow.statuses) {
+          options.push({ value: flowstatus.id, text: flowstatus.status })
+        }
+        return options
+      },
     },
     methods: {
       toggleSubmitShow(submit) {

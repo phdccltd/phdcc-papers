@@ -22,25 +22,7 @@
       <Messages :error="error" :message="message" />
 
       <div v-if="submitid">
-        <!-- SHOW SUBMIT SUMMARY -->
-        <h2>
-          <b-btn variant="link" @click="toggleSubmitShow(submit)">
-            <v-icon v-if="!submit.visible" name="minus-square" scale="2" />
-            <v-icon v-if="submit.visible" name="plus-square" scale="2" />
-          </b-btn>
-          {{submit.id}}: {{submit.name}} - <span class="status">{{ submit.status}}</span>
-        </h2>
-
-        <div v-if="submit.visible" class="mt-2">
-          <b-list-group class="entries">
-            <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
-              <PaperDate :dt="entry.dt" />
-              <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flowid+'/'+submit.id+'/'+entry.id">
-                {{entry.stage.name}}
-              </b-btn>
-            </b-list-group-item>
-          </b-list-group>
-        </div>
+        <SubmitSummary :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" :pubid="pubid" />
       </div>
       <div v-else>
         <h2>{{flow.name}}</h2>
@@ -154,6 +136,7 @@
 </template>
 <script>
   const _ = require('lodash/core')
+  import SubmitSummary from '~/components/SubmitSummary'
   import HelpAddStage from '~/components/HelpAddStage'
   import HelpAddSubmit from '~/components/HelpAddSubmit'
   import HelpEntry from '~/components/HelpEntry'
@@ -170,7 +153,7 @@
   import { page } from '@/utils/phdcc'
 
   export default {
-    components: { HelpAddStage, HelpAddSubmit, HelpEntry, Messages, PaperDate, FormFile, FormInput, FormLookup, FormLookups, FormRoleLookups, FormText, FormYes, FormYesNo },
+    components: { HelpAddStage, HelpAddSubmit, HelpEntry, Messages, SubmitSummary, PaperDate, FormFile, FormInput, FormLookup, FormLookups, FormRoleLookups, FormText, FormYes, FormYesNo },
     data() {
       return {
         error: '',
@@ -237,6 +220,7 @@
           this.setError('Invalid pubid')
           return false
         }
+        // pub.isowner = true // Do this when testing faked API access restriction
         page.title = pub.name
         document.title = pub.name
         this.$store.commit("page/setTitle", page.title)

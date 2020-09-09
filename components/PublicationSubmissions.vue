@@ -1,7 +1,6 @@
 <template>
   <!-- Main code to display submits etc for a publication, ie for all flows -->
   <!-- Displays all the submits that a user can see ie those they've written and those they can grade - or all for owners -->
-  <!-- Seems to have submitid optional param but now never called that way -->
   <div>
     <div v-if="pub.isowner" class="pl-1 mt-1 mb-1">
       <strong>ADMIN</strong>
@@ -17,7 +16,7 @@
     </div>
     <b-list-group class="flows">
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
-        <h2 v-bind:class="submitid?'':'bg-yellow'">
+        <h2 class="bg-yellow">
           <b-btn variant="link" @click="toggleFlowShow(flow)">
             <v-icon v-if="flow.submitsallvisible" name="minus-square" scale="2" class="btn-outline-warning" />
             <v-icon v-if="!flow.submitsallvisible" name="plus-square" scale="2" class="btn-outline-warning" />
@@ -77,11 +76,6 @@
         required: false,
         default: 0,
       },
-      submitid: {
-        type: Number,
-        required: false,
-        default: 0,
-      },
       setError: {
         type: Function,
         required: true,
@@ -125,35 +119,12 @@
         for (const flow of flows) {
           const anysubmithidden = false
           if (!this.flowid || this.flowid === flow.id) filteredflows.push(flow)
-          flow.newstatuses = []
-
-          for (const flowstatus of flow.statuses) {
-            flow.newstatuses.push({ value: flowstatus.id, text: flowstatus.status })
-          }
 
           flow.filteredsubmits = []
-          for (const submit of flow.submits) {
-            if (!this.submitid || this.submitid === submit.id) flow.filteredsubmits.push(submit)
+          for (const fsubmit of flow.submits) {
+            const submit = this.$store.getters['submits/submit'](this.pubid, fsubmit.id)
+            flow.filteredsubmits.push(submit)
             if (!submit.visible) anysubmithidden = true
-
-            // Find most recent status and what next stage is possible // CODE ALSO IN store/submits.js - submit(state)
-            submit.status = 'Status not set'
-            submit.dtstatus = null
-            submit.newstatusid = null
-            let foundvisible = false
-            for (const submitstatus of submit.statuses) {
-              submitstatus.status = 'Unknown'
-              const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submitstatus.flowstatusId })
-              if (flowstatus) {
-                submitstatus.status = flowstatus.status
-                if (!foundvisible) {
-                //if (!foundvisible && flowstatus.visibletoauthor) {  // Not now needed as filtered by API
-                  submit.status = flowstatus.status
-                  submit.dtstatus = submitstatus.dt
-                  foundvisible = true
-                }
-              }
-            }
 
             for (const entry of submit.entries) {
               entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
@@ -181,7 +152,6 @@
         submit.visible = !submit.visible
       },
       editSubmitName(submit) {
-        console.log('editSubmitName', submit.name)
         this.newtitle = submit.name
         this.submitbeingedited = submit
         this.$bvModal.show('bv-modal-edit-submit-title')
