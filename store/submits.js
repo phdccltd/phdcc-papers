@@ -75,8 +75,6 @@ export const getters = {
               }
               submit.status = 'Status not set'
               submit.dtstatus = false
-              // See also code in components/PublicationSubmissions.vue
-              console.log("SET STATUS STUFF")
               let foundvisible = false
               for (const submitstatus of submit.statuses) {
                 submitstatus.status = 'Unknown'
@@ -84,7 +82,6 @@ export const getters = {
                 if (flowstatus) {
                   submitstatus.status = flowstatus.status
                   if (!foundvisible) {
-                    //if (!foundvisible && flowstatus.visibletoauthor) {  // Not now needed as filtered by API
                     submit.status = flowstatus.status
                     submit.dtstatus = submitstatus.dt
                     foundvisible = true
