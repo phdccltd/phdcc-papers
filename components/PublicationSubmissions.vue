@@ -161,6 +161,7 @@
           this.setError('Invalid pubid')
           return false
         }
+        // pub.isowner = true // Do this when testing faked API access restriction
         page.title = pub.name
         document.title = pub.name
         this.$store.commit("page/setTitle", page.title)
@@ -239,17 +240,17 @@
           const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this submission and all its entries?', { title: submit.name })
           if (!OK) return
           const deleted = await this.$api.submit.deleteSubmit(submit.id)
-          console.log('deleteSubmitted', deleted)
+          //console.log('deleteSubmitted', deleted)
           if (!deleted) {
             await this.$bvModal.msgBoxOk('Could not delete this submission')
             return
           }
-          this.$bvToast.toast('Submission deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
+          //this.$bvToast.toast('Submission deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
           await this.$bvModal.msgBoxOk('Submission deleted')
           await this.$bvModal.msgBoxOk('NEED TO REMOVE REVIEWS, ETC???')
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
-          this.error = e.message
+          this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
         }
       },
       editSubmitName(submit) {
