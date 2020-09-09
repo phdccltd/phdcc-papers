@@ -1,5 +1,6 @@
 <template>
-  <!-- Main code to display all user's submits etc for a publication, ie for all flows -->
+  <!-- Main code to display submits etc for a publication, ie for all flows -->
+  <!-- Displays all the submits that a user can see ie those they've written and those they can grade - or all for owners -->
   <!-- Seems to have submitid optional param but now never called that way -->
   <div>
     <div v-if="pub.isowner" class="pl-1 mt-1 mb-1">
@@ -58,7 +59,7 @@
             <b-container v-if="submit.visible">
               <b-row no-gutters>
                 <b-col sm="6">
-                  <div v-if="admin">
+                  <div v-if="pub.isowner">
                     <form ref="form" @submit.stop.prevent>
                       <b-form-select v-model="submit.newstatusid" :options="flow.newstatuses" size="sm" style="width:auto;"></b-form-select>
                       <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
@@ -151,14 +152,13 @@
         submitbeingedited: false,
         showingadminoptions: false,
         newtitle: '',
-        admin: true,
       }
     },
     computed: {
       pub() {
         const pub = this.$store.getters['pubs/getPub'](this.pubid)
         if (!pub) {
-          setError('Invalid pubid')
+          this.setError('Invalid pubid')
           return false
         }
         page.title = pub.name

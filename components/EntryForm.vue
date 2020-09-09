@@ -50,10 +50,10 @@
       <div v-if="entry">
         <h2 class="border border-primary rounded bg-yellow mt-2 p-2">
           {{sectionheading}}
-          <b-btn v-if="showeditviewbutton" variant="outline-success" class="float-left mr-2" @click="toggleEdit">
+          <b-btn v-if="pub.isowner && showingadminoptions" variant="outline-success" class="float-left mr-2" @click="toggleEdit">
             {{editbtntext}}
           </b-btn>
-          <b-btn v-if="showdeletebutton" variant="outline-warning" class="float-right" @click="deleteEntry">
+          <b-btn v-if="pub.isowner && showingadminoptions" variant="outline-warning" class="float-right" @click="deleteEntry">
             Delete
           </b-btn>
         </h2>
@@ -179,8 +179,6 @@
         validationsummary: '',
         submitstatus: '',
         submiterror: '',
-        showeditviewbutton: false,
-        showdeletebutton: false,
         submittitle: {
           required: true,
           message: '',
@@ -192,19 +190,8 @@
       formtype: { type: String },
     },
     mounted() {
-      switch (this.formtype) {
-        case 'showedit':
-          this.showeditviewbutton = true // TODO: only set if admin
-          this.showdeletebutton = true // TODO: only set if admin
-          break
-        case 'addsubmit':
-          this.editable = true
-          this.showeditviewbutton = false
-          this.showdeletebutton = false
-          break
-        case 'addstage':
-          this.editable = true
-        default:
+      if (this.formtype === 'addstage') {
+        this.editable = true
       }
       this.error = ''
       this.message = this.$store.getters['misc/get']('message')
@@ -244,18 +231,18 @@
       editbtntext() {
         return this.editable ? 'View' : 'Edit'
       },
-      flow() {
-        // Naughtily get pub here
+      pub() {
         const pub = this.$store.getters['pubs/getPub'](this.pubid)
-        if (pub) {
-          page.title = pub.name
-          document.title = pub.name
-          this.$store.commit("page/setTitle", page.title)
-        } else {
+        if (!pub) {
           this.setError('Invalid pubid')
           return false
         }
-
+        page.title = pub.name
+        document.title = pub.name
+        this.$store.commit("page/setTitle", page.title)
+        return pub
+      },
+      flow() {
         const flows = this.$store.getters['submits/flows'](this.pubid)
         if (!flows) return false
         const flow = _.find(flows, flow => { return flow.id === this.flowid })
@@ -264,6 +251,9 @@
       submit() {
         const submit = this.$store.getters['submits/submit'](this.pubid, this.submitid)
         return submit
+      },
+      showingadminoptions() {
+        return this.formtype === 'showedit' || this.formtype === 'addsubmit'
       },
       entry() { // Called every time for all user input changes
         if (this.stageid) {

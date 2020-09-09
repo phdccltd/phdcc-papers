@@ -110,7 +110,7 @@
       pub() {
         const pub = this.$store.getters['pubs/getPub'](this.pubid)
         if (!pub) {
-          setError('Invalid pubid')
+          this.setError('Invalid pubid')
           return false
         }
         page.title = pub.name

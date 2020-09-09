@@ -28,7 +28,7 @@
           </form>
         </b-col>
         <b-col sm="6">
-          TO DO??? Add user
+          TO DO??? Add user to publication
         </b-col>
       </b-row>
       <b-list-group class="pubusers">
@@ -113,6 +113,8 @@
     async mounted() { // Client only
       this.error = ''
       this.message = ''
+      this.$store.dispatch('pubs/clearError')
+      this.$store.dispatch('pubs/fetch')
       this.$store.dispatch('users/clearError')
       this.$store.dispatch('users/fetchpubusers', this.pubid)
     },
@@ -120,7 +122,7 @@
       pub() {
         const pub = this.$store.getters['pubs/getPub'](this.pubid)
         if (!pub) {
-          setError('Invalid pubid')
+          this.setError('Invalid pubid')
           return false
         }
         page.title = pub.name
