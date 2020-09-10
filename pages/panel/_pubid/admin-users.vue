@@ -140,7 +140,8 @@
         return parseInt(this.$route.params.pubid)
       },
       pubusers() {
-        return this.$store.getters['users/pubusers'](this.pubid)
+        const pu = this.$store.getters['users/pubusers'](this.pubid)
+        return pu ? pu : {}
       },
     },
     methods: {

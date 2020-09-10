@@ -57,6 +57,30 @@
           </b-list-group>
         </b-col>
       </b-row>
+
+      <b-row>
+        <b-col sm="6">
+          <h4 class="publist-submit-h3">
+            Grading
+          </h4>
+          <div v-for="flowgrade in flow.flowgrades">
+            <strong>{{flowgrade.id}} {{flowgrade.name}}</strong>
+            <div v-for="grading in filteredgradings(submit.gradings,flowgrade)">
+              {{grading.flowgradescoreId}} <strong>{{grading.score}}</strong> {{grading.comment}} {{grading.username}} {{grading.lead}}
+            </div>
+
+          </div>
+        </b-col>
+        <b-col sm="6" v-if="pub.isowner">
+          <h4 class="publist-submit-h3">
+            Reviewers
+          </h4>
+          <div v-for="reviewer in submit.reviewers">
+            {{reviewer.id}} {{reviewer.username}} {{reviewer.lead}}
+          </div>
+        </b-col>
+      </b-row>
+
     </b-container>
 
   </div>
@@ -103,6 +127,17 @@
       },
     },
     methods: {
+      filteredgradings(gradings, flowgrade) {
+        const gradingstoshow = []
+        for (const grading of gradings) {
+          if (grading.flowgradeId === flowgrade.id) {
+            const flowgradescore = _.find(flowgrade.scores, (score) => { return score.id === grading.flowgradescoreId })
+            grading.score = flowgradescore ? flowgradescore.name : 'Bad' + grading.flowgradescoreId
+            gradingstoshow.push(grading)
+          }
+        }
+        return gradingstoshow
+      },
       toggleSubmitShow(submit) {
         submit.visible = !submit.visible
       },
