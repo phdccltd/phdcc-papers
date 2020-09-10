@@ -75,8 +75,15 @@
           <h4 class="publist-submit-h3">
             Reviewers
           </h4>
+          <form ref="form" @submit.stop.prevent>
+            <b-form-select v-model="submit.newreviewerid" :options="newrevieweroptions" size="sm" style="width:auto;"></b-form-select>
+            <b-btn variant="outline-success" @click="addReviewer(submit)">Add reviewer</b-btn>
+          </form>
           <div v-for="reviewer in submit.reviewers">
-            {{reviewer.id}} {{reviewer.username}} {{reviewer.lead}}
+            <b-link @click="removeReviewer(submit,reviewer)">
+              <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
+            </b-link>
+            {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
           </div>
         </b-col>
       </b-row>
@@ -122,6 +129,16 @@
         const options = []
         for (const flowstatus of this.flow.statuses) {
           options.push({ value: flowstatus.id, text: flowstatus.status })
+        }
+        return options
+      },
+      newrevieweroptions() {
+        const options = []
+        for (const reviewer of this.pub.reviewers) {
+          const already = _.find(this.submit.reviewers, (already) => { return already.userId === reviewer.id })
+          if (!already) {
+            options.push({ value: reviewer.id, text: reviewer.name + ' - ' + reviewer.roles })
+          }
         }
         return options
       },
@@ -174,7 +191,6 @@
       },
       async addSubmitStatus(flow, submit) {
         try {
-          console.log('addSubmitStatus', submit.id, flow.id, submit.newstatusid)
           if (!submit.newstatusid) return await this.$bvModal.msgBoxOk('Please choose a new status')
           const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submit.newstatusid })
           if (!flowstatus) return await this.$bvModal.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
@@ -182,7 +198,33 @@
           const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
           if (!submitstatus) return await this.$bvModal.msgBoxOk('Error adding status')
           this.$bvToast.toast('Status added', { toaster: 'b-toaster-top-center', variant: 'success', })
-          submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
+          //submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
+        }
+      },
+      async removeReviewer(submit,reviewer) {
+        try {
+          if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this reviewer?', { title: reviewer.username })) return
+          const OK = await this.$api.reviewers.removeReviewer(submit.id, reviewer.id)
+          if (!OK) return await this.$bvModal.msgBoxOk('Error removing reviewer')
+          this.$bvToast.toast('Reviewer removed', { toaster: 'b-toaster-top-center', variant: 'success', })
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error removing reviewer: ' + e.message)
+        }
+      },
+      async addReviewer(submit) {
+        try {
+          if (!submit.newreviewerid) return await this.$bvModal.msgBoxOk('Please choose a reviewer')
+          const lead = await this.$bvModal.msgBoxConfirm('Do you want to add this reviewer as the LEAD?', { okTitle: 'Yes', cancelTitle: 'No' })
+          console.log(submit.newreviewerid, lead)
+
+          const submitreviewer = await this.$api.reviewers.addReviewer(submit.id, submit.newreviewerid, lead)
+          if (!submitreviewer) return await this.$bvModal.msgBoxOk('Error adding reviewer')
+          this.$bvToast.toast('Reviewer added', { toaster: 'b-toaster-top-center', variant: 'success', })
+          //submit.newreviewerid = null // TODO This doesn't work ie reviewer still shows as selected when it is actually reset to null by following:
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.$bvModal.msgBoxOk('Error adding status: ' + e.message)

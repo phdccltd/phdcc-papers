@@ -70,6 +70,8 @@ export const getters = {
         for (const flow of flows) {
           for (const submit of flow.submits) {
             if (submit.id === submitid) {
+              if (!'newstatusid' in submit) submit.newstatusid = 0
+              if (!'newreviewerid' in submit) submit.newreviewerid = 0
               for (const entry of submit.entries) {
                 entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
               }

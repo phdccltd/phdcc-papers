@@ -11,6 +11,7 @@
 import acceptingsAPI from './acceptingsAPI.js'
 import mailtemplatesAPI from './mailtemplatesAPI.js'
 import pubAPI from './pubAPI.js'
+import reviewersAPI from './reviewersAPI.js'
 import sitepagesAPI from './sitepagesAPI.js'
 import submitAPI from './submitAPI.js'
 import userAPI from './userAPI.js'
@@ -21,6 +22,7 @@ export default ({ $axios, store }) => {
     acceptings: new acceptingsAPI(options),
     mailtemplates: new mailtemplatesAPI(options),
     pub: new pubAPI(options),
+    reviewers: new reviewersAPI(options),
     sitepages: new sitepagesAPI(options),
     submit: new submitAPI(options),
     user: new userAPI(options),
