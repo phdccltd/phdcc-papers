@@ -18,8 +18,8 @@
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
         <h2 class="bg-yellow">
           <b-btn variant="link" @click="toggleFlowShow(flow)">
-            <v-icon v-if="flow.submitsallvisible" name="minus-square" scale="2" class="btn-outline-warning" />
-            <v-icon v-if="!flow.submitsallvisible" name="plus-square" scale="2" class="btn-outline-warning" />
+            <v-icon v-if="flow.visible" name="minus-square" scale="2" class="btn-outline-warning" />
+            <v-icon v-if="!flow.visible" name="plus-square" scale="2" class="btn-outline-warning" />
           </b-btn>
           {{ flow.name }}
           <span v-for="flowaction in flow.actions">
@@ -28,9 +28,9 @@
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
         </h2>
-        <b-list-group class="flows">
+        <b-list-group v-if="flow.visible" class="flows">
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" :class="'submit ' + (submit.ismine?'':'submitnotmine')">
-            <SubmitSummary :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :pubid="pubid" :editSubmitName="editSubmitName"/>
+            <SubmitSummary :headline="true" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" />
           </b-list-group-item>
         </b-list-group>
       </b-list-group-item>
@@ -67,10 +67,6 @@
     components: { SubmitSummary, PaperDate, },
     mixins: [],
     props: {
-      pubid: {
-        type: Number,
-        required: true,
-      },
       flowid: {
         type: Number,
         required: false,
@@ -95,6 +91,9 @@
       }
     },
     computed: {
+      pubid() {
+        return parseInt(this.$route.params.pubid)
+      },
       pub() {
         const pub = this.$store.getters['pubs/getPub'](this.pubid)
         if (!pub) {
@@ -131,7 +130,6 @@
             }
           }
           countsubmits += flow.submits.length
-          flow.submitsallvisible = !anysubmithidden
         }
         this.noflows = flows.length === 0
         this.nowtavailable = !this.noflows && countsubmits === 0
@@ -143,13 +141,8 @@
         this.showingadminoptions = !this.showingadminoptions
       },
       toggleFlowShow(flow) {
-        for (const submit of flow.submits) {
-          submit.visible = !flow.submitsallvisible
-        }
-        flow.submitsallvisible = !flow.submitsallvisible
-      },
-      toggleSubmitShow(submit) {
-        submit.visible = !submit.visible
+        console.log('toggleFlowShow', flow.visible)
+        flow.visible = !flow.visible
       },
       editSubmitName(submit) {
         this.newtitle = submit.name

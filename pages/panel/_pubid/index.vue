@@ -7,7 +7,7 @@
     <div v-else>
       <HelpPanel />
       <Messages :error="error" :message="message" />
-      <PublicationSubmissions :pubid="pubid" :setError="setError" :setMessage="setMessage" />
+      <PublicationSubmissions :setError="setError" :setMessage="setMessage" />
     </div>
   </div>
 </template>

@@ -22,7 +22,7 @@
       <Messages :error="error" :message="message" />
 
       <div v-if="submitid">
-        <SubmitSummary :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" :pubid="pubid" />
+        <SubmitSummary :collapsible="true" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" />
       </div>
       <div v-else>
         <h2>{{flow.name}}</h2>
