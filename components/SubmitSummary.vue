@@ -58,9 +58,9 @@
           <div class="border rounded border-black mt-1 p-1">
             <b-row>
               <b-col sm="6">
-                <h4 class="publist-submit-h3">
+                <h3 class="publist-submit-h3">
                   <b-link @click="toggleShowSubmissions()">Submissions</b-link>
-                </h4>
+                </h3>
               </b-col>
               <b-col sm="6" v-if="showsubmissions">
                 <b-list-group class="entries">
@@ -77,9 +77,9 @@
           <div v-if="pub.isowner" class="border rounded border-black mt-1 p-1">
             <b-row>
               <b-col sm="6">
-                <h4 class="publist-submit-h3">
+                <h3 class="publist-submit-h3">
                   <b-link @click="toggleShowStatuses()">Statuses</b-link>
-                </h4>
+                </h3>
                 <form ref="form" @submit.stop.prevent>
                   <b-form-select v-model="submit.newstatusid" :options="newstatusoptions" size="sm" style="width:auto;"></b-form-select>
                   <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
@@ -103,9 +103,9 @@
           <div v-if="pub.isowner" class="border rounded border-black mt-1">
             <b-row>
               <b-col sm="6">
-                <h4 class="publist-submit-h3">
+                <h3 class="publist-submit-h3">
                   <b-link @click="toggleShowReviewers()">Reviewers</b-link>
-                </h4>
+                </h3>
                 <form ref="form" @submit.stop.prevent v-if="showreviewers">
                   <b-form-select v-model="submit.newreviewerid" :options="newrevieweroptions" size="sm" style="width:auto;"></b-form-select>
                   <b-btn variant="outline-success" @click="addReviewer(submit)">Add reviewer</b-btn>
@@ -122,17 +122,22 @@
             </b-row>
           </div>
 
-          <div>
-            <h4 class="publist-submit-h3">
-              Grading
-            </h4>
-            <div v-for="flowgrade in flow.flowgrades">
-              <strong>{{flowgrade.id}} {{flowgrade.name}}</strong>
-              <div v-for="grading in filteredgradings(submit.gradings,flowgrade)">
-                {{grading.flowgradescoreId}} <strong>{{grading.score}}</strong> {{grading.comment}} {{grading.username}} {{grading.lead}}
-              </div>
-
-            </div>
+          <div class="border rounded border-black mt-1 p-1">
+            <h3 class="publist-submit-h3 mb-1">
+              <b-link @click="toggleShowGradings()">Gradings</b-link>
+            </h3>
+            <b-list-group v-if="showgradings" class="gradings">
+              <b-list-group-item v-for="(flowgrade, findex) in flow.flowgrades" :key="findex" class="grading p-2">
+                <h4>
+                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.id}} {{flowgrade.name}}</b-link>
+                </h4>
+                <b-list-group v-if="flowgrade.visible">
+                  <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
+                    <Grading :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer"/>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-list-group-item>
+            </b-list-group>
           </div>
         </b-container>
       </div>
@@ -141,10 +146,11 @@
 </template>
 <script>
   import PaperDate from '~/components/PaperDate'
+  import Grading from '~/components/Grading'
   const _ = require('lodash/core')
 
   export default {
-    components: { PaperDate, },
+    components: { PaperDate, Grading, },
     props: {
       headline: {
         type: Boolean,
@@ -177,6 +183,7 @@
         showsubmissions: true,
         showreviewers: true,
         showstatuses: true,
+        showgradings: true,
       }
     },
     mounted() {
@@ -228,6 +235,12 @@
       },
       toggleShowStatuses() {
         this.showstatuses = !this.showstatuses
+      },
+      toggleShowGradings() {
+        this.showgradings = !this.showgradings
+      },
+      toggleSubGradings(flowgrade) {
+        flowgrade.visible = !flowgrade.visible
       },
       async deleteSubmit(submit) {
         try {

@@ -109,6 +109,9 @@ export const actions = {
       // Set collapse visibility for flow and submits
       for (const flow of flows) {
         flow.visible = true
+        for (const flowgrade of flow.flowgrades) {
+          flowgrade.visible = true
+        }
       }
       commit('addPubFlow', { pubid, flows })
     }
