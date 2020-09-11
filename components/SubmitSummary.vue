@@ -50,7 +50,8 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions">
-            <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
+            <b-btn v-if="collapsible" class="float-right" variant="success" @click="enterGrading(submit,submitaction)">Enter {{submitaction.name}}</b-btn>
+            <b-btn v-else class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}} needed!</b-btn>
           </span>
         </div>
 
@@ -133,7 +134,7 @@
                 </h4>
                 <b-list-group v-if="flowgrade.visible">
                   <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
-                    <Grading :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer"/>
+                    <Grading :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
                   </b-list-group-item>
                 </b-list-group>
               </b-list-group-item>
@@ -142,6 +143,45 @@
         </b-container>
       </div>
     </div>
+
+    <b-modal id="bv-modal-grading" centered @ok="okGrading">
+      <template v-slot:modal-title>
+        {{modaltitle}}
+      </template>
+      <form ref="form" @submit.stop.prevent>
+        <b-form-group label="Decision"
+                      label-for="decision"
+                      label-cols-sm="3">
+          <b-form-select v-model="decision"
+                         :options="decisionoptions"
+                         value-field="id"
+                         text-field="name"
+                         :select-size="4">
+          </b-form-select>
+        </b-form-group>
+        <b-form-group label="Comment"
+                      label-for="comment"
+                      label-cols-sm="3">
+          <b-form-textarea id="comment"
+                           v-model="comment"
+                           rows="10"
+                           max-rows="100"
+                           style="overflow-y: auto;"
+                           placeholder="Required"
+                           required>
+          </b-form-textarea>
+        </b-form-group>
+        <b-form-group label-cols-sm="3">
+          <b-form-checkbox v-model="canreview"
+                           name="checkbox-1"
+                           value="true"
+                           unchecked-value="false">
+            I can review
+          </b-form-checkbox>
+        </b-form-group>
+      </form>
+    </b-modal>
+
   </div>
 </template>
 <script>
@@ -184,6 +224,10 @@
         showreviewers: true,
         showstatuses: true,
         showgradings: true,
+        decision: 0,
+        decisionoptions: [],
+        comment: '',
+        canreview: false,
       }
     },
     mounted() {
@@ -313,6 +357,21 @@
         } catch (e) {
           this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
         }
+      },
+      enterGrading(submit, submitaction) {
+        console.log('submitaction',submitaction)
+        this.modaltitle = 'Add ' + submitaction.name
+        this.decision = 0
+        this.decisionoptions = []
+        const flowgrade = _.find(this.flow.flowgrades, (flowgrade) => { return flowgrade.id === submitaction.flowgradeid })
+        if (flowgrade) this.decisionoptions = flowgrade.scores
+        this.comment = ''
+        this.canreview = false
+        this.$bvModal.show('bv-modal-grading')
+      },
+      async okGrading() {
+        console.log('okGrading')
+        bvModalEvt.preventDefault()
       },
     },
   }

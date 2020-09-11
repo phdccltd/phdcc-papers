@@ -11,6 +11,13 @@
         <strong>ADMIN</strong>
         <b-btn variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-btn>
       </div>
+      <div class="pl-1">
+        Your roles
+        <strong v-if="$auth.user.super">SUPERADMIN</strong>
+        <span v-for="myrole in pub.myroles">
+          - {{myrole.name}}
+        </span>
+      </div>
       <SubmitSummary :collapsible="false" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" />
     </div>
   </div>

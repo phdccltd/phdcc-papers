@@ -21,6 +21,14 @@
       <HelpEntry v-if="formtype=='showedit'" />
       <Messages :error="error" :message="message" />
 
+      <div class="pl-1">
+        Your roles
+        <strong v-if="$auth.user.super">SUPERADMIN</strong>
+        <span v-for="myrole in pub.myroles">
+          - {{myrole.name}}
+        </span>
+      </div>
+
       <div v-if="submitid">
         <SubmitSummary :collapsible="true" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" />
       </div>
@@ -40,14 +48,14 @@
           </b-btn>
         </h2>
         <b-form @submit="onSubmit" @submit.stop.prevent>
-          <div v-if="formtype=='addsubmit'" class="mt-2 pl-0 container" >
+          <div v-if="formtype=='addsubmit'" class="mt-2 pl-0 container">
             <FormInput type="text" :edit="editable" label="Title" sid="field0" help=""
                        :class="fieldclass(submittitle)"
                        :reqd="submittitle.required"
                        :message="submittitle.message"
                        v-on:input="changed(submittitle)"
                        v-model="submittitle.val" />
-           </div>
+          </div>
           <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 pl-0">
             <FormInput v-if="field.type=='email'" type="email" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
@@ -79,12 +87,12 @@
                          :publookupId="field.publookupId"
                          v-model="field.val.string" />
             <FormRoleLookups v-if="field.type=='rolelookups'" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
-                         :class="fieldclass(field)"
-                         :reqd="field.required"
-                         :message="field.message"
-                         v-on:input="changed(field)"
-                         :pubroleId="field.pubroleId"
-                         v-model="field.val.string" />
+                             :class="fieldclass(field)"
+                             :reqd="field.required"
+                             :message="field.message"
+                             v-on:input="changed(field)"
+                             :pubroleId="field.pubroleId"
+                             v-model="field.val.string" />
             <FormInput v-if="field.type=='phone'" type="tel" :edit="editable" :label="field.label" :sid="'field'+field.id" :help="field.help"
                        :class="fieldclass(field)"
                        :reqd="field.required"

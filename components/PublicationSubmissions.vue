@@ -8,7 +8,7 @@
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
     </div>
     <div class="pl-1">
-      Roles
+      Your roles
       <strong v-if="$auth.user.super">SUPERADMIN</strong>
       <span v-for="myrole in pub.myroles">
         - {{myrole.name}}
