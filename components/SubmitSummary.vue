@@ -1,86 +1,128 @@
 <template>
   <div>
-    <div v-if="headline">
-      <h3 class="publist-submit-h3">
-        <b-btn v-if="showingadminoptions" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
-          Delete
-        </b-btn>
-        <nuxt-link :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id">
-          {{ submit.id }}:
-          {{ submit.name }}
-        </nuxt-link>
-        {{ submit.user }}
-        <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
-          <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
-        </b-btn>
-      </h3>
-      <div class="publist-current-status clearfix">
-        <PaperDate :dt="submit.dtstatus" />
-        <span class="status">{{ submit.status }}</span>
-        <span v-for="submitaction in submit.actions">
-          <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
-        </span>
+    <div v-if="submit">
+      <div v-if="headline">
+        <h3 class="publist-submit-h3">
+          <b-btn v-if="showingadminoptions" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
+            Delete
+          </b-btn>
+          <nuxt-link :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id">
+            {{ submit.id }}:
+            {{ submit.name }}
+          </nuxt-link>
+          {{ submit.user }}
+          <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
+            <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
+          </b-btn>
+        </h3>
+        <div class="publist-current-status clearfix">
+          <PaperDate :dt="submit.dtstatus" />
+          <span class="status">{{ submit.status }}</span>
+          <span v-for="submitaction in submit.actions">
+            <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
+          </span>
+        </div>
       </div>
-    </div>
-    <div v-else class="border rounded border-black">
-      <h2 class="bg-yellow p-2">
-        <b-btn v-if="collapsible" variant="link" @click="toggleSubmitShow()" style="margin-left: -0.6rem;">
-          <v-icon v-if="visible" name="minus-square" scale="2" />
-          <v-icon v-if="!visible" name="plus-square" scale="2" />
-        </b-btn>
-        <b-btn v-if="showingadminoptions" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
-          Delete
-        </b-btn>
+      <div v-else class="border rounded border-black">
+        <h2 class="bg-yellow p-2">
+          <b-btn v-if="collapsible" variant="link" @click="toggleSubmitShow()" style="margin-left: -0.6rem;">
+            <v-icon v-if="visible" name="minus-square" scale="2" />
+            <v-icon v-if="!visible" name="plus-square" scale="2" />
+          </b-btn>
+          <b-btn v-if="showingadminoptions" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
+            Delete
+          </b-btn>
 
-        {{ submit.id }}:
-        {{ submit.name }}
-        {{ submit.user }}
-        <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
-          <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
-        </b-btn>
-      </h2>
-      <div class="publist-current-status clearfix">
-        <PaperDate :dt="submit.dtstatus" />
-        <span class="status">{{ submit.status }}</span>
-        <span v-for="submitaction in submit.actions">
-          <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
-        </span>
-      </div>
+          <nuxt-link v-if="collapsible" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id">
+            {{ submit.id }}:
+            {{ submit.name }}
+          </nuxt-link>
+          <span v-else>
+            {{ submit.id }}:
+            {{ submit.name }}
+          </span>
+          {{ submit.user }}
+          <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
+            <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
+          </b-btn>
+        </h2>
+        <div class="publist-current-status clearfix">
+          <PaperDate :dt="submit.dtstatus" />
+          <span class="status">{{ submit.status }}</span>
+          <span v-for="submitaction in submit.actions">
+            <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
+          </span>
+        </div>
 
-      <b-container v-if="visible">
-        <b-row no-gutters>
-          <b-col sm="6">
-            <div v-if="pub.isowner">
-              <form ref="form" @submit.stop.prevent>
-                <b-form-select v-model="submit.newstatusid" :options="newstatusoptions" size="sm" style="width:auto;"></b-form-select>
-                <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
-              </form>
-              <div v-for="(submitstatus, index) in submit.statuses" :key="index">
-                <b-link @click="deleteSubmitStatus(submitstatus)">
-                  <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
-                </b-link>
-                <PaperDate :dt="submitstatus.dt" />
-                <span class="status">{{ submitstatus.status }}</span>
-              </div>
-              <div v-if="submit.statuses.length===0">
-                No statuses set
-              </div>
-            </div>
-          </b-col>
-          <b-col sm="6">
-            <b-list-group class="entries">
-              <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
-                <PaperDate :dt="entry.dt" />
-                <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/'+entry.id">
-                  {{entry.stage.name}}
-                </b-btn>
-              </b-list-group-item>
-            </b-list-group>
-          </b-col>
-        </b-row>
+        <b-container v-if="visible">
+          <div class="border rounded border-black mt-1 p-1">
+            <b-row>
+              <b-col sm="6">
+                <h4 class="publist-submit-h3">
+                  <b-link @click="toggleShowSubmissions()">Submissions</b-link>
+                </h4>
+              </b-col>
+              <b-col sm="6" v-if="showsubmissions">
+                <b-list-group class="entries">
+                  <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
+                    <PaperDate :dt="entry.dt" />
+                    <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/'+entry.id">
+                      {{entry.stage.name}}
+                    </b-btn>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-col>
+            </b-row>
+          </div>
+          <div v-if="pub.isowner" class="border rounded border-black mt-1 p-1">
+            <b-row>
+              <b-col sm="6">
+                <h4 class="publist-submit-h3">
+                  <b-link @click="toggleShowStatuses()">Statuses</b-link>
+                </h4>
+                <form ref="form" @submit.stop.prevent>
+                  <b-form-select v-model="submit.newstatusid" :options="newstatusoptions" size="sm" style="width:auto;"></b-form-select>
+                  <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
+                </form>
+              </b-col>
+              <b-col sm="6">
+                <div v-for="(submitstatus, index) in submit.statuses" :key="index">
+                  <b-link @click="deleteSubmitStatus(submitstatus)">
+                    <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
+                  </b-link>
+                  <PaperDate :dt="submitstatus.dt" />
+                  <span class="status">{{ submitstatus.status }}</span>
+                </div>
+                <div v-if="submit.statuses.length===0">
+                  No statuses set
+                </div>
+              </b-col>
+            </b-row>
+          </div>
 
-        <b-row>
-          <b-col sm="6">
+          <div v-if="pub.isowner" class="border rounded border-black mt-1">
+            <b-row>
+              <b-col sm="6">
+                <h4 class="publist-submit-h3">
+                  <b-link @click="toggleShowReviewers()">Reviewers</b-link>
+                </h4>
+                <form ref="form" @submit.stop.prevent v-if="showreviewers">
+                  <b-form-select v-model="submit.newreviewerid" :options="newrevieweroptions" size="sm" style="width:auto;"></b-form-select>
+                  <b-btn variant="outline-success" @click="addReviewer(submit)">Add reviewer</b-btn>
+                </form>
+              </b-col>
+              <b-col sm="6" v-if="showreviewers">
+                <div v-for="reviewer in submit.reviewers">
+                  <b-link @click="removeReviewer(submit,reviewer)">
+                    <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
+                  </b-link>
+                  {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
+                </div>
+              </b-col>
+            </b-row>
+          </div>
+
+          <div>
             <h4 class="publist-submit-h3">
               Grading
             </h4>
@@ -91,25 +133,9 @@
               </div>
 
             </div>
-          </b-col>
-          <b-col sm="6" v-if="pub.isowner">
-            <h4 class="publist-submit-h3">
-              Reviewers
-            </h4>
-            <form ref="form" @submit.stop.prevent>
-              <b-form-select v-model="submit.newreviewerid" :options="newrevieweroptions" size="sm" style="width:auto;"></b-form-select>
-              <b-btn variant="outline-success" @click="addReviewer(submit)">Add reviewer</b-btn>
-            </form>
-            <div v-for="reviewer in submit.reviewers">
-              <b-link @click="removeReviewer(submit,reviewer)">
-                <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
-              </b-link>
-              {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
-            </div>
-          </b-col>
-        </b-row>
-
-      </b-container>
+          </div>
+        </b-container>
+      </div>
     </div>
   </div>
 </template>
@@ -148,6 +174,9 @@
     data: function () {
       return {
         visible: true,
+        showsubmissions: true,
+        showreviewers: true,
+        showstatuses: true,
       }
     },
     mounted() {
@@ -189,6 +218,16 @@
       },
       toggleSubmitShow() {
         this.visible = !this.visible
+        this.reviewerscols = this.visible?6:3
+      },
+      toggleShowSubmissions() {
+        this.showsubmissions = !this.showsubmissions
+      },
+      toggleShowReviewers() {
+        this.showreviewers = !this.showreviewers
+      },
+      toggleShowStatuses() {
+        this.showstatuses = !this.showstatuses
       },
       async deleteSubmit(submit) {
         try {
