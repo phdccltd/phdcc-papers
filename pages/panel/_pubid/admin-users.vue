@@ -169,14 +169,10 @@
           }
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to stop this user accessing your publication/conference?  No submissions etc will be removed.', { title: pubuser.name })) return
           const ok = await this.$api.user.removePubUser(this.pubid, pubuser.id)
-          if (!ok) {
-            this.$bvToast.toast('User could not be removed', {
-              title: 'Remove ' + pubuser.name,
-              toaster: 'b-toaster-top-center',
-              variant: 'danger',
-            })
-          } else {
+          if (ok) {
             this.$store.dispatch('users/fetchpubusers', this.pubid)
+          } else {
+            this.$bvToast.toast('User could not be removed: ' + pubuser.name, { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
           }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error removing user: ' + e.message)
@@ -241,11 +237,7 @@
               this.$bvModal.hide('bv-modal-add-role')
             })
           } else {
-            this.$bvToast.toast('User role could not be added', {
-              title: 'Add ' + roletoadd.name + ' for ' + this.addroleusername,
-              toaster: 'b-toaster-top-center',
-              variant: 'danger',
-            })
+            this.$bvToast.toast('User role could not be added', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
           }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error adding role: ' + e.message)

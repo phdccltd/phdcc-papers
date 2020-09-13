@@ -8,10 +8,11 @@ export default class gradingsAPI extends BaseAPI {
     const { ok } = await this.$del('/gradings/' + submitid, data)
     return ok
   }
-  async addGrading(submitid, userid, lead) {
-    const data = {
-      userid,
-      lead,
+  async addGrading(submitid, decision, comment, canreview) {
+    const data = { // User is auth
+      decision,
+      comment,
+      canreview,
     }
     const { ok } = await this.$post('/gradings/' + submitid, data)
     return ok

@@ -227,7 +227,7 @@
             this.$store.dispatch('submits/fetchpub', this.pubid)
             this.$bvToast.toast('Accepting deleted', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           } else {
-            this.$bvToast.toast('Accepting could not be deleted', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+            this.$bvModal.msgBoxOk('Accepting could not be deleted', { title: 'FAIL' })
           }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error deleting accepting: ' + e.message)

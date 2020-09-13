@@ -380,13 +380,16 @@
         bvModalEvt.preventDefault()
         try {
           if (this.decision === 0) return await this.$bvModal.msgBoxOk('No decision made!')
-          /*const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle)
-          if (!amended) return await this.$bvModal.msgBoxOk('Error changing title')
-          this.$bvToast.toast('Title edited', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })*/
-          this.$store.dispatch('submits/fetchpub', this.pubid)
-          this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-grading')
-          })
+          const ok = await this.$api.gradings.addGrading(this.submit.id, this.decision, this.comment, this.canreview)
+          if (ok) {
+            this.$bvToast.toast('Grading added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', }) 
+            this.$store.dispatch('submits/fetchpub', this.pubid)
+            this.$nextTick(() => {
+              this.$bvModal.hide('bv-modal-grading')
+            })
+          } else {
+            this.$bvToast.toast('Could not add grading', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+          }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error saving grading: ' + e.message)
         }
