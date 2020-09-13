@@ -19,7 +19,7 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions">
-            <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
+            <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}} needed</b-btn>
           </span>
         </div>
       </div>
@@ -51,7 +51,7 @@
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions">
             <b-btn v-if="collapsible" class="float-right" variant="success" @click="enterGrading(submit,submitaction)">Enter {{submitaction.name}}</b-btn>
-            <b-btn v-else class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}} needed!</b-btn>
+            <b-btn v-else class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}} needed</b-btn>
           </span>
         </div>
 
@@ -144,7 +144,7 @@
       </div>
     </div>
 
-    <b-modal id="bv-modal-grading" centered @ok="okGrading">
+    <b-modal id="bv-modal-grading" centered no-close-on-backdrop @ok="okGrading">
       <template v-slot:modal-title>
         {{modaltitle}}
       </template>
@@ -159,7 +159,8 @@
                          :select-size="4">
           </b-form-select>
         </b-form-group>
-        <b-form-group label="Comment"
+        <b-form-group v-if="cancomment"
+                      label="Comment"
                       label-for="comment"
                       label-cols-sm="3">
           <b-form-textarea id="comment"
@@ -171,7 +172,8 @@
                            required>
           </b-form-textarea>
         </b-form-group>
-        <b-form-group label-cols-sm="3">
+        <b-form-group v-if="canopttoreview"
+                      label-cols-sm="3">
           <b-form-checkbox v-model="canreview"
                            name="checkbox-1"
                            value="true"
@@ -226,7 +228,9 @@
         showgradings: true,
         decision: 0,
         decisionoptions: [],
+        cancomment: false,
         comment: '',
+        canopttoreview: false,
         canreview: false,
       }
     },
@@ -311,7 +315,7 @@
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this status?', { title: submitstatus.status })) return
           const OK = await this.$api.submit.deleteSubmitStatus(submitstatus.id)
           if (!OK) return await this.$bvModal.msgBoxOk('Error deleting status')
-          this.$bvToast.toast('Status deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
+          this.$bvToast.toast('Status deleted', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.$bvModal.msgBoxOk('Error deleting status: ' + e.message)
@@ -325,7 +329,7 @@
           if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
           const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
           if (!submitstatus) return await this.$bvModal.msgBoxOk('Error adding status')
-          this.$bvToast.toast('Status added', { toaster: 'b-toaster-top-center', variant: 'success', })
+          this.$bvToast.toast('Status added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           //submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
@@ -337,7 +341,7 @@
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this reviewer?', { title: reviewer.username })) return
           const OK = await this.$api.reviewers.removeReviewer(submit.id, reviewer.id)
           if (!OK) return await this.$bvModal.msgBoxOk('Error removing reviewer')
-          this.$bvToast.toast('Reviewer removed', { toaster: 'b-toaster-top-center', variant: 'success', })
+          this.$bvToast.toast('Reviewer removed', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           this.$bvModal.msgBoxOk('Error removing reviewer: ' + e.message)
@@ -351,7 +355,7 @@
 
           const submitreviewer = await this.$api.reviewers.addReviewer(submit.id, submit.newreviewerid, lead)
           if (!submitreviewer) return await this.$bvModal.msgBoxOk('Error adding reviewer')
-          this.$bvToast.toast('Reviewer added', { toaster: 'b-toaster-top-center', variant: 'success', })
+          this.$bvToast.toast('Reviewer added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           //submit.newreviewerid = null // TODO This doesn't work ie reviewer still shows as selected when it is actually reset to null by following:
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
@@ -361,17 +365,31 @@
       enterGrading(submit, submitaction) {
         console.log('submitaction',submitaction)
         this.modaltitle = 'Add ' + submitaction.name
-        this.decision = 0
         this.decisionoptions = []
         const flowgrade = _.find(this.flow.flowgrades, (flowgrade) => { return flowgrade.id === submitaction.flowgradeid })
-        if (flowgrade) this.decisionoptions = flowgrade.scores
-        this.comment = ''
-        this.canreview = false
+        if (!flowgrade) return this.$bvModal.msgBoxOk('Could not find flowgrad info')
+        this.decisionoptions = flowgrade.scores
+        this.cancomment = flowgrade.cancomment
+        this.canopttoreview = flowgrade.canopttoreview
+        //this.decision = 0 // Save entry in case of exit
+        //this.comment = ''
+        //this.canreview = false
         this.$bvModal.show('bv-modal-grading')
       },
-      async okGrading() {
-        console.log('okGrading')
+      async okGrading(bvModalEvt) {
         bvModalEvt.preventDefault()
+        try {
+          if (this.decision === 0) return await this.$bvModal.msgBoxOk('No decision made!')
+          /*const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle)
+          if (!amended) return await this.$bvModal.msgBoxOk('Error changing title')
+          this.$bvToast.toast('Title edited', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })*/
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+          this.$nextTick(() => {
+            this.$bvModal.hide('bv-modal-grading')
+          })
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error saving grading: ' + e.message)
+        }
       },
     },
   }

@@ -9,6 +9,7 @@
  */
 
 import acceptingsAPI from './acceptingsAPI.js'
+import gradingsAPI from './gradingsAPI.js'
 import mailtemplatesAPI from './mailtemplatesAPI.js'
 import pubAPI from './pubAPI.js'
 import reviewersAPI from './reviewersAPI.js'
@@ -20,6 +21,7 @@ export default ({ $axios, store }) => {
   const options = { $axios, store }
   return {
     acceptings: new acceptingsAPI(options),
+    gradings: new gradingsAPI(options),
     mailtemplates: new mailtemplatesAPI(options),
     pub: new pubAPI(options),
     reviewers: new reviewersAPI(options),

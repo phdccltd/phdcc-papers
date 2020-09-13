@@ -197,10 +197,10 @@
           const ok = await this.$api.mailtemplates.deleteMailTemplate(this.flowid, mailtemplate.id)
           if (ok) {
             this.$store.dispatch('mailtemplates/fetch', this.flowid)
-            this.$bvToast.toast('Mail template removed', { title: this.templatename, toaster: 'b-toaster-top-center', variant: 'success', })
+            this.$bvToast.toast('Mail template removed', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
             this.$nextTick(() => { this.$bvModal.hide('bv-modal-mail-template') })
           } else {
-            this.$bvToast.toast('Remove went wrong', { title: this.templatename, toaster: 'b-toaster-top-center', variant: 'danger', })
+            this.$bvToast.toast('Remove went wrong', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
           }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error adding template: ' + e.message)
@@ -240,10 +240,10 @@
 
           if (ok) {
             this.$store.dispatch('mailtemplates/fetch', this.flowid)
-            this.$bvToast.toast('Mail template added/edited', { title: this.templatename, toaster: 'b-toaster-top-center', variant: 'success', })
+            this.$bvToast.toast('Mail template added/edited', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
             this.$nextTick(() => { this.$bvModal.hide('bv-modal-mail-template') })
           } else {
-            this.$bvToast.toast('Add/Edit went wrong', { title: this.templatename, toaster: 'b-toaster-top-center', variant: 'danger', })
+            this.$bvToast.toast('Add/Edit went wrong', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
           }
         } catch (e) {
           this.$bvModal.msgBoxOk('Error adding template: ' + e.message)
