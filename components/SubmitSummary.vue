@@ -232,6 +232,7 @@
         comment: '',
         canopttoreview: false,
         canreview: false,
+        flowgradeid: 0,
       }
     },
     mounted() {
@@ -371,6 +372,7 @@
         this.decisionoptions = flowgrade.scores
         this.cancomment = flowgrade.cancomment
         this.canopttoreview = flowgrade.canopttoreview
+        this.flowgradeid = submitaction.flowgradeid
         //this.decision = 0 // Save entry in case of exit
         //this.comment = ''
         //this.canreview = false
@@ -380,7 +382,7 @@
         bvModalEvt.preventDefault()
         try {
           if (this.decision === 0) return await this.$bvModal.msgBoxOk('No decision made!')
-          const ok = await this.$api.gradings.addGrading(this.submit.id, this.decision, this.comment, this.canreview)
+          const ok = await this.$api.gradings.addGrading(this.submit.id, this.flowgradeid, this.decision, this.comment, this.canreview)
           if (ok) {
             this.$bvToast.toast('Grading added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', }) 
             this.$store.dispatch('submits/fetchpub', this.pubid)
