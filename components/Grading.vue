@@ -8,7 +8,7 @@
         {{date}}
       </b-col>
       <b-col sm="9" class="formfieldview">
-        {{grading.username}} {{grading.lead}}
+        {{grading.username}} {{grading.lead?'LEAD':''}}
       </b-col>
     </b-row>
     <b-row no-gutters>
@@ -35,9 +35,10 @@
         {{canreview}}
         <span v-if="canreview">
           <span v-if="isreviewer">- Already a reviewer</span>
-          <b-btn v-else variant="outline-success" @click="addAsReviewer()">Add as reviewer</b-btn>
+          <b-btn v-else-if="grading.hasReviewerRole" variant="outline-success" @click="addAsReviewer()">Add as reviewer</b-btn>
+          <span v-else> - doesn't have reviewer role</span>
         </span>
-      </b-col>
+</b-col>
     </b-row>
   </div>
 </template>

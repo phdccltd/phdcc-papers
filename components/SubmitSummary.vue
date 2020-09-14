@@ -81,12 +81,12 @@
                 <h3 class="publist-submit-h3">
                   <b-link @click="toggleShowStatuses()">Statuses</b-link>
                 </h3>
-                <form ref="form" @submit.stop.prevent>
+                <form v-if="showstatuses" ref="form" @submit.stop.prevent>
                   <b-form-select v-model="submit.newstatusid" :options="newstatusoptions" size="sm" style="width:auto;"></b-form-select>
                   <b-btn variant="outline-success" @click="addSubmitStatus(flow,submit)">Add status</b-btn>
                 </form>
               </b-col>
-              <b-col sm="6">
+              <b-col sm="6" v-if="showstatuses">
                 <div v-for="(submitstatus, index) in submit.statuses" :key="index">
                   <b-link @click="deleteSubmitStatus(submitstatus)">
                     <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
