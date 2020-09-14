@@ -130,11 +130,19 @@
             <b-list-group v-if="showgradings" class="gradings">
               <b-list-group-item v-for="(flowgrade, findex) in flow.flowgrades" :key="findex" class="grading p-2">
                 <h4>
-                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.id}} {{flowgrade.name}}</b-link>
+                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}} gradings</b-link>
                 </h4>
                 <b-list-group v-if="flowgrade.visible">
                   <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
                     <Grading :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
+                  </b-list-group-item>
+                </b-list-group>
+                <h4>
+                  <b-link @click="toggleSubGradingSummary(flowgrade)">{{flowgrade.name}} summary</b-link>
+                </h4>
+                <b-list-group v-if="flowgrade.summary">
+                  <b-list-group-item class="p-2">
+                    <GradingSummary :flowgrade="flowgrade" :submit="submit" />
                   </b-list-group-item>
                 </b-list-group>
               </b-list-group-item>
@@ -189,10 +197,11 @@
 <script>
   import PaperDate from '~/components/PaperDate'
   import Grading from '~/components/Grading'
+  import GradingSummary from '~/components/GradingSummary'
   const _ = require('lodash/core')
 
   export default {
-    components: { PaperDate, Grading, },
+    components: { PaperDate, Grading, GradingSummary, },
     props: {
       headline: {
         type: Boolean,
@@ -290,6 +299,9 @@
       },
       toggleSubGradings(flowgrade) {
         flowgrade.visible = !flowgrade.visible
+      },
+      toggleSubGradingSummary(flowgrade) {
+        flowgrade.summary = !flowgrade.summary
       },
       async deleteSubmit(submit) {
         try {
