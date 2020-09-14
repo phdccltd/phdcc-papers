@@ -7,7 +7,7 @@
         </b-link>
         {{date}}
       </b-col>
-      <b-col sm="9" class="formfieldview">
+      <b-col sm="9" class="formfieldview pl-1">
         {{grading.username}} {{grading.lead?'LEAD':''}}
       </b-col>
     </b-row>
@@ -15,7 +15,7 @@
       <b-col sm="3">
         Decision
       </b-col>
-      <b-col sm="9" class="formfieldview">
+      <b-col sm="9" class="formfieldview pl-1">
         {{grading.score}}
       </b-col>
     </b-row>
@@ -23,7 +23,7 @@
       <b-col sm="3">
         Comment
       </b-col>
-      <b-col sm="9" class="formfieldview">
+      <b-col sm="9" class="formfieldview pl-1">
         <b-form-textarea :value="grading.comment" max-rows="100" class="font-weight-bold" style="overflow-y: auto;"></b-form-textarea>
       </b-col>
     </b-row>
@@ -31,7 +31,7 @@
       <b-col sm="3">
         Can review
       </b-col>
-      <b-col sm="9" class="formfieldview">
+      <b-col sm="9" class="formfieldview pl-1">
         {{canreview}}
         <span v-if="canreview">
           <span v-if="isreviewer">- Already a reviewer</span>

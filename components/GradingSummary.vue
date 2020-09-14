@@ -5,7 +5,7 @@
         Decisions
       </b-col>
       <b-col sm="9" class="formfieldview">
-        <div v-for="score in flowgrade.scores" class="p-1">
+        <div v-for="score in flowgrade.scores" class="pl-1">
           {{score.name}}:
           {{scorecount(score)}}
         </div>
@@ -15,7 +15,7 @@
       <b-col sm="3">
         Can review
       </b-col>
-      <b-col sm="9" class="formfieldview">
+      <b-col sm="9" class="formfieldview pl-1">
         {{canreviewers()}}
       </b-col>
     </b-row>
