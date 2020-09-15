@@ -131,6 +131,7 @@
               <b-list-group-item v-for="(flowgrade, findex) in flow.flowgrades" :key="findex" class="grading p-2">
                 <h4>
                   <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}} gradings</b-link>
+                  - {{filteredgradings(submit.gradings,flowgrade).length}}
                 </h4>
                 <b-list-group v-if="flowgrade.visible">
                   <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
@@ -395,7 +396,7 @@
         bvModalEvt.preventDefault()
         try {
           if (this.decision === 0) return await this.$bvModal.msgBoxOk('No decision made!')
-          const ok = await this.$api.gradings.addGrading(this.submit.id, this.flowgradeid, this.decision, this.comment, this.canreview)
+          const ok = await this.$api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
           if (ok) {
             this.$bvToast.toast('Grading added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', }) 
             this.$store.dispatch('submits/fetchpub', this.pubid)
