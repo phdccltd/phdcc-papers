@@ -18,8 +18,22 @@
           - {{myrole.name}}
         </span>
       </div>
-      <SubmitSummary :collapsible="false" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" />
+      <SubmitSummary :collapsible="false" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" />
     </div>
+
+    <b-modal id="bv-modal-edit-submit-title" centered @ok="okTitleEdited">
+      <template v-slot:modal-title>
+        Edit submission title
+      </template>
+      <form ref="form" @submit.stop.prevent>
+        <b-form-group label="Title"
+                      label-for="new-title"
+                      invalid-feedback="Title is required">
+          <b-form-input id="new-title" required v-model="newtitle"></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
+
   </div>
 </template>
 
@@ -102,6 +116,31 @@
       },
       toggleShowAdminOptions() {
         this.showingadminoptions = !this.showingadminoptions
+      },
+
+      editSubmitName(submit) { // These three methods are also in PublicationSubmissions ie duplicated
+        this.newtitle = submit.name
+        this.submitbeingedited = submit
+        this.$bvModal.show('bv-modal-edit-submit-title')
+      },
+      okTitleEdited(bvModalEvt) {
+        bvModalEvt.preventDefault()
+        this.doEditTitle()
+      },
+      async doEditTitle() {
+        try {
+          const newtitle = this.newtitle.trim()
+          if (newtitle.length === 0) return await this.$bvModal.msgBoxOk('No new title given!')
+          const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle)
+          if (!amended) return await this.$bvModal.msgBoxOk('Error changing title')
+          this.$bvToast.toast('Title edited', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
+          this.$store.dispatch('submits/fetchpub', this.pubid)
+          this.$nextTick(() => {
+            this.$bvModal.hide('bv-modal-edit-submit-title')
+          })
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error changing title: ' + e.message)
+        }
       },
     },
     head() {

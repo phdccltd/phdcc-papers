@@ -144,7 +144,7 @@
         console.log('toggleFlowShow', flow.visible)
         flow.visible = !flow.visible
       },
-      editSubmitName(submit) {
+      editSubmitName(submit) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
         this.newtitle = submit.name
         this.submitbeingedited = submit
         this.$bvModal.show('bv-modal-edit-submit-title')

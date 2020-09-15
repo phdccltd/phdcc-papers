@@ -363,10 +363,11 @@
       async addReviewer(submit) {
         try {
           if (!submit.newreviewerid) return await this.$bvModal.msgBoxOk('Please choose a reviewer')
-          const lead = await this.$bvModal.msgBoxConfirm('Do you want to add this reviewer as the LEAD?', { okTitle: 'Yes', cancelTitle: 'No' })
-          console.log(submit.newreviewerid, lead)
+          const notlead = await this.$bvModal.msgBoxConfirm('Do you want to add this reviewer as the LEAD? Escape to cancel.', { okTitle: 'Add as reviewer', cancelTitle: 'Add as lead reviewer' })
+          if (notlead===null) return
+          console.log(submit.newreviewerid, notlead)
 
-          const submitreviewer = await this.$api.reviewers.addReviewer(submit.id, submit.newreviewerid, lead)
+          const submitreviewer = await this.$api.reviewers.addReviewer(submit.id, submit.newreviewerid, !notlead)
           if (!submitreviewer) return await this.$bvModal.msgBoxOk('Error adding reviewer')
           this.$bvToast.toast('Reviewer added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           //submit.newreviewerid = null // TODO This doesn't work ie reviewer still shows as selected when it is actually reset to null by following:
