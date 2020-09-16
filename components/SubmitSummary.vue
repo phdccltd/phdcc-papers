@@ -163,6 +163,14 @@
         {{modaltitle}}
       </template>
       <form ref="form" @submit.stop.prevent>
+        <b-form-row>
+          <b-col sm="3">
+            <b-btn v-if="helplinktext && helplink" variant="outline-success" :href="helplink" target="_blank">{{helplinktext}}</b-btn>
+          </b-col>
+          <b-col sm="9">
+            {{helptext}}
+          </b-col>
+        </b-form-row>
         <b-form-group label="Decision"
                       label-for="decision"
                       label-cols-sm="3">
@@ -237,6 +245,9 @@
         showreviewers: true,
         showstatuses: true,
         showgradings: true,
+        helptext: false,
+        helplinktext: false,
+        helplink: false,
         decision: 0,
         decisionoptions: [],
         cancomment: false,
@@ -408,6 +419,9 @@
         this.decisionoptions = []
         const flowgrade = _.find(this.flow.flowgrades, (flowgrade) => { return flowgrade.id === submitaction.flowgradeid })
         if (!flowgrade) return this.$bvModal.msgBoxOk('Could not find flowgrad info')
+        this.helptext = flowgrade.helptext
+        this.helplinktext = flowgrade.helplinktext
+        this.helplink = flowgrade.helplink
         this.decisionoptions = flowgrade.scores
         this.cancomment = flowgrade.cancomment
         this.canopttoreview = flowgrade.canopttoreview
