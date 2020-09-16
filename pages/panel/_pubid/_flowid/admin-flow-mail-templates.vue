@@ -162,6 +162,7 @@
       },
       substitutions() {
         let substitutions = '{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r'
+        substitutions += '{{author.username}}\r{{author.id}}\r\r'
         substitutions += '{{grading.score}}\r{{grading.comments}}\r{{grading.canreview}}\r\r'
         substitutions += '{{entry.id}}\r'
         const flow = this.flow
