@@ -110,7 +110,7 @@ export const actions = {
       for (const flow of flows) {
         flow.visible = true
         for (const flowgrade of flow.flowgrades) {
-          flowgrade.visible = false
+          flowgrade.visible = true
           flowgrade.summary = true
         }
       }

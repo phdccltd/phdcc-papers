@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row no-gutters>
+    <b-row no-gutters v-if="datevisible">
       <b-col sm="3">
         <b-link @click="deleteGrading()">
           <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
@@ -11,7 +11,7 @@
         {{grading.username}} {{grading.lead?'LEAD':''}}
       </b-col>
     </b-row>
-    <b-row no-gutters>
+    <b-row no-gutters v-if="decisionvisible">
       <b-col sm="3">
         Decision
       </b-col>
@@ -62,6 +62,13 @@
     computed: {
       pubid() {
         return parseInt(this.$route.params.pubid)
+      },
+      datevisible() {
+        return 'dt' in this.grading
+      },
+      decisionvisible() {
+        console.log(this.grading.score)
+        return 'score' in this.grading
       },
       date() {
         if (this.grading.dt===null) return ''

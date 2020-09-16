@@ -128,7 +128,7 @@
               <b-link @click="toggleShowGradings()">Gradings</b-link>
             </h3>
             <b-list-group v-if="showgradings" class="gradings">
-              <b-list-group-item v-for="(flowgrade, findex) in flow.flowgrades" :key="findex" class="grading p-2">
+              <b-list-group-item v-for="(flowgrade, findex) in filteredflowgrades()" :key="findex" class="grading p-2">
                 <h4>
                   <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}} gradings</b-link>
                   - {{filteredgradings(submit.gradings,flowgrade).length}}
@@ -138,14 +138,16 @@
                     <Grading :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
                   </b-list-group-item>
                 </b-list-group>
-                <h4>
-                  <b-link @click="toggleSubGradingSummary(flowgrade)">{{flowgrade.name}} summary</b-link>
-                </h4>
-                <b-list-group v-if="flowgrade.summary">
-                  <b-list-group-item class="p-2">
-                    <GradingSummary :flowgrade="flowgrade" :submit="submit" />
-                  </b-list-group-item>
-                </b-list-group>
+                <div v-if="pub.isowner">
+                  <h4>
+                    <b-link @click="toggleSubGradingSummary(flowgrade)">{{flowgrade.name}} summary</b-link>
+                  </h4>
+                  <b-list-group v-if="flowgrade.summary">
+                    <b-list-group-item class="p-2">
+                      <GradingSummary :flowgrade="flowgrade" :submit="submit" />
+                    </b-list-group-item>
+                  </b-list-group>
+                </div>
               </b-list-group-item>
             </b-list-group>
           </div>
@@ -271,12 +273,23 @@
       },
     },
     methods: {
+      filteredflowgrades() {
+        const flowgradestoshow = []
+        for (const flowgrade of this.flow.flowgrades) {
+          if (this.pub.isowner || flowgrade.authorcanseeatthisstatus) {
+            flowgradestoshow.push(flowgrade)
+          }
+        }
+        return flowgradestoshow
+      },
       filteredgradings(gradings, flowgrade) {
         const gradingstoshow = []
         for (const grading of gradings) {
           if (grading.flowgradeId === flowgrade.id) {
-            const flowgradescore = _.find(flowgrade.scores, (score) => { return score.id === grading.flowgradescoreId })
-            grading.score = flowgradescore ? flowgradescore.name : 'Bad' + grading.flowgradescoreId
+            if ('flowgradescoreId' in grading) {
+              const flowgradescore = _.find(flowgrade.scores, (score) => { return score.id === grading.flowgradescoreId })
+              grading.score = flowgradescore ? flowgradescore.name : 'Bad' + grading.flowgradescoreId
+            }
             gradingstoshow.push(grading)
           }
         }
