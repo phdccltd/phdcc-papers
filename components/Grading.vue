@@ -2,7 +2,7 @@
   <div>
     <b-row no-gutters v-if="datevisible">
       <b-col sm="3">
-        <b-link @click="deleteGrading()">
+        <b-link v-if="pub.isowner" @click="deleteGrading()">
           <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
         </b-link>
         {{date}}
@@ -46,6 +46,9 @@
   const _ = require('lodash/core')
   export default {
     props: {
+      pub: {
+        required: true,
+      },
       flowgrade: {
         required: true,
       },

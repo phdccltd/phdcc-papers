@@ -101,20 +101,20 @@
             </b-row>
           </div>
 
-          <div v-if="pub.isowner" class="border rounded border-black mt-1">
+          <div v-if="showReviewersSection()" class="border rounded border-black mt-1">
             <b-row>
               <b-col sm="6">
                 <h3 class="publist-submit-h3">
                   <b-link @click="toggleShowReviewers()">Reviewers</b-link>
                 </h3>
-                <form ref="form" @submit.stop.prevent v-if="showreviewers">
+                <form ref="form" @submit.stop.prevent v-if="showreviewers && pub.isowner">
                   <b-form-select v-model="submit.newreviewerid" :options="newrevieweroptions" size="sm" style="width:auto;"></b-form-select>
                   <b-btn variant="outline-success" @click="addReviewer(submit)">Add reviewer</b-btn>
                 </form>
               </b-col>
               <b-col sm="6" v-if="showreviewers">
                 <div v-for="reviewer in submit.reviewers">
-                  <b-link @click="removeReviewer(submit,reviewer)">
+                  <b-link v-if="pub.isowner" @click="removeReviewer(submit,reviewer)">
                     <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
                   </b-link>
                   {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
@@ -135,7 +135,7 @@
                 </h4>
                 <b-list-group v-if="flowgrade.visible">
                   <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
-                    <Grading :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
+                    <Grading :pub="pub" :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
                   </b-list-group-item>
                 </b-list-group>
                 <div v-if="pub.isowner">
@@ -300,13 +300,14 @@
       },
       showaction(submitaction) {
         const rv = (submitaction.show & this.showtype) != 0
-        console.log('showtype', this.showtype, 'submitaction', submitaction.show, rv)
         return rv
       },
       showactiongrade(submitaction) {
         const rv = submitaction.dograde === this.showtype
-        console.log('showtype', this.showtype, 'submitaction', submitaction.dograde, rv)
         return rv
+      },
+      showReviewersSection() {
+        return this.pub.isowner || this.submit.reviewers.length>0
       },
       toggleSubmitShow() {
         this.visible = !this.visible
