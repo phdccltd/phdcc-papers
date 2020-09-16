@@ -161,7 +161,9 @@
         return this.$store.getters['mailtemplates/get'](this.flowid)
       },
       substitutions() {
-        let substitutions = '{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r{{entry.id}}\r'
+        let substitutions = '{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r'
+        substitutions += '{{grading.score}}\r{{grading.comments}}\r{{grading.canreview}}\r\r'
+        substitutions += '{{entry.id}}\r'
         const flow = this.flow
         for (const stage of flow.stages) {
           substitutions += '\r' + stage.name + ':\r'

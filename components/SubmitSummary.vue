@@ -275,12 +275,10 @@
       filteredflowgrades() {
         const flowgradestoshow = []
         for (const flowgrade of this.flow.flowgrades) {
-          if (this.pub.isowner || flowgrade.authorcanseeatthisstatus) {
-
-            const anygradings = _.find(this.submit.gradings, (grading) => { return grading.flowgradeId === flowgrade.id })
-            if (anygradings) {
-              flowgradestoshow.push(flowgrade)
-            }
+          // If we've been given some gradings, then it must be OK to show them
+          const anygradings = _.find(this.submit.gradings, (grading) => { return grading.flowgradeId === flowgrade.id })
+          if (anygradings) {
+            flowgradestoshow.push(flowgrade)
           }
         }
         return flowgradestoshow
