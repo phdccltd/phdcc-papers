@@ -149,6 +149,9 @@
                   </b-list-group>
                 </div>
               </b-list-group-item>
+              <div v-if="filteredflowgrades().length===0">
+                No gradings
+              </div>
             </b-list-group>
           </div>
         </b-container>
@@ -273,7 +276,11 @@
         const flowgradestoshow = []
         for (const flowgrade of this.flow.flowgrades) {
           if (this.pub.isowner || flowgrade.authorcanseeatthisstatus) {
-            flowgradestoshow.push(flowgrade)
+
+            const anygradings = _.find(this.submit.gradings, (grading) => { return grading.flowgradeId === flowgrade.id })
+            if (anygradings) {
+              flowgradestoshow.push(flowgrade)
+            }
           }
         }
         return flowgradestoshow
