@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="submit">
-      <div v-if="headline">
+      <div v-if="showtype==1">
         <h3 class="publist-submit-h3">
           <b-btn v-if="showingadminoptions" variant="outline-danger" class="float-right" @click="deleteSubmit(submit)">
             Delete
@@ -19,13 +19,13 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions">
-            <b-btn class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}} needed</b-btn>
+            <b-btn v-if="showaction(submitaction)" class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
         </div>
       </div>
       <div v-else class="border rounded border-black">
         <h2 class="bg-yellow p-2">
-          <b-btn v-if="collapsible" variant="link" @click="toggleSubmitShow()" style="margin-left: -0.6rem;">
+          <b-btn v-if="showtype==4" variant="link" @click="toggleSubmitShow()" style="margin-left: -0.6rem;">
             <v-icon v-if="visible" name="minus-square" scale="2" />
             <v-icon v-if="!visible" name="plus-square" scale="2" />
           </b-btn>
@@ -33,7 +33,7 @@
             Delete
           </b-btn>
 
-          <nuxt-link v-if="collapsible" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id">
+          <nuxt-link v-if="showtype==4" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id">
             {{ submit.id }}:
             {{ submit.name }}
           </nuxt-link>
@@ -50,8 +50,8 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions">
-            <b-btn v-if="collapsible" class="float-right" variant="success" @click="enterGrading(submit,submitaction)">Enter {{submitaction.name}}</b-btn>
-            <b-btn v-else class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}} needed</b-btn>
+            <b-btn v-if="showactiongrade(submitaction)" class="float-right" variant="success" @click="enterGrading(submit,submitaction)">{{submitaction.gradename}}</b-btn>
+            <b-btn v-if="showaction(submitaction)"  class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
         </div>
 
@@ -206,13 +206,9 @@
   export default {
     components: { PaperDate, Grading, GradingSummary, },
     props: {
-      headline: {
-        type: Boolean,
-        default: false,
-      },
-      collapsible: {
-        type: Boolean,
-        default: false,
+      showtype: {
+        type: Number,
+        required: true,
       },
       pub: {
         required: true,
@@ -248,7 +244,7 @@
       }
     },
     mounted() {
-      if (this.collapsible) this.visible = false
+      if (this.showtype == 4) this.visible = false
     },
     computed: {
       pubid() {
@@ -294,6 +290,16 @@
           }
         }
         return gradingstoshow
+      },
+      showaction(submitaction) {
+        const rv = (submitaction.show & this.showtype) != 0
+        console.log('showtype', this.showtype, 'submitaction', submitaction.show, rv)
+        return rv
+      },
+      showactiongrade(submitaction) {
+        const rv = submitaction.dograde === this.showtype
+        console.log('showtype', this.showtype, 'submitaction', submitaction.dograde, rv)
+        return rv
       },
       toggleSubmitShow() {
         this.visible = !this.visible

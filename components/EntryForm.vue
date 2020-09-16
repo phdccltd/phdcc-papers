@@ -30,7 +30,7 @@
       </div>
 
       <div v-if="submitid">
-        <SubmitSummary :collapsible="true" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" />
+        <SubmitSummary :showtype="4" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" />
       </div>
       <div v-else>
         <h2>{{flow.name}}</h2>

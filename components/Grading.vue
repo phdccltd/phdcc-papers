@@ -67,7 +67,6 @@
         return 'dt' in this.grading
       },
       decisionvisible() {
-        console.log(this.grading.score)
         return 'score' in this.grading
       },
       date() {
