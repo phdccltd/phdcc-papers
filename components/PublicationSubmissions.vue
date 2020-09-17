@@ -6,6 +6,7 @@
       <strong>ADMIN</strong>
       <b-btn variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
+      <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-mail'" class="ml-2">Send email</b-btn>
     </div>
     <div class="pl-1">
       Your roles
