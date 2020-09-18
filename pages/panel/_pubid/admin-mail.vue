@@ -64,12 +64,12 @@
         </b-form-select>
       </b-row>
     </div>
-    <form ref="form" @submit.stop.prevent>
+    <b-form ref="form" @submit="onSubmit" @submit.stop.prevent>
       <b-form-group label="To"
                     label-for="mailsubject"
                     label-cols-sm="2">
         <div v-if="selectedrole" class="col-form-label">
-          Role {{rolename}} will email {{rolecount}}.
+          Role {{rolename}} will email {{rolecounttext}}.
         </div>
         <div v-if="selecteduser" class="col-form-label">
           ({{chosenuser.username}},{{chosenuser.email}})
@@ -79,7 +79,7 @@
       <b-form-group label="Subject"
                     label-for="mailsubject"
                     label-cols-sm="2">
-        <b-form-input id="mailsubject" v-model="mailsubject" placeholder="Required" required></b-form-input>
+        <b-form-input id="mailsubject" v-model="mailsubject" placeholder="Required" required v-on:input="clearmessages()"></b-form-input>
       </b-form-group>
       <b-form-group label="Text"
                     label-for="mailtext"
@@ -87,6 +87,7 @@
         Only plain text supported. Substitutions NOT supported.
         <b-form-textarea id="mailtext"
                          v-model="mailtext"
+                         v-on:input="clearmessages()"
                          rows="10"
                          max-rows="100"
                          style="overflow-y: auto;"
@@ -97,12 +98,12 @@
       <b-form-row>
         <b-col cols="10" offset-md="2">
           <b-btn variant="success" type="submit">
-            Submit
+            Send
           </b-btn>
-          <Messages :message="sendstatus" :warning="validationsummary" :error="submiterror" />
+          <Messages :message="sendstatus" :warning="validationsummary" :error="senderror" />
         </b-col>
       </b-form-row>
-    </form>
+    </b-form>
   </div>
 </template>
 
@@ -129,7 +130,7 @@
         mailtext: '',
         sendstatus: '',
         validationsummary: '',
-        submiterror: '',
+        senderror: '',
       }
     },
     async mounted() { // Client only
@@ -184,7 +185,7 @@
         const pubrole = _.find(this.pubusers.pubroles, (pubrole) => { return pubrole.id === iselectedrole })
         return pubrole ? pubrole.name: ''
       },
-      rolecount() {
+      selectedrolecount() {
         let rolecount = 0
         const iselectedrole = parseInt(this.selectedrole)
         if (iselectedrole === -1) {
@@ -203,7 +204,11 @@
             }
           }
         }
-        return rolecount === 1 ? (rolecount + ' user') : (rolecount + ' users')
+        return rolecount
+      },
+      rolecounttext() {
+        const selectedrolecount = this.selectedrolecount
+        return selectedrolecount === 1 ? (selectedrolecount + ' user') : (selectedrolecount + ' users')
       },
       chosenuser() {
         const chosenuser = _.find(this.pubusers.users, (user) => { return user.id === this.selecteduser })
@@ -242,24 +247,63 @@
       },
       /* ************************ */
       rolechanged() {
+        this.clearmessages()
         if (this.selectedrole != 0) {
           this.selecteduser = 0
         }
       },
       /* ************************ */
       userchanged() {
+        this.clearmessages()
         if (this.selecteduser != 0) {
           this.selectedrole = 0
         }
       },
       /* ************************ */
       templatechanged() {
+        this.clearmessages()
         for (const mailtemplate of this.mailtemplates) {
           if (mailtemplate.id == this.selectedtemplate) {
             this.mailsubject = mailtemplate.subject
             this.mailtext = mailtemplate.body
           }
         }
+      },
+      clearmessages() {
+        this.message = ''
+        this.error = ''
+        this.sendstatus = ''
+        this.senderror = ''
+        this.validationsummary = ''
+      },
+      /* ************************ */
+      async onSubmit(evt) {
+        try {
+          this.clearmessages()
+
+          this.mailsubject = this.mailsubject.trim()
+          if (this.mailsubject.length === 0) {
+            this.validationsummary = 'Please give a subject'
+            return false
+          }
+          this.mailtext = this.mailtext.trim()
+          if (this.mailtext.length === 0) {
+            this.validationsummary = 'Please give the mail text'
+            return false
+          }
+
+          if (this.selecteduser === 0 && this.selectedrolecount === 0) {
+            this.validationsummary = 'No recipients to send to'
+            return false
+          }
+          const recipientcount = this.selecteduser ? 1 : this.selectedrolecount
+          this.sendstatus = 'Recipient count: ' + recipientcount
+        } catch (e) {
+          this.error = e.message
+          this.senderror = e.message
+          this.sendstatus = ''
+        }
+
       },
     },
     /* ************************ */

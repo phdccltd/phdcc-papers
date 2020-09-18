@@ -33,7 +33,7 @@ export const actions = {
   async fetch({ commit }, flowid) {
     try {
       //console.log('store mailtemplates submits.fetch', flowid)
-      const { mailtemplates } = await this.$api.mailtemplates.get(flowid)
+      const { mailtemplates } = await this.$api.mail.getTemplates(flowid)
       for (const mailtemplate of mailtemplates) {
         mailtemplate.visible = false
       }

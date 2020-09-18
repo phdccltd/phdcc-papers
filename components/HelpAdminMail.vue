@@ -9,6 +9,12 @@
         Use this page to send mails to user(s)
       </p>
       <ul>
+        <li>Either choose a role - or All users or All submitters.</li>
+        <li>Or choose a user</li>
+        <li>If you want, choose one of the prepared mail templates to start the mail text</li>
+        <li>Enter a subject and the text of the mail</li>
+        <li>Only plain text is allowed and no substitutions are done</li>
+        <li>Press Send when ready</li>
       </ul>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">

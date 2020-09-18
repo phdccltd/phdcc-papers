@@ -197,7 +197,7 @@
       async deleteMailTemplate(mailtemplate) {
         try {
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this template?', { title: mailtemplate.name })) return
-          const ok = await this.$api.mailtemplates.deleteMailTemplate(this.flowid, mailtemplate.id)
+          const ok = await this.$api.mail.deleteMailTemplate(this.flowid, mailtemplate.id)
           if (ok) {
             this.$store.dispatch('mailtemplates/fetch', this.flowid)
             this.$bvToast.toast('Mail template removed', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
@@ -239,7 +239,7 @@
           if (this.templatesubject.length === 0) return await this.$bvModal.msgBoxOk('Please give a subject')
           if (this.templatebody.length === 0) return await this.$bvModal.msgBoxOk('Please give a body')
 
-          const ok = await this.$api.mailtemplates.addEditMailTemplate(this.flowid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
+          const ok = await this.$api.mail.addEditMailTemplate(this.flowid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
 
           if (ok) {
             this.$store.dispatch('mailtemplates/fetch', this.flowid)

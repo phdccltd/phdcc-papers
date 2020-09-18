@@ -1,14 +1,14 @@
 import BaseAPI from '@/api/BaseAPI'
 
-export default class mailtemplatesAPI extends BaseAPI {
-  get(flowid) {
-    return this.$get('/mailtemplates/' + flowid)
+export default class mailAPI extends BaseAPI {
+  getTemplates(flowid) {
+    return this.$get('/mail/templates/' + flowid)
   }
   async deleteMailTemplate(flowid, templateid) {
     const data = {
       templateid,
     }
-    const { ok } = await this.$del('/mailtemplates/' + flowid, data)
+    const { ok } = await this.$del('/mail/templates/' + flowid, data)
     return ok
   }
   async addEditMailTemplate(flowid, templateid, templatename, templatesubject, templatebody) {
@@ -18,7 +18,7 @@ export default class mailtemplatesAPI extends BaseAPI {
       templatesubject,
       templatebody,
     }
-    const { ok } = await this.$post('/mailtemplates/' + flowid, data)
+    const { ok } = await this.$post('/mail/templates/' + flowid, data)
     return ok
   }
 }
