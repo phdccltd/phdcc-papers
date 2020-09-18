@@ -11,7 +11,7 @@
       <ul>
         <li>Add or remove roles for each user</li>
         <li>Remove access for a user</li>
-        <li>Use the top filter to only see users who have a particualr role</li>
+        <li>Use the top filter to only see users who have a particular role</li>
       </ul>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
