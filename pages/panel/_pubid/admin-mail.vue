@@ -63,47 +63,47 @@
           </template>
         </b-form-select>
       </b-row>
+      <b-form ref="form" @submit="onSubmit" @submit.stop.prevent>
+        <b-form-group label="To"
+                      label-for="mailsubject"
+                      label-cols-sm="2">
+          <div v-if="selectedrole" class="col-form-label">
+            Role {{rolename}} will email {{rolecounttext}}.
+          </div>
+          <div v-if="selecteduser" class="col-form-label">
+            ({{chosenuser.username}},{{chosenuser.email}})
+            has roles: {{chosenuser.sroles}}
+          </div>
+        </b-form-group>
+        <b-form-group label="Subject"
+                      label-for="mailsubject"
+                      label-cols-sm="2">
+          <b-form-input id="mailsubject" v-model="mailsubject" placeholder="Required" required v-on:input="clearmessages()"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Text"
+                      label-for="mailtext"
+                      label-cols-sm="2">
+          Only plain text supported. Substitutions NOT supported.
+          <b-form-textarea id="mailtext"
+                           v-model="mailtext"
+                           v-on:input="clearmessages()"
+                           rows="10"
+                           max-rows="100"
+                           style="overflow-y: auto;"
+                           placeholder="Required"
+                           required>
+          </b-form-textarea>
+        </b-form-group>
+        <b-form-row>
+          <b-col cols="10" offset-md="2">
+            <b-btn variant="success" type="submit">
+              Send
+            </b-btn>
+            <Messages :message="sendstatus" :warning="validationsummary" :error="senderror" />
+          </b-col>
+        </b-form-row>
+      </b-form>
     </div>
-    <b-form ref="form" @submit="onSubmit" @submit.stop.prevent>
-      <b-form-group label="To"
-                    label-for="mailsubject"
-                    label-cols-sm="2">
-        <div v-if="selectedrole" class="col-form-label">
-          Role {{rolename}} will email {{rolecounttext}}.
-        </div>
-        <div v-if="selecteduser" class="col-form-label">
-          ({{chosenuser.username}},{{chosenuser.email}})
-          has roles: {{chosenuser.sroles}}
-        </div>
-      </b-form-group>
-      <b-form-group label="Subject"
-                    label-for="mailsubject"
-                    label-cols-sm="2">
-        <b-form-input id="mailsubject" v-model="mailsubject" placeholder="Required" required v-on:input="clearmessages()"></b-form-input>
-      </b-form-group>
-      <b-form-group label="Text"
-                    label-for="mailtext"
-                    label-cols-sm="2">
-        Only plain text supported. Substitutions NOT supported.
-        <b-form-textarea id="mailtext"
-                         v-model="mailtext"
-                         v-on:input="clearmessages()"
-                         rows="10"
-                         max-rows="100"
-                         style="overflow-y: auto;"
-                         placeholder="Required"
-                         required>
-        </b-form-textarea>
-      </b-form-group>
-      <b-form-row>
-        <b-col cols="10" offset-md="2">
-          <b-btn variant="success" type="submit">
-            Send
-          </b-btn>
-          <Messages :message="sendstatus" :warning="validationsummary" :error="senderror" />
-        </b-col>
-      </b-form-row>
-    </b-form>
   </div>
 </template>
 
@@ -297,7 +297,16 @@
             return false
           }
           const recipientcount = this.selecteduser ? 1 : this.selectedrolecount
-          this.sendstatus = 'Recipient count: ' + recipientcount
+          this.sendstatus = 'Sending mail. Recipient count: ' + recipientcount
+
+          const ok = await this.$api.mail.sendMail(this.pubid, this.selecteduser, this.selectedrole, this.mailsubject, this.mailtext)
+          if (ok) {
+            this.sendstatus = 'Sent OK'
+            this.$bvToast.toast('Mail sent OK', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
+          } else {
+            this.senderror = 'Error sending mail'
+            this.sendstatus = ''
+          }
         } catch (e) {
           this.error = e.message
           this.senderror = e.message

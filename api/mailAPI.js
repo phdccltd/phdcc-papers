@@ -21,5 +21,16 @@ export default class mailAPI extends BaseAPI {
     const { ok } = await this.$post('/mail/templates/' + flowid, data)
     return ok
   }
+  async sendMail(pubid, selecteduser, selectedrole, mailsubject, mailtext) {
+    const data = {
+      selecteduser,
+      selectedrole,
+      mailsubject,
+      mailtext,
+    }
+    const { ok } = await this.$post('/mail/' + pubid, data)
+    return ok
+  }
+
 }
 

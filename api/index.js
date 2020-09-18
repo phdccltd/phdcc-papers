@@ -22,7 +22,7 @@ export default ({ $axios, store }) => {
   return {
     acceptings: new acceptingsAPI(options),
     gradings: new gradingsAPI(options),
-    mail: new mail(options),
+    mail: new mailAPI(options),
     pub: new pubAPI(options),
     reviewers: new reviewersAPI(options),
     sitepages: new sitepagesAPI(options),
