@@ -181,9 +181,10 @@
       formtype: { type: String },
     },
     mounted() {
-      if (this.formtype === 'addstage') {
+      if (this.formtype === 'addstage' || this.formtype === 'addsubmit') {
         this.editable = true
       }
+      console.log(this.formtype, this.editable)
       this.error = ''
       this.message = this.$store.getters['misc/get']('message')
       this.$store.dispatch('misc/set', { key: 'message', value: '' })
