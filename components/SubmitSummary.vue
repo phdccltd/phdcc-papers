@@ -118,11 +118,12 @@
                     <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
                   </b-link>
                   {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
+                  <v-icon v-for="(grading, grindex) in gradingicons(reviewer)" name="check-circle" scale="1" :color="grading.colour" :title="grading.name" :key="grindex" />
+                  <v-icon v-if="reviewer.sentreminderdt" name="envelope" scale="1" color="pink" :title="'Reminded on '+reviewer.sentreminderdt" />
                 </div>
               </b-col>
             </b-row>
           </div>
-
           <div class="border rounded border-black mt-1 p-1">
             <h3 class="publist-submit-h3 mb-1">
               <b-link @click="toggleShowGradings()">Gradings</b-link>
@@ -130,30 +131,31 @@
             <b-list-group v-if="showgradings" class="gradings">
               <b-list-group-item v-for="(flowgrade, findex) in filteredflowgrades()" :key="findex" class="grading p-2">
                 <h4>
-                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}} gradings</b-link>
+                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name
+                  }} gradings</b-link>
                   - {{filteredgradings(submit.gradings,flowgrade).length}}
-                </h4>
-                <b-list-group v-if="flowgrade.visible">
-                  <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
-                    <Grading :pub="pub" :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
-                  </b-list-group-item>
-                </b-list-group>
-                <div v-if="pub.isowner">
-                  <h4>
-                    <b-link @click="toggleSubGradingSummary(flowgrade)">{{flowgrade.name}} summary</b-link>
                   </h4>
-                  <b-list-group v-if="flowgrade.summary">
-                    <b-list-group-item class="p-2">
-                      <GradingSummary :flowgrade="flowgrade" :submit="submit" />
+                  <b-list-group v-if="flowgrade.visible">
+                    <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
+                      <Grading :pub="pub" :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
                     </b-list-group-item>
                   </b-list-group>
+                  <div v-if="pub.isowner">
+                    <h4>
+                      <b-link @click="toggleSubGradingSummary(flowgrade)">{{flowgrade.name}} summary</b-link>
+                    </h4>
+                    <b-list-group v-if="flowgrade.summary">
+                      <b-list-group-item class="p-2">
+                        <GradingSummary :flowgrade="flowgrade" :submit="submit" />
+                      </b-list-group-item>
+                    </b-list-group>
+                  </div>
+                  </b-list-group-item>
+                  <div v-if="filteredflowgrades().length===0">
+                    No gradings
+                  </div>
+                  </b-list-group>
                 </div>
-              </b-list-group-item>
-              <div v-if="filteredflowgrades().length===0">
-                No gradings
-              </div>
-            </b-list-group>
-          </div>
         </b-container>
       </div>
     </div>
@@ -283,6 +285,17 @@
       },
     },
     methods: {
+      gradingicons(reviewer) {
+        const flowgrades = this.flow.flowgrades
+        const gradingicons = []
+        for(const grading of this.submit.gradings) {
+          if (grading.userId === reviewer.userId) {
+            const flowgrade = _.find(flowgrades, (flowgrade) => { return grading.flowgradeId === flowgrade.id })
+            gradingicons.push({ name: flowgrade ? flowgrade.name : '', colour: flowgrade ? flowgrade.tickcolour : 'green' })
+          }
+        }
+        return gradingicons
+      },
       filteredflowgrades() {
         const flowgradestoshow = []
         for (const flowgrade of this.flow.flowgrades) {

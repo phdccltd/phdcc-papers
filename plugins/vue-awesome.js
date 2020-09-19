@@ -14,6 +14,8 @@ require('vue-awesome/icons/plus-square')
 require('vue-awesome/icons/minus-square')
 require('vue-awesome/icons/edit')
 require('vue-awesome/icons/times-circle')
+require('vue-awesome/icons/envelope')
+require('vue-awesome/icons/check-circle')
 
 Vue.component('v-icon', Icon)
 

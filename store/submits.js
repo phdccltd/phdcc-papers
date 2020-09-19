@@ -106,12 +106,16 @@ export const actions = {
     try {
       //console.log('store fetchpub submits.actions', pubid)
       const { flows } = await this.$api.submit.fetchpub({ pubid })
-      // Set collapse visibility for flow and submits
+      // Set collapse visibility for flow and submits - and tickcolour
+      const tickcolours = ['cyan', 'green', 'maroon', 'blue']
+      let tickcolourno = 0
       for (const flow of flows) {
         flow.visible = true
         for (const flowgrade of flow.flowgrades) {
           flowgrade.visible = true
           flowgrade.summary = true
+          flowgrade.tickcolour = tickcolours[tickcolourno]
+          tickcolourno = ++tickcolourno % tickcolours.length
         }
       }
       commit('addPubFlow', { pubid, flows })
