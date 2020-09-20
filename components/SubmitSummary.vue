@@ -18,7 +18,7 @@
         <div class="publist-current-status clearfix">
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
-          <span v-for="submitaction in submit.actions">
+          <span v-for="submitaction in submit.actions" :key="submitaction.id">
             <b-btn v-if="showaction(submitaction)" class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
         </div>
@@ -49,7 +49,7 @@
         <div class="publist-current-status clearfix">
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
-          <span v-for="submitaction in submit.actions">
+          <span v-for="submitaction in submit.actions" :key="submitaction.id">
             <b-btn v-if="showactiongrade(submitaction)" class="float-right" variant="success" @click="enterGrading(submit,submitaction)">{{submitaction.gradename}}</b-btn>
             <b-btn v-if="showaction(submitaction)"  class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
@@ -65,7 +65,7 @@
               </b-col>
               <b-col sm="6" v-if="showsubmissions">
                 <b-list-group class="entries">
-                  <b-list-group-item v-for="(entry, index) in submit.entries" :key="index" class="entry">
+                  <b-list-group-item v-for="entry in submit.entries" :key="entry.id" class="entry">
                     <PaperDate :dt="entry.dt" />
                     <b-btn variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/'+submit.id+'/'+entry.id">
                       {{entry.stage.name}}
@@ -87,7 +87,7 @@
                 </form>
               </b-col>
               <b-col sm="6" v-if="showstatuses">
-                <div v-for="(submitstatus, index) in submit.statuses" :key="index">
+                <div v-for="submitstatus in submit.statuses" :key="submitstatus.id">
                   <b-link @click="deleteSubmitStatus(submitstatus)">
                     <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
                   </b-link>
@@ -113,13 +113,13 @@
                 </form>
               </b-col>
               <b-col sm="6" v-if="showreviewers">
-                <div v-for="reviewer in submit.reviewers">
+                <div v-for="reviewer in submit.reviewers" :key="reviewer.id">
                   <b-link v-if="pub.isowner" @click="removeReviewer(submit,reviewer)">
                     <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
                   </b-link>
                   {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
-                  <v-icon v-for="(grading, grindex) in gradingicons(reviewer)" name="check-circle" scale="1" :color="grading.colour" :title="grading.name" :key="grindex" />
-                  <v-icon v-if="reviewer.sentreminderdt" name="envelope" scale="1" color="pink" :title="'Reminded on '+reviewer.sentreminderdt" />
+                  <v-icon v-for="grading in gradingicons(reviewer)" :key="grading.id" name="check-circle" scale="1" :color="grading.colour" v-b-popover.hover.top="grading.name" />
+                  <v-icon v-for="sentreminder in reviewer.sentreminders" :key="sentreminder.id" name="envelope" scale="1" color="pink" v-b-popover.hover.top="sentreminder.dt" class="mr-1" />
                 </div>
               </b-col>
             </b-row>
@@ -129,14 +129,13 @@
               <b-link @click="toggleShowGradings()">Gradings</b-link>
             </h3>
             <b-list-group v-if="showgradings" class="gradings">
-              <b-list-group-item v-for="(flowgrade, findex) in filteredflowgrades()" :key="findex" class="grading p-2">
+              <b-list-group-item v-for="flowgrade in filteredflowgrades()" :key="flowgrade.id" class="grading p-2">
                 <h4>
-                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name
-                  }} gradings</b-link>
+                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}} gradings</b-link>
                   - {{filteredgradings(submit.gradings,flowgrade).length}}
                   </h4>
                   <b-list-group v-if="flowgrade.visible">
-                    <b-list-group-item v-for="(grading,gindex) in filteredgradings(submit.gradings,flowgrade)" :key="gindex" class="p-2">
+                    <b-list-group-item v-for="grading in filteredgradings(submit.gradings,flowgrade)" :key="grading.id" class="p-2">
                       <Grading :pub="pub" :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
                     </b-list-group-item>
                   </b-list-group>
@@ -291,7 +290,7 @@
         for(const grading of this.submit.gradings) {
           if (grading.userId === reviewer.userId) {
             const flowgrade = _.find(flowgrades, (flowgrade) => { return grading.flowgradeId === flowgrade.id })
-            gradingicons.push({ name: flowgrade ? flowgrade.name : '', colour: flowgrade ? flowgrade.tickcolour : 'green' })
+            gradingicons.push({ id: grading.id, name: flowgrade ? flowgrade.name : '', colour: flowgrade ? flowgrade.tickcolour : 'green' })
           }
         }
         return gradingicons
