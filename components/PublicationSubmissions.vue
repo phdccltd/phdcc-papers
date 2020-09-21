@@ -24,7 +24,7 @@
           </b-btn>
           {{ flow.name }}
           <span v-for="flowaction in flow.actions">
-            <b-btn class="float-right" variant="success" :to="flowaction.route">{{flowaction.name}}</b-btn>
+            <b-btn class="float-right mr-2" variant="success" :to="flowaction.route">{{flowaction.name}}</b-btn>
           </span>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>

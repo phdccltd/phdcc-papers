@@ -21,6 +21,7 @@
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
             <b-btn v-if="showaction(submitaction)" class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
+          <div v-for="actiondone in submit.actionsdone" :key="actiondone.id" class="actiondone float-right">{{actiondone.name}}</div>
         </div>
       </div>
       <div v-else class="border rounded border-black">
