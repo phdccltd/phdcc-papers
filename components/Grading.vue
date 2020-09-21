@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="grading.lead?'leadgrading':''">
     <b-row no-gutters v-if="datevisible">
       <b-col sm="3">
         <b-link v-if="pub.isowner" @click="deleteGrading()">
@@ -38,7 +38,7 @@
           <b-btn v-else-if="grading.hasReviewerRole" variant="outline-success" @click="addAsReviewer()">Add as reviewer</b-btn>
           <span v-else> - doesn't have reviewer role</span>
         </span>
-</b-col>
+      </b-col>
     </b-row>
   </div>
 </template>

@@ -118,7 +118,7 @@
                     <v-icon name="times-circle" scale="1" class="btn-outline-danger" />
                   </b-link>
                   {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
-                  <v-icon v-for="grading in gradingicons(reviewer)" :key="grading.id" name="check-circle" scale="1" :color="grading.colour" v-b-popover.hover.top="grading.name" />
+                  <v-icon v-for="grading in gradingicons(reviewer)" :key="grading.id" name="check-circle" scale="1" :color="grading.colour" v-b-popover.hover.top="grading.name" class="mr-1" />
                   <v-icon v-for="sentreminder in reviewer.sentreminders" :key="sentreminder.id" name="envelope" scale="1" color="pink" v-b-popover.hover.top="sentreminder.dt" class="mr-1" />
                 </div>
               </b-col>
@@ -191,7 +191,6 @@
                            rows="10"
                            max-rows="100"
                            style="overflow-y: auto;"
-                           placeholder="Required"
                            required>
           </b-form-textarea>
         </b-form-group>
