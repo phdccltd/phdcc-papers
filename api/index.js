@@ -9,6 +9,7 @@
  */
 
 import acceptingsAPI from './acceptingsAPI.js'
+import downloadsAPI from './downloadsAPI.js'
 import gradingsAPI from './gradingsAPI.js'
 import mailAPI from './mailAPI.js'
 import pubAPI from './pubAPI.js'
@@ -21,6 +22,7 @@ export default ({ $axios, store }) => {
   const options = { $axios, store }
   return {
     acceptings: new acceptingsAPI(options),
+    downloads: new downloadsAPI(options),
     gradings: new gradingsAPI(options),
     mail: new mailAPI(options),
     pub: new pubAPI(options),
