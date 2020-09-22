@@ -77,6 +77,7 @@ export const getters = {
               }
               submit.status = 'Status not set'
               submit.dtstatus = false
+              submit.owneradvice = false
               let foundvisible = false
               for (const submitstatus of submit.statuses) {
                 submitstatus.status = 'Unknown'
@@ -84,6 +85,7 @@ export const getters = {
                 if (flowstatus) {
                   submitstatus.status = flowstatus.status
                   if (!foundvisible) {
+                    submit.owneradvice = flowstatus.owneradvice
                     submit.status = flowstatus.status
                     submit.dtstatus = submitstatus.dt
                     foundvisible = true

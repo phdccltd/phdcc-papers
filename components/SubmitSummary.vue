@@ -22,6 +22,7 @@
             <b-btn v-if="showaction(submitaction)" class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
           <div v-for="actiondone in submit.actionsdone" :key="actiondone.id" class="actiondone float-right">{{actiondone.name}}</div>
+          <div v-if="pub.isowner && submit.owneradvice" class="actiondone float-right">{{submit.owneradvice}}</div>
         </div>
       </div>
       <div v-else class="border rounded border-black">
@@ -52,8 +53,9 @@
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
             <b-btn v-if="showactiongrade(submitaction)" class="float-right" variant="success" @click="enterGrading(submit,submitaction)">{{submitaction.gradename}}</b-btn>
-            <b-btn v-if="showaction(submitaction)"  class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
+            <b-btn v-if="showaction(submitaction)" class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
+          <div v-if="pub.isowner && submit.owneradvice" class="actiondone float-right mr-2">{{submit.owneradvice}}</div>
         </div>
 
         <b-container v-if="visible">
