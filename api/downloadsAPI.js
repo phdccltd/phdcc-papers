@@ -5,11 +5,12 @@ export default class gradingsAPI extends BaseAPI {
     const params = {
       flowgradeid,
     }
-    const { ok } = await this.$axios.get(process.env.API + '/downloads/anon/' + pubid, {
+    const ret = await this.$axios.get(process.env.API + '/downloads/anon/' + pubid, {
       params,
       responseType: 'blob'
     })
-    return ok
+    console.log('downloadAnonymousGradings GOT', ret)
+    return ret
   }
 }
 
