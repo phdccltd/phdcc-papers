@@ -12,7 +12,20 @@
       <HelpAdminDownloads />
       <Messages :error="error" :message="message" />
 
-      <b-list-group class="pubusers">
+      <b-list-group>
+        <b-list-group-item>
+          <div class="mb-2">
+            <strong>Choose a submission stage:</strong>
+            <b-form-select :options="allstages"
+                           size="sm"
+                           value-field="id"
+                           text-field="name"
+                           v-model="selectedstage"
+                           style="width:auto;">
+            </b-form-select>
+          </div>
+          <b-btn variant="success" @click="downloadAnonymousStageSubmissions()">Download anonymised submissions</b-btn>
+        </b-list-group-item>
         <b-list-group-item>
           <div class="mb-2">
             <strong>Choose a grading type:</strong>
@@ -24,7 +37,6 @@
                            style="width:auto;">
             </b-form-select>
           </div>
-          <b-btn variant="success" @click="downloadAnonymousGradings()">Download anonymous gradings</b-btn>
           <b-btn variant="success" @click="downloadAnonymousGradings()">Download reviewer performance</b-btn>
         </b-list-group-item>
         <b-list-group-item>
@@ -55,6 +67,7 @@
       return {
         error: '',
         message: '',
+        selectedstage: 0,
         selectedgrade: 0,
       }
     },
@@ -86,6 +99,16 @@
         //console.log('PUB pubid')
         return parseInt(this.$route.params.pubid)
       },
+      allstages() {
+        const allstages = []
+        const flows = this.$store.getters['submits/flows'](this.pubid)
+        for (const flow of flows) {
+          for (const flowstage of flow.stages) {
+            allstages.push(flowstage)
+          }
+        }
+        return allstages
+      },
       allgrades() {
         const allgrades = []
         const flows = this.$store.getters['submits/flows'](this.pubid)
@@ -95,7 +118,6 @@
           }
         }
         return allgrades
-
       },
     },
     methods: {
@@ -108,15 +130,27 @@
         this.message = msg
       },
       /* ************************ */
-      async downloadAnonymousGradings() {
-        console.log('DOWNLOAD ANON', this.selectedgrade)
+      async downloadAnonymousStageSubmissions() {
+        console.log('DOWNLOAD ANON', this.selectedstage)
         try {
-          if (this.selectedgrade == 0) return await this.$bvModal.msgBoxOk('No grading chosen!')
+          if (this.selectedstage == 0) return await this.$bvModal.msgBoxOk('No stage chosen!')
 
-          const ret = await this.$api.downloads.downloadAnonymousGradings(this.pubid, this.selectedgrade)
+          const ret = await this.$api.downloads.downloadAnonymousStageSubmissions(this.pubid, this.selectedstage)
+          console.log(ret)
+          if (ret.data.type == 'application/json') {
+            const reader = new FileReader();
+            reader.addEventListener('loadend', (e) => {
+              const text = e.srcElement.result;
+              const rv = JSON.parse(text)
+              if ('status' in rv) {
+                this.$bvModal.msgBoxOk('Error: ' + rv.status)
+              }
+            });
+            reader.readAsText(ret.data)
+            return
+          }
           let filename = 'anonymised.txt'
-          if ('content-disposition' in ret.headers) {
-            // attachment; filename="anonymised.txt"
+          if ('content-disposition' in ret.headers) { // attachment; filename="anonymised.txt"
             const cd = ret.headers['content-disposition']
             const dqpos = cd.indexOf('"')
             if (dqpos !== -1) {
@@ -129,9 +163,11 @@
           link.download = path.basename(filename)
           link.click()
           URL.revokeObjectURL(link.href)
-      } catch (e) {
+        } catch (e) {
           this.$bvModal.msgBoxOk('Error downloading: ' + e.message)
         }
+      },
+      async downloadAnonymousGradings() {
       },
     },
     /* ************************ */
