@@ -27,6 +27,12 @@
           <b-btn variant="success" @click="downloadAnonymousStageSubmissions()">Download anonymised submissions</b-btn>
         </b-list-group-item>
         <b-list-group-item>
+          <b-btn variant="success" @click="downloadSummary()">Download summary</b-btn>
+        </b-list-group-item>
+        <b-list-group-item>
+          <b-btn variant="success" @click="downloadAll()">Download all</b-btn>
+        </b-list-group-item>
+        <b-list-group-item>
           <div class="mb-2">
             <strong>Choose a grading type:</strong>
             <b-form-select :options="allgrades"
@@ -37,13 +43,7 @@
                            style="width:auto;">
             </b-form-select>
           </div>
-          <b-btn variant="success" @click="downloadAnonymousGradings()">Download reviewer performance</b-btn>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-btn variant="success" @click="downloadAnonymousGradings()">Download summary</b-btn>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-btn variant="success" @click="downloadAnonymousGradings()">Download all</b-btn>
+          <b-btn variant="success" @click="downloadReviewerPerformance()">Download reviewer performance</b-btn>
         </b-list-group-item>
       </b-list-group>
     </div>
@@ -131,43 +131,52 @@
       },
       /* ************************ */
       async downloadAnonymousStageSubmissions() {
-        console.log('DOWNLOAD ANON', this.selectedstage)
         try {
           if (this.selectedstage == 0) return await this.$bvModal.msgBoxOk('No stage chosen!')
 
           const ret = await this.$api.downloads.downloadAnonymousStageSubmissions(this.pubid, this.selectedstage)
-          console.log(ret)
-          if (ret.data.type == 'application/json') {
-            const reader = new FileReader();
-            reader.addEventListener('loadend', (e) => {
-              const text = e.srcElement.result;
-              const rv = JSON.parse(text)
-              if ('status' in rv) {
-                this.$bvModal.msgBoxOk('Error: ' + rv.status)
-              }
-            });
-            reader.readAsText(ret.data)
-            return
-          }
-          let filename = 'anonymised.txt'
-          if ('content-disposition' in ret.headers) { // attachment; filename="anonymised.txt"
-            const cd = ret.headers['content-disposition']
-            const dqpos = cd.indexOf('"')
-            if (dqpos !== -1) {
-              filename = cd.substring(dqpos+1,cd.length-1)
-            }
-          }
-          const blob = new Blob([ret.data], { type: ret.data.type })
-          const link = document.createElement('a')
-          link.href = URL.createObjectURL(blob)
-          link.download = path.basename(filename)
-          link.click()
-          URL.revokeObjectURL(link.href)
+          this.handleDownloadReturn(ret)
         } catch (e) {
           this.$bvModal.msgBoxOk('Error downloading: ' + e.message)
         }
       },
-      async downloadAnonymousGradings() {
+      async downloadSummary() {
+        const ret = await this.$api.downloads.downloadSummary(this.pubid)
+        this.handleDownloadReturn(ret)
+      },
+      async downloadAll() {
+        this.$bvToast.toast('NOT IMPLEMENTED', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+      },
+      async downloadReviewerPerformance() {
+        this.$bvToast.toast('NOT IMPLEMENTED', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+      },
+      handleDownloadReturn(ret) {
+        if (ret.data.type == 'application/json') {
+          const reader = new FileReader();
+          reader.addEventListener('loadend', (e) => {
+            const text = e.srcElement.result;
+            const rv = JSON.parse(text)
+            if ('status' in rv) {
+              this.$bvModal.msgBoxOk('Error: ' + rv.status)
+            }
+          });
+          reader.readAsText(ret.data)
+          return
+        }
+        let filename = 'anonymised.txt'
+        if ('content-disposition' in ret.headers) { // attachment; filename="thename.ext"
+          const cd = ret.headers['content-disposition']
+          const dqpos = cd.indexOf('"')
+          if (dqpos !== -1) {
+            filename = cd.substring(dqpos + 1, cd.length - 1)
+          }
+        }
+        const blob = new Blob([ret.data], { type: ret.data.type })
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = path.basename(filename)
+        link.click()
+        URL.revokeObjectURL(link.href)
       },
     },
     /* ************************ */

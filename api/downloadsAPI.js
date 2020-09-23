@@ -9,8 +9,15 @@ export default class gradingsAPI extends BaseAPI {
       params,
       responseType: 'blob'
     })
-    //console.log('downloadAnonymousStageSubmissions GOT', ret)
     return ret
   }
+
+  async downloadSummary(pubid) {
+    const ret = await this.$axios.get(process.env.API + '/downloads/summary/' + pubid, {
+      responseType: 'blob'
+    })
+    return ret
+  }
+  
 }
 
