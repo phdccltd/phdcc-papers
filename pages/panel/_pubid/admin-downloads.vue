@@ -25,8 +25,6 @@
             </b-form-select>
           </div>
           <b-btn variant="success" @click="downloadAnonymousStageSubmissions()">Download anonymised submissions</b-btn>
-        </b-list-group-item>
-        <b-list-group-item>
           <b-btn variant="success" @click="downloadSummary()">Download summary</b-btn>
         </b-list-group-item>
         <b-list-group-item>
@@ -141,8 +139,14 @@
         }
       },
       async downloadSummary() {
-        const ret = await this.$api.downloads.downloadSummary(this.pubid)
-        this.handleDownloadReturn(ret)
+        try {
+          if (this.selectedstage == 0) return await this.$bvModal.msgBoxOk('No stage chosen!')
+
+          const ret = await this.$api.downloads.downloadSummary(this.pubid, this.selectedstage)
+          this.handleDownloadReturn(ret)
+        } catch (e) {
+          this.$bvModal.msgBoxOk('Error downloading: ' + e.message)
+        }
       },
       async downloadAll() {
         this.$bvToast.toast('NOT IMPLEMENTED', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
