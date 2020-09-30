@@ -8,8 +8,9 @@ const version = JSON.parse(packageJson).version || 0
 console.log('version', version)
 
 module.exports = {
-  //mode: 'universal',
-  mode: 'spa',
+  ////mode: 'universal',
+  //mode: 'spa',
+  ssr: false,
   /*
    ** Headers of the page
    */
