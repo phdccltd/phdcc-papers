@@ -18,7 +18,7 @@
     </div>
     <b-list-group class="flows">
       <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
-        <h2 class="bg-yellow">
+        <h2 class="bg-yellow clearfix">
           <b-btn variant="link" @click="toggleFlowShow(flow)">
             <v-icon v-if="flow.visible" name="minus-square" scale="2" class="btn-outline-warning" />
             <v-icon v-if="!flow.visible" name="plus-square" scale="2" class="btn-outline-warning" />
