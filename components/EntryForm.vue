@@ -49,7 +49,7 @@
         </h2>
         <b-form @submit="onSubmit" @submit.stop.prevent>
           <div v-if="formtype=='addsubmit'" class="mt-2 pl-0 container">
-            <FormInput type="text" :edit="editable" label="Title" sid="field0" help=""
+            <FormInput type="text" :edit="editable" label="Paper title" sid="field0" help=""
                        :class="fieldclass(submittitle)"
                        :reqd="submittitle.required"
                        :message="submittitle.message"

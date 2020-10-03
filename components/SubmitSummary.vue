@@ -19,7 +19,7 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-btn v-if="showaction(submitaction)" class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
+            <b-btn v-if="showaction(submitaction)" class="float-right ml-1" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
           <div v-for="actiondone in submit.actionsdone" :key="actiondone.id" class="actiondone float-right">{{actiondone.name}}</div>
           <div v-if="pub.isowner && submit.owneradvice" class="actiondone float-right">{{submit.owneradvice}}</div>
@@ -129,12 +129,12 @@
           </div>
           <div class="border rounded border-black mt-1 p-1">
             <h3 class="publist-submit-h3 mb-1">
-              <b-link @click="toggleShowGradings()">Gradings</b-link>
+              <b-link @click="toggleShowGradings()">Reviews</b-link>
             </h3>
             <b-list-group v-if="showgradings" class="gradings">
               <b-list-group-item v-for="flowgrade in filteredflowgrades()" :key="flowgrade.id" class="grading p-2">
                 <h4>
-                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}} gradings</b-link>
+                  <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}}</b-link>
                   - {{filteredgradings(submit.gradings,flowgrade).length}}
                   </h4>
                   <b-list-group v-if="flowgrade.visible">
