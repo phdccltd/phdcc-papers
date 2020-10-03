@@ -154,7 +154,7 @@
                   </div>
                   </b-list-group-item>
                   <div v-if="filteredflowgrades().length===0">
-                    No gradings
+                    No reviews
                   </div>
                   </b-list-group>
                 </div>
