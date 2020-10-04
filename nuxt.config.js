@@ -1,7 +1,16 @@
 require('dotenv').config()
 const fs = require('fs')
+const execSync = require('child_process').execSync
 
+console.log('papers NODE_ENV', process.env.NODE_ENV)
 console.log('papers API', process.env.API)
+
+if (process.env.STARTUP_EMAIL && process.env.STARTUP_SUBJECT && !('npm_lifecycle_script' in process.env)) {
+  console.log('SEND MAIL TO ', process.env.STARTUP_EMAIL)
+  const now = new Date()
+  const cmd = 'echo "Server: ' + now.toISOString() + ' to API ' + process.env.API + '" | mail -s "' + process.env.STARTUP_SUBJECT + '" ' + process.env.STARTUP_EMAIL
+  execSync(cmd)
+}
 
 const packageJson = fs.readFileSync('./package.json')
 const version = JSON.parse(packageJson).version || 0
