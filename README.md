@@ -14,6 +14,14 @@ RECAPTCHA_SITE_KEY='recaptcha site key'
 RECAPTCHA_BYPASS='Password to avoid recaptcha'
 ```
 
+Optionally add all these variables to send an email when the production server is started:
+
+```
+STARTUP_EMAIL='to@example.com'
+STARTUP_SUBJECT='Papers nuxt restarted'
+STARTUP_FROM='from@example.com'
+```
+
 If running in a dev environment at localhost that calls a website server API, specify the server API `RECAPTCHA_BYPASS` to bypass the authenication recaptcha.
 
 ## Build Setup
