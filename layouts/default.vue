@@ -32,9 +32,10 @@
     </div>
     <nuxt class="container" />
     <div class="container mt-3 pt-2 border-top" style="color:gray">
-      <a href="https://www.phdcc.com/papers/">Papers {{ version }}</a>.
-      Your time: {{ yourtime }} - Copyright &copy; 2020 PHD Computer Consultants Ltd, 
-    </div>
+      <a href="https://www.phdcc.com/papers/">Papers {{ version }}/{{apiversion}}</a>, <span style="color:lightgrey">{{BUILD_DATE}}</span>.
+        Copyright &copy; 2020 PHD Computer Consultants Ltd.
+
+</div>
   </div>
 </template>
 
@@ -58,6 +59,13 @@
       },
       version() {
         return process.env.VERSION
+      },
+      BUILD_DATE() {
+        return process.env.BUILD_DATE
+      },
+      apiversion() {
+        console.log('GET APIVERSION')
+        return this.$store.getters['misc/get']('apiversion')
       },
       title() {
         //if (this.pagemounted) {

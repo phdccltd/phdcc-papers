@@ -76,11 +76,21 @@
 
     computed: {
       pubs() {
-        return this.$store.getters['pubs/get']
+        const pubs = this.$store.getters['pubs/get']
+
+        // Set apiversion here
+        for (const pub in pubs) {
+          this.$store.dispatch('misc/set', { key: 'apiversion', value: pubs[pub].apiversion })
+          break
+        }
+
+        return pubs
       },
       nowtavailable() {
         const pubs = this.$store.getters['pubs/get']
-        return pubs.length === 0
+        let count = 0
+        for (const pub in pubs) { count++ }
+        return count === 0
       },
       message() {
         return 'Hello ' + this.$auth.user.name

@@ -44,7 +44,7 @@ export const getters = {
 }
 
 export const actions = {
-  async fetch({ commit }) {
+  async fetch({ commit,store }) {
     try {
       //console.log('store fetch pubs.actions')
       commit('setError', false)
