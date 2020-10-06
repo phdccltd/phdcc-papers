@@ -193,8 +193,7 @@
                            v-model="comment"
                            rows="10"
                            max-rows="100"
-                           style="overflow-y: auto;"
-                           required>
+                           style="overflow-y: auto;">
           </b-form-textarea>
         </b-form-group>
         <b-form-group v-if="canopttoreview"
