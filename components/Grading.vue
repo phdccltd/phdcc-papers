@@ -33,7 +33,7 @@
       </b-col>
       <b-col sm="9" class="formfieldview pl-1">
         {{canreview}}
-        <span v-if="canreview">
+        <span v-if="pub.isowner && canreview">
           <span v-if="isreviewer">- Already a reviewer</span>
           <b-btn v-else-if="grading.hasReviewerRole" variant="outline-success" @click="addAsReviewer()">Add as reviewer</b-btn>
           <span v-else> - doesn't have reviewer role</span>
