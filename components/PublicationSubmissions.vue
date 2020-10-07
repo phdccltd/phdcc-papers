@@ -161,13 +161,13 @@
           if (newtitle.length === 0) return await this.$bvModal.msgBoxOk('No new title given!')
           const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle)
           if (!amended) return await this.$bvModal.msgBoxOk('Error changing title')
-          this.$bvToast.toast('Title edited', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
           this.$nextTick(() => {
             this.$bvModal.hide('bv-modal-edit-submit-title')
+            this.$bvModal.msgBoxOk('Title changed')
           })
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error changing title: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error changing title: ' + e.message)
         }
       },
       async deleteSubmit(submit) {
@@ -181,12 +181,11 @@
             await this.$bvModal.msgBoxOk('Could not delete this submission')
             return
           }
-          //this.$bvToast.toast('Submission deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
           await this.$bvModal.msgBoxOk('Submission deleted')
           await this.$bvModal.msgBoxOk('NEED TO REMOVE REVIEWS, ETC???')
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
         }
       },
     },

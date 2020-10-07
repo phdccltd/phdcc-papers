@@ -94,10 +94,10 @@
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this grading?', { title: this.date + ': ' + this.grading.username + ' - ' + this.grading.score })) return
           const OK = await this.$api.gradings.deleteGrading(this.submit.id, this.grading.id)
           if (!OK) return await this.$bvModal.msgBoxOk('Error removing grading')
-          this.$bvToast.toast('Grading removed', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
+          await this.$bvModal.msgBoxOk('Grading removed')
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error removing grading: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error removing grading: ' + e.message)
         }
       },
     },

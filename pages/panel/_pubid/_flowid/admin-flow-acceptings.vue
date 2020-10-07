@@ -206,15 +206,15 @@
           const ok = await this.$api.acceptings.addEditAccepting(this.flowid, this.acceptingid, this.chosenstage, this.chosenopen, this.chosenstatus)
           if (ok) {
             this.$store.dispatch('submits/fetchpub', this.pubid)
-            this.$bvToast.toast('Accepting added/edited', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
             this.$nextTick(() => {
               this.$bvModal.hide('bv-modal-accepting')
+              this.$bvModal.msgBoxOk('Accepting added/edited')
             })
           } else {
-            this.$bvToast.toast('Accepting could not be added/edited', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+            await this.$bvModal.msgBoxOk('Accepting could not be added/edited', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error adding/editing accepting: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error adding/editing accepting: ' + e.message)
         }
       },
       /* ************************ */
@@ -225,12 +225,14 @@
           const ok = await this.$api.acceptings.deleteAccepting(this.flowid, accepting.id)
           if (ok) {
             this.$store.dispatch('submits/fetchpub', this.pubid)
-            this.$bvToast.toast('Accepting deleted', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
+            this.$nextTick(() => {
+              this.$bvModal.msgBoxOk('Accepting deleted')
+            })
           } else {
-            this.$bvModal.msgBoxOk('Accepting could not be deleted', { title: 'FAIL' })
+            await this.$bvModal.msgBoxOk('Accepting could not be deleted', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error deleting accepting: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error deleting accepting: ' + e.message)
         }
       },
     },

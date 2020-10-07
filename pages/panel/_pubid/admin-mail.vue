@@ -302,7 +302,7 @@
           const ok = await this.$api.mail.sendMail(this.pubid, this.selecteduser, this.selectedrole, this.mailsubject, this.mailtext)
           if (ok) {
             this.sendstatus = 'Sent OK'
-            this.$bvToast.toast('Mail sent OK', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
+            await this.$bvModal.msgBoxOk('Mail sent OK')
           } else {
             this.senderror = 'Error sending mail'
             this.sendstatus = ''

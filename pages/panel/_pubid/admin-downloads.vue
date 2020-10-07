@@ -135,7 +135,7 @@
           const ret = await this.$api.downloads.downloadAnonymousStageSubmissions(this.pubid, this.selectedstage)
           this.handleDownloadReturn(ret)
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error downloading: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error downloading: ' + e.message)
         }
       },
       async downloadSummary() {
@@ -145,23 +145,23 @@
           const ret = await this.$api.downloads.downloadSummary(this.pubid, this.selectedstage)
           this.handleDownloadReturn(ret)
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error downloading: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error downloading: ' + e.message)
         }
       },
       async downloadAll() {
-        this.$bvToast.toast('NOT IMPLEMENTED', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+        await this.$bvModal.msgBoxOk('NOT IMPLEMENTED', { title: 'HOLD ON', headerBgVariant: 'warning' })
       },
       async downloadReviewerPerformance() {
-        this.$bvToast.toast('NOT IMPLEMENTED', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+        await this.$bvModal.msgBoxOk('NOT IMPLEMENTED', { title: 'HOLD ON', headerBgVariant: 'warning' })
       },
       handleDownloadReturn(ret) {
         if (ret.data.type == 'application/json') {
           const reader = new FileReader();
-          reader.addEventListener('loadend', (e) => {
+          reader.addEventListener('loadend', async (e) => {
             const text = e.srcElement.result;
             const rv = JSON.parse(text)
             if ('status' in rv) {
-              this.$bvModal.msgBoxOk('Error: ' + rv.status)
+              await this.$bvModal.msgBoxOk('Error: ' + rv.status)
             }
           });
           reader.readAsText(ret.data)

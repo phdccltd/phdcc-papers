@@ -200,13 +200,15 @@
           const ok = await this.$api.mail.deleteMailTemplate(this.flowid, mailtemplate.id)
           if (ok) {
             this.$store.dispatch('mailtemplates/fetch', this.flowid)
-            this.$bvToast.toast('Mail template removed', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
-            this.$nextTick(() => { this.$bvModal.hide('bv-modal-mail-template') })
+            this.$nextTick(() => {
+              this.$bvModal.hide('bv-modal-mail-template')
+              this.$bvModal.msgBoxOk('Mail template removed')
+            })
           } else {
-            this.$bvToast.toast('Remove went wrong', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+            await this.$bvModal.msgBoxOk('Remove went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error adding template: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error adding template: ' + e.message)
         }
       },
       /* ************************ */
@@ -243,13 +245,15 @@
 
           if (ok) {
             this.$store.dispatch('mailtemplates/fetch', this.flowid)
-            this.$bvToast.toast('Mail template added/edited', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
-            this.$nextTick(() => { this.$bvModal.hide('bv-modal-mail-template') })
+            this.$nextTick(() => {
+              this.$bvModal.hide('bv-modal-mail-template')
+              this.$bvModal.msgBoxOk('Mail template added/edited')
+            })
           } else {
-            this.$bvToast.toast('Add/Edit went wrong', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+            await this.$bvModal.msgBoxOk('Add/Edit went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error adding template: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error adding template: ' + e.message)
         }
       }
     },

@@ -364,12 +364,11 @@
             await this.$bvModal.msgBoxOk('Could not delete this submission')
             return
           }
-          //this.$bvToast.toast('Submission deleted', { toaster: 'b-toaster-top-center', variant: 'success', })
           await this.$bvModal.msgBoxOk('Submission deleted')
           await this.$bvModal.msgBoxOk('NEED TO REMOVE REVIEWS, ETC???')
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
         }
       },
       async deleteSubmitStatus(submitstatus) {
@@ -378,10 +377,12 @@
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this status?', { title: submitstatus.status })) return
           const OK = await this.$api.submit.deleteSubmitStatus(submitstatus.id)
           if (!OK) return await this.$bvModal.msgBoxOk('Error deleting status')
-          this.$bvToast.toast('Status deleted', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
+          this.$nextTick(() => {
+            this.$bvModal.msgBoxOk('Status deleted')
+          })
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error deleting status: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error deleting status: ' + e.message)
         }
       },
       async addSubmitStatus(flow, submit) {
@@ -392,11 +393,13 @@
           if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
           const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
           if (!submitstatus) return await this.$bvModal.msgBoxOk('Error adding status')
-          this.$bvToast.toast('Status added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           //submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
           this.$store.dispatch('submits/fetchpub', this.pubid)
+          this.$nextTick(() => {
+            this.$bvModal.msgBoxOk('Status added')
+          })
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
         }
       },
       async removeReviewer(submit,reviewer) {
@@ -404,10 +407,12 @@
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this reviewer?', { title: reviewer.username })) return
           const OK = await this.$api.reviewers.removeReviewer(submit.id, reviewer.id)
           if (!OK) return await this.$bvModal.msgBoxOk('Error removing reviewer')
-          this.$bvToast.toast('Reviewer removed', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           this.$store.dispatch('submits/fetchpub', this.pubid)
+          this.$nextTick(() => {
+            this.$bvModal.msgBoxOk('Reviewer removed')
+          })
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error removing reviewer: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error removing reviewer: ' + e.message)
         }
       },
       async addReviewer(submit) {
@@ -419,11 +424,13 @@
 
           const submitreviewer = await this.$api.reviewers.addReviewer(submit.id, submit.newreviewerid, !notlead)
           if (!submitreviewer) return await this.$bvModal.msgBoxOk('Error adding reviewer')
-          this.$bvToast.toast('Reviewer added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', })
           //submit.newreviewerid = null // TODO This doesn't work ie reviewer still shows as selected when it is actually reset to null by following:
           this.$store.dispatch('submits/fetchpub', this.pubid)
+          this.$nextTick(() => {
+            this.$bvModal.msgBoxOk('Reviewer added')
+          })
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
         }
       },
       enterGrading(submit, submitaction) {
@@ -450,16 +457,16 @@
           if (this.decision === 0) return await this.$bvModal.msgBoxOk('No decision made!')
           const ok = await this.$api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
           if (ok) {
-            this.$bvToast.toast('Grading added', { title: 'SUCCESS', toaster: 'b-toaster-top-center', variant: 'success', }) 
             this.$store.dispatch('submits/fetchpub', this.pubid)
             this.$nextTick(() => {
               this.$bvModal.hide('bv-modal-grading')
+              this.$bvModal.msgBoxOk('Review added')
             })
           } else {
-            this.$bvToast.toast('Could not add grading', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+            await this.$bvModal.msgBoxOk('Could not add review', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error saving grading: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error saving review: ' + e.message)
         }
       },
     },

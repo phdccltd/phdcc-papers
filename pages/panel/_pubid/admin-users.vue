@@ -172,10 +172,10 @@
           if (ok) {
             this.$store.dispatch('users/fetchpubusers', this.pubid)
           } else {
-            this.$bvToast.toast('User could not be removed: ' + pubuser.name, { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+            await this.$bvModal.msgBoxOk('User could not be removed', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error removing user: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error removing user: ' + e.message)
         }
       },
       /* ************************ */
@@ -188,16 +188,12 @@
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this role?', { title: pubuser.name+': '+role.name })) return
           const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
           if (!ok) {
-            this.$bvToast.toast('User role could not be deleted', {
-              title: 'Delete ' + role.name + ' for '+pubuser.name,
-              toaster: 'b-toaster-top-center',
-              variant: 'danger',
-            })
+            await this.$bvModal.msgBoxOk('User role could not be deleted', { title: 'FAIL', headerBgVariant: 'warning' })
           } else {
             this.$store.dispatch('users/fetchpubusers', this.pubid)
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error removing user role: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error removing user role: ' + e.message)
         }
       },
       /* ************************ */
@@ -237,10 +233,10 @@
               this.$bvModal.hide('bv-modal-add-role')
             })
           } else {
-            this.$bvToast.toast('User role could not be added', { title: 'FAIL', toaster: 'b-toaster-top-center', variant: 'danger', })
+            await this.$bvModal.msgBoxOk('User role could not be added', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
-          this.$bvModal.msgBoxOk('Error adding role: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error adding role: ' + e.message)
         }
       },
     },
