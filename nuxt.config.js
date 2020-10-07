@@ -135,6 +135,7 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    transpile: [/^vue-awesome/],  // node_modules/bootstrap-vue/src/icons/icons.js
     /*
      ** You can extend webpack config here
      */
@@ -164,16 +165,34 @@ module.exports = {
   bootstrapVue: {
     // bootstrapCSS: false, // here you can disable automatic bootstrapCSS in case you are loading it yourself using sass
     // bootstrapVueCSS: false, // CSS that is specific to bootstrapVue components can also be disabled. That way you won't load css for modules that you don't use
-    componentPlugins: [],
-    directivePlugins: [],
+    componentPlugins: [ // https://bootstrap-vue.org/docs/components
+      'AlertPlugin',
+      'ButtonPlugin',
+      'CardPlugin',
+      'CollapsePlugin',
+      'FormPlugin',
+      'FormCheckboxPlugin',
+      'FormFilePlugin',
+      'FormGroupPlugin',
+      'FormInputPlugin',
+      'FormRadioPlugin',
+      'FormSelectPlugin',
+      'FormTextareaPlugin',
+      //'InputGroupPlugin',
+      'LayoutPlugin',
+      'LinkPlugin',
+      'ListGroupPlugin',
+      'ModalPlugin',
+      //'NavPlugin',
+      //'NavbarPlugin',
+      'PopoverPlugin',
+      'BVToastPlugin'
+    ],
+    directivePlugins: [ // https://bootstrap-vue.org/docs/directives
+      //'VBPopoverPlugin',  // included in plugin vue-popper.js
+      //'TooltipPlugin',    // included in plugin vue-popper.js
+    ],
   },
-  // NO: api is now separate
-  // , serverMiddleware: [
-  //   // https://nuxtjs.org/api/configuration-servermiddleware/#usage
-  //   // https://blog.lichter.io/posts/nuxt-with-an-api/
-  //   // API middleware
-  //   '~/server/index.js',
-  // ],
 
   auth: {
     strategies: {
