@@ -5,6 +5,9 @@
         <v-icon name="info-circle" scale="2" />
         Hide this
       </b-btn>
+      <p v-if="custom">
+        <strong>{{custom}}</strong>
+      </p>
       <p>
         Use this page to send mails to user(s)
       </p>
@@ -34,6 +37,9 @@
       return {
         id: 'admin-mail'
       }
+    },
+    props: {
+      custom: { type: String },
     },
   }
 </script>

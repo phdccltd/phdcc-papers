@@ -224,7 +224,7 @@
           const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
           if (!roletoadd) return
           if (roletoadd.isowner) {
-            if (!await this.$bvModal.msgBoxConfirm('This is an OWNER role. Do you want to continue?', { title: this.addroleusername })) return
+            if (!await this.$bvModal.msgBoxConfirm('This is an OWNER role. Do you want to continue?', { title: this.addroleusername, headerBgVariant: 'warning' })) return
           }
           const ok = await this.$api.user.addUserRole(this.pubid, this.addroleuserid, this.chosennewrole)
           if (ok) {

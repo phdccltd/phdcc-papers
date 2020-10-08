@@ -5,6 +5,9 @@
         <v-icon name="info-circle" scale="2" />
         Hide this
       </b-btn>
+      <p v-if="custom">
+        <strong>{{custom}}</strong>
+      </p>
       <p>
         Here's the Control Panel for all your conferences/journals.
       </p>
@@ -37,6 +40,9 @@
       return {
         id: 'home'
       }
+    },
+    props: {
+      custom: { type: String },
     },
   }
 </script>

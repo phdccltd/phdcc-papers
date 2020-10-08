@@ -15,8 +15,8 @@
               {{ pub.name }}
             </b-btn>
           </b-col>
-          <b-col sm="2">
-            {{ pub.startdate }}
+          <b-col sm="9">
+            {{ pub.description }}
           </b-col>
           <!--b-col sm="2">
             {{ pub.tz }}

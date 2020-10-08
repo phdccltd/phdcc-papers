@@ -5,6 +5,9 @@
         <v-icon name="info-circle" scale="2" />
         Hide this
       </b-btn>
+      <p v-if="custom">
+        <strong>{{custom}}</strong>
+      </p>
       <p>
         Please start a new submission.
       </p>
@@ -26,6 +29,9 @@
       return {
         id: 'addsubmit'
       }
+    },
+    props: {
+      custom: { type: String },
     },
   }
 </script>

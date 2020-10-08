@@ -5,7 +5,7 @@
       ERROR {{fatalerror}}
     </b-alert>
     <div v-else>
-      <HelpPanel />
+      <HelpPanel :custom="pub.description" />
       <Messages :error="error" :message="message" />
       <PublicationSubmissions :setError="setError" :setMessage="setMessage" />
     </div>
@@ -44,6 +44,9 @@
       pubid() {
         //console.log('PUB pubid')
         return parseInt(this.$route.params.pubid)
+      },
+      pub() {
+        return this.$store.getters['pubs/getPub'](this.pubid)
       },
       fatalerror() {
         const error1 = this.$store.getters['pubs/error']

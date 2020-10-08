@@ -5,6 +5,9 @@
         <v-icon name="info-circle" scale="2" />
         Hide this
       </b-btn>
+      <p v-if="custom">
+        <strong>{{custom}}</strong>
+      </p>
       <p>
         Here's details of this submission.
       </p>
@@ -32,6 +35,9 @@
       return {
         id: 'panel-submit'
       }
+    },
+    props: {
+      custom: { type: String },
     },
   }
 </script>

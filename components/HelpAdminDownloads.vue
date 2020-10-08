@@ -5,11 +5,13 @@
         <v-icon name="info-circle" scale="2" />
         Hide this
       </b-btn>
+      <p v-if="custom">
+        <strong>{{custom}}</strong>
+      </p>
       <p>
         Use this page to download data about your publications' submissions
       </p>
-      <ul>
-      </ul>
+      <ul></ul>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
       <v-icon name="question-circle" />
@@ -28,6 +30,9 @@
       return {
         id: 'admin-downloads'
       }
+    },
+    props: {
+      custom: { type: String },
     },
   }
 </script>

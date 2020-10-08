@@ -5,6 +5,9 @@
         <v-icon name="info-circle" scale="2" />
         Hide this
       </b-btn>
+      <p v-if="custom">
+        <strong>{{custom}}</strong>
+      </p>
       <p>
         Use this page to administer your flow templates
       </p>
@@ -26,6 +29,9 @@
       return {
         id: 'admin-flow-mail-templates'
       }
+    },
+    props: {
+      custom: { type: String },
     },
   }
 </script>

@@ -5,6 +5,9 @@
         <v-icon name="info-circle" scale="2" />
         Hide this
       </b-btn>
+      <p v-if="custom">
+        <strong>{{custom}}</strong>
+      </p>
       <p>
         Here's what's been submitted for this stage of the submission process
       </p>
@@ -26,6 +29,9 @@
       return {
         id: 'entry'
       }
+    },
+    props: {
+      custom: { type: String },
     },
   }
 </script>
