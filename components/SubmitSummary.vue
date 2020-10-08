@@ -16,7 +16,7 @@
           </b-btn>
         </h3>
         <div class="publist-current-status clearfix">
-          <PaperDate :dt="submit.dtstatus" />
+          Status: <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
             <b-btn v-if="showaction(submitaction)" class="float-right ml-1" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
