@@ -25,12 +25,13 @@
           </b-btn>
           {{ flow.name }}
           <span v-for="flowaction in flow.actions">
-            <b-btn class="float-right mr-2" variant="success" :to="flowaction.route">{{flowaction.name}}</b-btn>
+            <b-btn class="float-right mr-2" variant="outline-success" :to="flowaction.route">{{flowaction.name}}</b-btn>
           </span>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
         </h2>
         <b-list-group v-if="flow.visible" class="flows">
+          <p class="m-1">{{flow.description}}</p>
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" :class="'submit ' + (submit.ismine?'':'submitnotmine')">
             <SubmitSummary :showtype="1" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" />
           </b-list-group-item>

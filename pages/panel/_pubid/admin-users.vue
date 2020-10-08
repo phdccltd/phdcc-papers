@@ -165,7 +165,7 @@
         try {
           //console.log('deletePubUser', pubuser.id, this.$auth.user.id)
           if (pubuser.id === this.$auth.user.id) {
-            if (!await this.$bvModal.msgBoxConfirm('THIS IS YOU. Do you want to continue?', { title: pubuser.name })) return
+            if (!await this.$bvModal.msgBoxConfirm('THIS IS YOU. Do you want to continue?', { title: pubuser.name, headerBgVariant: 'warning' })) return
           }
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to stop this user accessing your publication/conference?  No submissions etc will be removed.', { title: pubuser.name })) return
           const ok = await this.$api.user.removePubUser(this.pubid, pubuser.id)
@@ -183,7 +183,7 @@
         try {
           //console.log('deleteUserRole', pubuser.id, role.id)
           if (pubuser.id === this.$auth.user.id) {
-            if (!await this.$bvModal.msgBoxConfirm('THIS IS YOU. Do you want to continue?', { title: pubuser.name })) return
+            if (!await this.$bvModal.msgBoxConfirm('THIS IS YOU. Do you want to continue?', { title: pubuser.name, headerBgVariant: 'warning' })) return
           }
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this role?', { title: pubuser.name+': '+role.name })) return
           const ok = await this.$api.user.deleteUserRole(this.pubid, pubuser.id, role.id)
