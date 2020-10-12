@@ -47,12 +47,12 @@
       },
       arrayvalues: {
         get: function () {
-          //if (!this.value) return [] OK as null
           //console.log('arrayvalues get',this.value)
           return this.value
         },
         set: function (v) {
           //console.log('arrayvalues set', v)
+          // Unselecting seems impossible, but heopfully we cope anyway
           this.$emit('input', v)
         },
       },

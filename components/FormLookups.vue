@@ -54,7 +54,7 @@
         },
         set: function (v) {
           //console.log('arrayvalues set', v.join(','))
-          this.$emit('input', v.join(','))
+          this.$emit('input', v.length == 0 ? null : v.join(','))
         },
       },
       plainvalues() {
@@ -78,7 +78,7 @@
 
         const publookup = _.find(pub.publookups, publookup => { return publookup.id === this.publookupId })
         if (!publookup) return []
-        console.log('publookup', publookup)
+        //console.log('publookup', publookup)
         if (publookup && publookup.values) {
           publookup.values.forEach(v => {
             v.value = v.id

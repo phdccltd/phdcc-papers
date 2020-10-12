@@ -48,13 +48,13 @@
       },
       arrayvalues: {
         get: function () {
-          if (!this.value) return []
           //console.log('arrayvalues get')
+          if (!this.value) return []
           return this.value.split(',')
         },
         set: function (v) {
           //console.log('arrayvalues set', v.join(','))
-          this.$emit('input', v.join(','))
+          this.$emit('input', v.length==0 ? null : v.join(','))
         },
       },
       plainvalues() {
