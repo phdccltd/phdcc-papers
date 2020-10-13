@@ -6,6 +6,7 @@
       <strong>ADMIN</strong>
       <b-btn variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
+      <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-mail-templates'" class="ml-2">Mail templates</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-mail'" class="ml-2">Send email</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-downloads'" class="ml-2">Downloads</b-btn>
     </div>
@@ -27,7 +28,6 @@
           <span v-for="flowaction in flow.actions">
             <b-btn class="float-right mr-2" variant="outline-success" :to="flowaction.route">{{flowaction.name}}</b-btn>
           </span>
-          <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-mail-templates'">Mail templates</b-btn>
           <b-btn class="float-right mr-2" v-if="pub.isowner && showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/'+flow.id+'/admin-flow-acceptings'">Stage status</b-btn>
         </h2>
         <b-list-group v-if="flow.visible" class="flows">

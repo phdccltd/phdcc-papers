@@ -1,20 +1,19 @@
 <template>
-  <!-- ADMIN MAIL TEMPLATES FOR PUBLICATION FLOW -->
+  <!-- ADMIN MAIL TEMPLATES FOR PUBLICATION -->
   <!-- Access check: correctly fails as API returns error if not allowed -->
   <div>
     <b-alert v-if="fatalerror" variant="warning" :show="true">
       ERROR {{fatalerror}}
     </b-alert>
     <div v-else-if="!pub.isowner">
-      You cannot administer this publication flow
+      You cannot administer this publication
     </div>
     <div v-else>
-      <HelpAdminFlowMailTemplates />
+      <HelpAdminMailTemplates />
       <Messages :error="error" :message="message" />
       <b-container class="bg-yellow p-3">
         <b-row no-gutters>
           <b-col sm="6">
-            <strong>{{flow.name}}:</strong>
             <b-btn variant="outline-success" @click="startAddMailTemplate()">
               Add mail template
             </b-btn>
@@ -94,13 +93,13 @@
 </template>
 <script>
   const _ = require('lodash/core')
-  import HelpAdminFlowMailTemplates from '~/components/HelpAdminFlowMailTemplates'
+  import HelpAdminMailTemplates from '~/components/HelpAdminMailTemplates'
   import Messages from '~/components/Messages'
   import { page } from '@/utils/phdcc'
   page.title = ''
   export default {
     middleware: 'authuser',
-    components: { Messages, HelpAdminFlowMailTemplates },
+    components: { Messages, HelpAdminMailTemplates },
     data({ app, params, store }) {
       //console.log('_id data')
       return {
@@ -118,14 +117,9 @@
       this.error = ''
       this.message = ''
       this.$store.dispatch('mailtemplates/clearError')
-      this.$store.dispatch('mailtemplates/fetch', this.flowid)
+      this.$store.dispatch('mailtemplates/fetch', this.pubid)
       this.$store.dispatch('pubs/fetch')
       this.$store.dispatch('submits/fetchpub', this.pubid)
-      // TODO: Fix as this won't work first time round
-      const flow = this.flow
-      for (const stage of flow.stages) {
-        this.$store.dispatch('submits/fetchformfields', stage.id)
-      }
     },
     computed: {
       pub() {
@@ -147,30 +141,22 @@
       pubid() {
         return parseInt(this.$route.params.pubid)
       },
-      flowid() {
-        return parseInt(this.$route.params.flowid)
-      },
-      flow() {
-        // Get flows and work out follow-on properties
-        let flows = this.$store.getters['submits/flows'](this.pubid)
-        if (!flows) return false
-        const flow = _.find(flows, flow => { return flow.id === this.flowid })
-        return flow
-      },
       mailtemplates() {
-        return this.$store.getters['mailtemplates/get'](this.flowid)
+        return this.$store.getters['mailtemplates/get'](this.pubid)
       },
       substitutions() {
         let substitutions = '{{siteurl}}\r{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r'
         substitutions += '{{author.username}}\r{{author.id}}\r\r'
         substitutions += '{{grading.score}}\r{{grading.comment}}\r{{grading.canreview}}\r\r'
         substitutions += '{{entry.id}}\r'
-        const flow = this.flow
-        for (const stage of flow.stages) {
-          substitutions += '\r' + stage.name + ':\r'
-          const entry = this.$store.getters['submits/stagefields'](stage.id)
-          for (const field of entry.fields) {
-            substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r'
+        const flows = this.$store.getters['submits/flows'](this.pubid)
+        for (const flow of flows) {
+          for (const stage of flow.stages) {
+            substitutions += '\r' + stage.name + ':\r'
+            const entry = this.$store.getters['submits/stagefields'](stage.id)
+            for (const field of entry.fields) {
+              substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r'
+            }
           }
         }
         return substitutions
@@ -197,9 +183,9 @@
       async deleteMailTemplate(mailtemplate) {
         try {
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this template?', { title: mailtemplate.name })) return
-          const ok = await this.$api.mail.deleteMailTemplate(this.flowid, mailtemplate.id)
+          const ok = await this.$api.mail.deleteMailTemplate(this.pubid, mailtemplate.id)
           if (ok) {
-            this.$store.dispatch('mailtemplates/fetch', this.flowid)
+            this.$store.dispatch('mailtemplates/fetch', this.pubid)
             this.$nextTick(() => {
               this.$bvModal.hide('bv-modal-mail-template')
               this.$bvModal.msgBoxOk('Mail template removed')
@@ -241,10 +227,10 @@
           if (this.templatesubject.length === 0) return await this.$bvModal.msgBoxOk('Please give a subject')
           if (this.templatebody.length === 0) return await this.$bvModal.msgBoxOk('Please give a body')
 
-          const ok = await this.$api.mail.addEditMailTemplate(this.flowid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
+          const ok = await this.$api.mail.addEditMailTemplate(this.pubid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
 
           if (ok) {
-            this.$store.dispatch('mailtemplates/fetch', this.flowid)
+            this.$store.dispatch('mailtemplates/fetch', this.pubid)
             this.$nextTick(() => {
               this.$bvModal.hide('bv-modal-mail-template')
               this.$bvModal.msgBoxOk('Mail template added/edited')

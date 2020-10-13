@@ -139,13 +139,8 @@
       this.$store.dispatch('pubs/clearError')
       this.$store.dispatch('pubs/fetch')
       this.$store.dispatch('submits/fetchpub', this.pubid)
-      const flows = this.$store.getters['submits/flows'](this.pubid)
-      if (flows) {
-        this.$store.dispatch('mailtemplates/clearError')
-        for (const flow of flows) {
-          this.$store.dispatch('mailtemplates/fetch', flow.id)
-        }
-      }
+      this.$store.dispatch('mailtemplates/clearError')
+      this.$store.dispatch('mailtemplates/fetch', this.pubid)
       this.$store.dispatch('users/clearError')
       this.$store.dispatch('users/fetchpubusers', this.pubid)
     },
@@ -222,17 +217,7 @@
         return chosenuser
       },
       mailtemplates() {
-        const mailtemplates =[]
-        const flows = this.$store.getters['submits/flows'](this.pubid)
-        if (flows) {
-          for (const flow of flows) {
-            const templates = this.$store.getters['mailtemplates/get'](flow.id)
-            for (const template of templates) {
-              mailtemplates.push(template)
-            }
-          }
-        }
-        return mailtemplates
+        return this.$store.getters['mailtemplates/get'](this.pubid)
       },
 
     },

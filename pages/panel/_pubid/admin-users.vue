@@ -28,7 +28,6 @@
           </form>
         </b-col>
         <b-col sm="6">
-          TO DO??? Add user to publication
         </b-col>
       </b-row>
       <b-list-group class="pubusers">

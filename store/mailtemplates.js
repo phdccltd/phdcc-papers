@@ -3,15 +3,14 @@ const _ = require('lodash/core')
 import Vue from 'vue'
 
 export const state = () => ({
-  flowmailtemplates: {},
+  mailtemplates: {},
   error: false,
-  //list: [],
 })
 
 export const mutations = {
-  addFlowMailTemplate(state, fmtholder) {
-    //console.log('addFlowMailTemplate', fmtholder)
-    Vue.set(state.flowmailtemplates, fmtholder.flowid, fmtholder.mailtemplates)
+  addMailTemplate(state, fmtholder) {
+    console.log('addMailTemplate', fmtholder)
+    Vue.set(state.mailtemplates, fmtholder.pubid, fmtholder.pubmails)
   },
   setError(state, error) {
     state.error = error
@@ -20,9 +19,9 @@ export const mutations = {
 
 export const getters = {
   get(state) {
-    return (flowid) => {
-      //console.log('store mailtemplates getter get flowid', flowid)
-      const mailtemplates = _.find(state.flowmailtemplates, (mailtemplates, thisflowid) => { return parseInt(thisflowid) === flowid })
+    return (pubid) => {
+      console.log('store mailtemplates getter get pubid', pubid)
+      const mailtemplates = _.find(state.mailtemplates, (mailtemplates, thispubid) => { return parseInt(thispubid) === pubid })
       return mailtemplates
     }
   },
@@ -30,14 +29,14 @@ export const getters = {
 }
 
 export const actions = {
-  async fetch({ commit }, flowid) {
+  async fetch({ commit }, pubid) {
     try {
-      //console.log('store mailtemplates submits.fetch', flowid)
-      const { mailtemplates } = await this.$api.mail.getTemplates(flowid)
-      for (const mailtemplate of mailtemplates) {
-        mailtemplate.visible = false
+      //console.log('store mailtemplates submits.fetch', pubid)
+      const { pubmails } = await this.$api.mail.getTemplates(pubid)
+      for (const pubmail of pubmails) {
+        pubmail.visible = false
       }
-      commit('addFlowMailTemplate', { flowid, mailtemplates })
+      commit('addMailTemplate', { pubid, pubmails })
     }
     catch (e) {
       console.log('mailtemplates fetch', e.message)

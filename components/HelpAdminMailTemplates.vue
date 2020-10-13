@@ -9,7 +9,10 @@
         <strong>{{custom}}</strong>
       </p>
       <p>
-        Use this page to administer your flow templates
+        Use this page to administer your mail templates.
+      </p>
+      <p>
+        The rules associated with each template are not yet displayed or editable.
       </p>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
