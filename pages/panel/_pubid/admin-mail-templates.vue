@@ -145,7 +145,7 @@
         return this.$store.getters['mailtemplates/get'](this.pubid)
       },
       substitutions() {
-        let substitutions = '{{siteurl}}\r{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r'
+        let substitutions = '{{site.name}}\r{{site.url}}\r{{pub.name}}\r{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r'
         substitutions += '{{author.username}}\r{{author.id}}\r\r'
         substitutions += '{{grading.score}}\r{{grading.comment}}\r{{grading.canreview}}\r\r'
         substitutions += '{{entry.id}}\r'
