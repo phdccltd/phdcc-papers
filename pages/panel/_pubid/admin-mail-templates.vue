@@ -131,7 +131,7 @@
         page.title = pub.name
         document.title = pub.name
         this.$store.commit("page/setTitle", page.title)
-        this.$store.commit("page/setTitleSuffix", 'ADMIN FLOW MAIL')
+        this.$store.commit("page/setTitleSuffix", 'ADMIN MAIL')
         return pub
       },
       fatalerror() {

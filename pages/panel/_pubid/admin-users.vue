@@ -61,6 +61,7 @@
         <template v-slot:modal-title>
           Add role
         </template>
+        <p>Note: adding some roles may send emails, eg Author.</p>
         <form ref="form" @submit.stop.prevent>
           <b-form-group label="user"
                         label-for="addroleusername"

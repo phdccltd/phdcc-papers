@@ -9,7 +9,15 @@
         <strong>{{custom}}</strong>
       </p>
       <p>
-        Use this page to specific what stages are open for submissions
+        Use this page to specify what stages are open for submissions.
+      </p>
+      <p>
+        Most stages open automatically when the submission is at the correct status.
+        If you wish to override this, then specify settings here.
+      </p>
+      <p>
+        In most cases, once set up, you will not add or remove entries here.
+        Instead, change the setting from Closed to Open or vice versa.
       </p>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
