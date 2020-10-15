@@ -478,7 +478,7 @@
             // this.$store.dispatch('submits/fetchpub', this.pubid)
             this.$nextTick(() => {
               this.$bvModal.hide('bv-modal-grading')
-              this.submitaction.dograde = 0
+              this.submitaction.dograde = 0 // Hide this button clunkily, as we are not refreshing
               this.setMessage('Review added')
             })
           } else {

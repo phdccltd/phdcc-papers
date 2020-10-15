@@ -41,11 +41,9 @@ export default class userAPI extends BaseAPI {
     return this.$patch('/user', params)
   }
 
-  /* share(id, uid) {
-    return this.$post('/users', { id, uid, action: 'Do' })
+  async masquerade(userid) {
+    console.log('masquerade', userid)
+    const { ok } = await this.$get('/users/masquerade/' + userid)
+    return ok
   }
-
-  hide(id, uid) {
-    return this.$post('/users', { id, uid, action: 'Hide' })
-  } */
 }
