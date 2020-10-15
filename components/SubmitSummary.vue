@@ -1,3 +1,8 @@
+<!--
+  showtype  bit mask  0x1 top level   Show 'needed'
+                      0x2 submit      Show 'needed'
+                      0x4 entry       Show 'add grading'
+-->
 <template>
   <div>
     <div v-if="submit">
@@ -54,8 +59,8 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-btn v-if="showactiongrade(submitaction)" class="float-right" variant="success" @click="enterGrading(submit,submitaction)">{{submitaction.gradename}}</b-btn>
-            <b-btn v-if="showaction(submitaction)" class="float-right" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
+            <b-btn v-if="showactiongrade(submitaction)" class="float-right ml-1" variant="success" @click="enterGrading(submit,submitaction)">{{submitaction.gradename}}</b-btn>
+            <b-btn v-if="showaction(submitaction)" class="float-right ml-1" variant="success" :to="submitaction.route">{{submitaction.name}}</b-btn>
           </span>
           <div v-if="pub.isowner && submit.owneradvice" class="actiondone float-right mr-2">{{submit.owneradvice}}</div>
         </div>
@@ -138,28 +143,28 @@
                 <h4>
                   <b-link @click="toggleSubGradings(flowgrade)">{{flowgrade.name}}</b-link>
                   - {{filteredgradings(submit.gradings,flowgrade).length}}
+                </h4>
+                <b-list-group v-if="flowgrade.visible">
+                  <b-list-group-item v-for="grading in filteredgradings(submit.gradings,flowgrade)" :key="grading.id" class="p-2">
+                    <Grading :pub="pub" :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
+                  </b-list-group-item>
+                </b-list-group>
+                <div v-if="pub.isowner">
+                  <h4>
+                    <b-link @click="toggleSubGradingSummary(flowgrade)">{{flowgrade.name}} summary</b-link>
                   </h4>
-                  <b-list-group v-if="flowgrade.visible">
-                    <b-list-group-item v-for="grading in filteredgradings(submit.gradings,flowgrade)" :key="grading.id" class="p-2">
-                      <Grading :pub="pub" :flowgrade="flowgrade" :grading="grading" :submit="submit" :addReviewer="addReviewer" />
+                  <b-list-group v-if="flowgrade.summary">
+                    <b-list-group-item class="p-2">
+                      <GradingSummary :flowgrade="flowgrade" :submit="submit" />
                     </b-list-group-item>
                   </b-list-group>
-                  <div v-if="pub.isowner">
-                    <h4>
-                      <b-link @click="toggleSubGradingSummary(flowgrade)">{{flowgrade.name}} summary</b-link>
-                    </h4>
-                    <b-list-group v-if="flowgrade.summary">
-                      <b-list-group-item class="p-2">
-                        <GradingSummary :flowgrade="flowgrade" :submit="submit" />
-                      </b-list-group-item>
-                    </b-list-group>
-                  </div>
-                  </b-list-group-item>
-                  <div v-if="filteredflowgrades().length===0">
-                    No reviews
-                  </div>
-                  </b-list-group>
                 </div>
+              </b-list-group-item>
+              <div v-if="filteredflowgrades().length===0">
+                No reviews
+              </div>
+            </b-list-group>
+          </div>
         </b-container>
       </div>
     </div>
@@ -257,6 +262,7 @@
         showreviewers: true,
         showstatuses: true,
         showgradings: true,
+        submitaction: null,
         helptext: false,
         helplinktext: false,
         helplink: false,
@@ -298,7 +304,7 @@
       gradingicons(reviewer) {
         const flowgrades = this.flow.flowgrades
         const gradingicons = []
-        for(const grading of this.submit.gradings) {
+        for (const grading of this.submit.gradings) {
           if (grading.userId === reviewer.userId) {
             const flowgrade = _.find(flowgrades, (flowgrade) => { return grading.flowgradeId === flowgrade.id })
             gradingicons.push({ id: grading.id, name: flowgrade ? flowgrade.name : '', colour: flowgrade ? flowgrade.tickcolour : 'green' })
@@ -339,11 +345,11 @@
         return rv
       },
       showReviewersSection() {
-        return this.pub.isowner || this.submit.reviewers.length>0
+        return this.pub.isowner || this.submit.reviewers.length > 0
       },
       toggleSubmitShow() {
         this.visible = !this.visible
-        this.reviewerscols = this.visible?6:3
+        this.reviewerscols = this.visible ? 6 : 3
       },
       toggleShowSubmissions() {
         this.showsubmissions = !this.showsubmissions
@@ -412,7 +418,7 @@
           await this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
         }
       },
-      async removeReviewer(submit,reviewer) {
+      async removeReviewer(submit, reviewer) {
         try {
           if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this reviewer?', { title: reviewer.username })) return
           const OK = await this.$api.reviewers.removeReviewer(submit.id, reviewer.id)
@@ -429,7 +435,7 @@
         try {
           if (!submit.newreviewerid) return await this.$bvModal.msgBoxOk('Please choose a reviewer')
           const notlead = await this.$bvModal.msgBoxConfirm('Do you want to add this reviewer as the LEAD? Escape to cancel.', { okTitle: 'Add as reviewer', cancelTitle: 'Add as lead reviewer' })
-          if (notlead===null) return
+          if (notlead === null) return
           console.log(submit.newreviewerid, notlead)
 
           const submitreviewer = await this.$api.reviewers.addReviewer(submit.id, submit.newreviewerid, !notlead)
@@ -444,11 +450,12 @@
         }
       },
       enterGrading(submit, submitaction) {
-        console.log('submitaction',submitaction)
+        console.log('submitaction', submitaction)
+        this.submitaction = submitaction
         this.modaltitle = 'Add ' + submitaction.name
         this.decisionoptions = []
         const flowgrade = _.find(this.flow.flowgrades, (flowgrade) => { return flowgrade.id === submitaction.flowgradeid })
-        if (!flowgrade) return this.$bvModal.msgBoxOk('Could not find flowgrad info')
+        if (!flowgrade) return this.$bvModal.msgBoxOk('Could not find flowgrade info')
         this.helptext = flowgrade.helptext
         this.helplinktext = flowgrade.helplinktext
         this.helplink = flowgrade.helplink
@@ -467,9 +474,11 @@
           if (this.decision === 0) return await this.$bvModal.msgBoxOk('No decision made!')
           const ok = await this.$api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
           if (ok) {
-            this.$store.dispatch('submits/fetchpub', this.pubid)
+            // Don't do this as it removes Next/Previous buttons:
+            // this.$store.dispatch('submits/fetchpub', this.pubid)
             this.$nextTick(() => {
               this.$bvModal.hide('bv-modal-grading')
+              this.submitaction.dograde = 0
               this.setMessage('Review added')
             })
           } else {
