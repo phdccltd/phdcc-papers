@@ -30,7 +30,7 @@
       </div>
 
       <div v-if="submitid">
-        <SubmitSummary :showtype="4" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" />
+        <SubmitSummary :showtype="4" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" :setError="setError" :setMessage="setMessage" />
       </div>
       <div v-else>
         <h2>{{flow.name}}</h2>
@@ -123,9 +123,6 @@
                        :message="field.message"
                        v-on:input="changed(field)"
                        v-model="field.val.integer" />
-            <div v-if="field.type.substring(0,4)=='file'">
-              NEWFILE {{field.val.newfile}}
-            </div>
           </b-container>
           <b-container v-if="editable">
             <b-form-row>
@@ -278,7 +275,6 @@
             const val = _.find(entry.values, value => { return value.formfieldId === field.id })
             field.val = val || {}
             field.val.newfile = null
-            console.log("NEWFILE SET TO NULL")
           }
           //console.log(entry)
           return entry

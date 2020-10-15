@@ -91,13 +91,13 @@
       },
       async deleteGrading() {
         try {
-          if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this grading?', { title: this.date + ': ' + this.grading.username + ' - ' + this.grading.score })) return
+          if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this review?', { title: this.date + ': ' + this.grading.username + ' - ' + this.grading.score })) return
           const OK = await this.$api.gradings.deleteGrading(this.submit.id, this.grading.id)
-          if (!OK) return await this.$bvModal.msgBoxOk('Error removing grading')
+          if (!OK) return await this.$bvModal.msgBoxOk('Error removing review')
+          await this.$bvModal.msgBoxOk('Review removed')
           this.$store.dispatch('submits/fetchpub', this.pubid)
-          await this.$bvModal.msgBoxOk('Grading removed')
         } catch (e) {
-          await this.$bvModal.msgBoxOk('Error removing grading: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error removing review: ' + e.message)
         }
       },
     },

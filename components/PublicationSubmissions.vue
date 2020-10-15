@@ -33,7 +33,7 @@
         <b-list-group v-if="flow.visible" class="flows">
           <p class="m-1">{{flow.description}}</p>
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" :class="'submit ' + (submit.ismine?'':'submitnotmine')">
-            <SubmitSummary :showtype="1" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" />
+            <SubmitSummary :showtype="1" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" :setError="setError" :setMessage="setMessage" />
           </b-list-group-item>
         </b-list-group>
       </b-list-group-item>

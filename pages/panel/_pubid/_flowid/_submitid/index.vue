@@ -18,7 +18,7 @@
           - {{myrole.name}}
         </span>
       </div>
-      <SubmitSummary :showtype="2" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" />
+      <SubmitSummary :showtype="2" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" :setError="setError" :setMessage="setMessage" />
     </div>
 
     <b-modal id="bv-modal-edit-submit-title" centered @ok="okTitleEdited">

@@ -241,6 +241,14 @@
       editSubmitName: {
         type: Function,
       },
+      setError: {
+        type: Function,
+        required: true,
+      },
+      setMessage: {
+        type: Function,
+        required: true,
+      },
     },
     data: function () {
       return {
@@ -462,7 +470,7 @@
             this.$store.dispatch('submits/fetchpub', this.pubid)
             this.$nextTick(() => {
               this.$bvModal.hide('bv-modal-grading')
-              this.$bvModal.msgBoxOk('Review added')
+              this.setMessage('Review added')
             })
           } else {
             await this.$bvModal.msgBoxOk('Could not add review', { title: 'FAIL', headerBgVariant: 'warning' })
