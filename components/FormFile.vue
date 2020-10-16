@@ -2,7 +2,13 @@
   <div>
     <b-form-group v-if="edit" :label="labelreqd" :label-for="sid" label-cols-sm="3">
       {{existingfile}}
-      <div class="form-help">{{help}}</div>
+      <div class="form-help">
+        <a v-if="helplink" :href="helplink" target="_blank">
+          {{help}}
+          <v-icon name="external-link-alt" scale="0.75" class="ml-1" />
+        </a>
+        <div v-else>{{help}}</div>
+      </div>
       <b-form-file :id="sid"
                    v-bind:value="value"
                    v-on:input="$emit('input', $event)"
@@ -41,6 +47,7 @@
       label: { type: String },
       sid: { type: String },
       help: { type: String },
+      helplink: { type: String },
       allowedfiletypes: { type: String },
       existingfile: { type: String },
       relpath: { type: String },

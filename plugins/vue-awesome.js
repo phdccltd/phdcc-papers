@@ -8,6 +8,7 @@ import Icon from 'vue-awesome/components/Icon.vue'
 require('vue-awesome/icons/check-circle')
 require('vue-awesome/icons/edit')
 require('vue-awesome/icons/envelope')
+require('vue-awesome/icons/external-link-alt')
 require('vue-awesome/icons/home')
 require('vue-awesome/icons/info-circle')
 require('vue-awesome/icons/minus-square')

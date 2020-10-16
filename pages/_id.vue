@@ -15,21 +15,6 @@
     components: {
     },
 
-    //middleware: 'sitepages', // Server once and Client thereafter
-
-    /*validate({ params, query, store }) {
-      // It will be called server-side once (on the first request to the Nuxt app) and client-side when navigating to further routes.
-      console.log('_id validate', params.id)
-      const path = '/' + params.id
-      const sitepage = store.getters['sitepages/get'](path)
-      console.log('_id validated', sitepage)
-      if (sitepage)
-        return true
-      else
-        return false // false will stop Nuxt.js to render the route and display the error page
-      
-    },*/
-
     mounted() { // Client only
       this.$store.dispatch('sitepages/fetch')
       this.$store.commit("page/setTitle", page.title)
