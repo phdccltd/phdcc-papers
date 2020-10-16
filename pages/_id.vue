@@ -27,6 +27,7 @@
         const sitepage = this.$store.getters['sitepages/get'](path)
         if (sitepage) {
           page.title = sitepage.title
+          this.$store.commit("page/setTitle", page.title)
           return sitepage.content
         }
         return ''
