@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div :class="'container'+($auth.user.masquerading ? ' alert-warning':'')">
       <div class="border border-primary rounded p-3">
         <div class="float-right">
           <div v-if="$auth.loggedIn">
@@ -20,7 +20,6 @@
         <b-btn variant="outline-secondary" class="mr-2" to="/panel" v-if="$auth.user" title="Control Panel">
           <v-icon name="home" scale="1" />
         </b-btn>
-        <b-btn to="/admin" variant="outline-primary" class="mr-2" v-if="$auth.user && $auth.user.super">Users</b-btn>
         <h1 class="menu-title">
           <nuxt-link v-if="pubid" :to="'/panel/'+pubid">{{ title }}</nuxt-link>
           <span v-else>
@@ -64,7 +63,7 @@
         return process.env.BUILD_DATE
       },
       apiversion() {
-        console.log('GET APIVERSION')
+        //console.log('GET APIVERSION')
         return this.$store.getters['misc/get']('apiversion')
       },
       title() {
@@ -87,10 +86,15 @@
     methods: {
       logout() {
         console.log('logout')
-        this.$auth.logout()
         //window.localStorage.removeItem('papers')
         this.$store.dispatch('misc/clear')
-        this.$router.push('/')
+        this.$store.dispatch('users/clear')
+        this.$store.dispatch('submits/clear')
+        this.$store.dispatch('pubs/clear')
+        this.$nextTick(() => {
+          this.$auth.logout()
+          this.$router.push('/')
+        })
       },
     }
   }

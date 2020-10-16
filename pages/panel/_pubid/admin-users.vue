@@ -41,7 +41,7 @@
               {{pubuser.email}}
               <br />
               Submissions: {{pubuser.submits.length}}
-              <b-btn v-if="$auth.user.super && $auth.user.id!=pubuser.id" @click="masquerade(pubuser.id)" variant="outline-warning" size="sm" class="mr-2" >Masquerade</b-btn>
+              <b-btn v-if="$auth.user.super && $auth.user.id!=pubuser.id" @click="masquerade(pubuser)" variant="outline-warning" size="sm" class="mr-2" >Masquerade</b-btn>
             </b-col>
             <b-col sm="6">
               <b-btn variant="link" class="float-right" @click="startAddUserRole(pubusers, pubuser)">
@@ -241,12 +241,19 @@
         }
       },
       /* ************************ */
-      async masquerade(userid) {
+      async masquerade(pubuser) {
         try {
-          console.log('masquerade', userid)
-          const ok = await this.$api.user.masquerade(userid)
+          const ok = await this.$api.user.masquerade(pubuser.id)
           if (ok) {
+            this.$auth.user.id = pubuser.id
+            this.$auth.user.name = pubuser.name
+            this.$auth.user.super = false
+            this.$auth.user.masquerading = true
             this.$router.push('/panel')
+            this.$store.dispatch('misc/clear')
+            this.$store.dispatch('pubs/clear')
+            this.$store.dispatch('submits/clear')
+            this.$store.dispatch('users/clear')
           } else {
             await this.$bvModal.msgBoxOk('Could not masquerade', { title: 'FAIL', headerBgVariant: 'warning' })
           }

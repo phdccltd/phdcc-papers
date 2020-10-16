@@ -178,7 +178,7 @@ export const actions = {
   },
 
   async addEntry({ commit, getters, dispatch }, entry) {
-    console.log('store action submits/addEntry', entry)
+    //console.log('store action submits/addEntry', entry)
     const { id } = await this.$api.submits.add(entry)
     //await dispatch('fetchentry', { id })
     return id

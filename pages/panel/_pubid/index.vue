@@ -46,7 +46,8 @@
         return parseInt(this.$route.params.pubid)
       },
       pub() {
-        return this.$store.getters['pubs/getPub'](this.pubid)
+        const pub = this.$store.getters['pubs/getPub'](this.pubid)
+        return pub ? pub : {}
       },
       fatalerror() {
         const error1 = this.$store.getters['pubs/error']
