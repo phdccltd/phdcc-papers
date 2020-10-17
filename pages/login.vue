@@ -1,6 +1,8 @@
 <template>
   <div>
     <Messages :error="error" :message="message" />
+    <div v-html="content">
+    </div>
     <UserAuthForm buttonText="Login" :submitForm="loginUser" v-bind:isRegister="false" />
   </div>
 </template>
@@ -22,6 +24,7 @@
       }
     },
     async mounted() {
+      this.$store.dispatch('sitepages/fetch')
       page.title = 'Login'
       //console.log('login MOUNTED')
       if (this.$auth.loggedIn) {
@@ -40,6 +43,15 @@
       return {
         title: page.title,
       }
+    },
+    computed: {
+      content() {
+        const sitepage = this.$store.getters['sitepages/get']('/login')
+        if (sitepage) {
+          return sitepage.content
+        }
+        return ''
+      },
     },
     methods: {
       async loginUser(loginInfo) {

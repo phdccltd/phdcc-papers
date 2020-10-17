@@ -29,21 +29,15 @@
     </b-form-group>
 
     <b-form-group v-if="isRegister">
-      <b-form-checkbox v-model="form.agreed" :state="validAgreed" id="agreed" name="agreed" required>
-        I agree to the terms of use
+      <b-form-checkbox v-model="form.agreed" id="agreed" name="agreed" required>
+        I agree to the <a href="/terms" target="_blank">terms of use</a>
       </b-form-checkbox>
-      <b-form-invalid-feedback :state="validAgreed">
-        You must agree to the terms
-      </b-form-invalid-feedback>
     </b-form-group>
     <b-button type="submit" variant="primary">{{ buttonText }}</b-button>
   </b-form>
 </template>
 
 <script>
-  //import validations from "@/utils/validations";
-  //import UserAuthPassword from '@/components/UserAuthPassword.vue';
-
   export default {
     data() {
       return {
@@ -67,7 +61,7 @@
         type: String,
         required: true,
       },
-      isRegister: Boolean
+      isRegister: Boolean,
     },
     computed: {
       validAgreed() { // NOT CALLED
