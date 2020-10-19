@@ -14,7 +14,7 @@ RECAPTCHA_SITE_KEY='recaptcha site key'
 RECAPTCHA_BYPASS='Password to avoid recaptcha'
 ```
 
-Optionally add all these variables to send an email when the production server is started:
+Optionally add all these variables to send a mail when the production server is started:
 
 ```
 STARTUP_EMAIL='to@example.com'
@@ -26,17 +26,33 @@ If running in a dev environment at localhost that calls a website server API, sp
 
 ## Build Setup
 
-```bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:1234
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
 ```
+# Grab the code
+git clone https://github.com/phdccltd/phdcc-papers.git
+cd phdcc-papers-api
+
+# install dependencies
+npm install
+
+# serve with hot reload at eg localhost:1234
+npm run dev
+
+# For simple production use:
+npm run build
+npm run start
+
+# For production in PM2, create an ecosystem file or start
+npm run build
+pm2 start ./node_modules/nuxt/bin/nuxt.js --name papers -- start
+```
+
+## Used with thanks
+
+Thanks to all the developers who produced the open-source modules that are used, including
+
+* [Nuxt](https://nuxtjs.org), which is [Vue](https://vuejs.org/) 
+* [BootstrapVue](https://bootstrap-vue.js.org/), which is Bootstrap v4 for Vue/Nuxt. 
+
+# License
+
+[MIT](LICENCE)
