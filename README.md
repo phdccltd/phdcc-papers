@@ -9,9 +9,8 @@ Create a `.env` text file in the root directory of this component with the follo
 
 ```
 NUXT_PORT=1234
-API='http://the.url'
+API='https://papers.example.org/api'
 RECAPTCHA_SITE_KEY='recaptcha site key'
-RECAPTCHA_BYPASS='Password to avoid recaptcha'
 ```
 
 Optionally add all these variables to send a mail when the production server is started:
@@ -23,6 +22,9 @@ STARTUP_FROM='from@example.com'
 ```
 
 If running in a dev environment at localhost that calls a website server API, specify the server API `RECAPTCHA_BYPASS` to bypass the authenication recaptcha.
+Do not put `RECAPTCHA_BYPASS` on your production site.
+
+*Note: any values you put in this .env file WILL BE INCLUDED in the compiled code sent to the user.*
 
 ## Build Setup
 
