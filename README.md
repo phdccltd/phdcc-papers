@@ -2,7 +2,7 @@
 
 **Papers**: [PHDCC journal/conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
 
-To be used in conjuction with [phdcc-papers-api](https://github.com/chriscant/phdcc-papers-api).
+To be used in conjuction with [phdcc-papers-api](https://github.com/phdccltd/phdcc-papers-api).
 Please read the API set up instructions there.
 
 Create a `.env` text file with the following secrets:
@@ -30,7 +30,7 @@ If running in a dev environment at localhost that calls a website server API, sp
 # install dependencies
 $ npm install
 
-# serve with hot reload at localhost:3000
+# serve with hot reload at localhost:1234
 $ npm run dev
 
 # build for production and launch server
