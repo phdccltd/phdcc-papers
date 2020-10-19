@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "private": true,
@@ -26,7 +26,6 @@
     "nuxt": "2.14.7",
     "promise-polyfill": "8.1.3",
     "vue-awesome": "4.1.0",
-    "vue-server-renderer": "2.6.11",
     "vuex-persistedstate": "3.0.1"
   },
   "devDependencies": {

@@ -3,9 +3,9 @@
 **Papers**: [PHDCC journal/conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
 
 To be used in conjuction with [phdcc-papers-api](https://github.com/phdccltd/phdcc-papers-api).
-Please read the API set up instructions there.
+Please read the full set up instructions there.
 
-Create a `.env` text file with the following secrets:
+Create a `.env` text file in the root directory of this component with the following secrets:
 
 ```
 NUXT_PORT=1234
