@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="'container'+($auth.user.masquerading ? ' alert-warning':'')">
+    <div :class="'container'+($auth.user && $auth.user.masquerading ? ' alert-warning':'')">
       <div class="border border-primary rounded p-3">
         <div class="float-right">
           <div v-if="$auth.loggedIn">
@@ -31,10 +31,12 @@
     </div>
     <nuxt class="container" />
     <div class="container mt-3 pt-2 border-top" style="color:gray">
-      <a href="https://www.phdcc.com/papers/">Papers {{ version }}/{{apiversion}}</a>, <span style="color:lightgrey">{{BUILD_DATE}}</span>.
+      <a href="https://www.phdcc.com/papers/">Papers {{ version }}/{{apiversion}}</a>,
+      <span style="color:lightgrey">
+        built: {{BUILD_DATE}}.
         Copyright &copy; 2020 PHD Computer Consultants Ltd.
-
-</div>
+      </span>
+    </div>
   </div>
 </template>
 
