@@ -211,6 +211,7 @@ module.exports = {
       home: false,
       callback: false,
       logout: false
-    }
+    },
+    cookie: false,
   },
 }

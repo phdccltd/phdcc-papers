@@ -19,9 +19,6 @@
       <p class="mt-2">
         If you have any questions <a href="https://www.phdcc.com/feedback.html" target="_blank">please get in touch</a>.
       </p>
-      <p>
-        Please note the <a href="https://conf.phdcc.co.uk/privacy.html" target="_blank">privacy policy</a> which applies to publication/conference/journal contributors and organisers (ie you).
-      </p>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
       <v-icon name="question-circle" />
