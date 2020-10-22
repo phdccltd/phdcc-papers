@@ -3,29 +3,50 @@
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
-    <UserAuthForm buttonText="Login" :submitForm="loginUser" v-bind:isRegister="false" />
+    <b-form @submit="onSubmit" @submit.stop.prevent>
+      <b-form-group label="Email address:" label-cols-sm="3"
+                    label-for="email">
+        <b-form-input id="email"
+                      v-model="form.email"
+                      type="email"
+                      required
+                      placeholder="Enter email"></b-form-input>
+      </b-form-group>
+      <b-row no-gutters>
+        <b-col cols="9" offset-md="3">
+          <b-button :disabled="requested" type="submit" variant="primary">
+            Email login link
+            <v-icon v-if="requested" name="check-circle" scale="1" class="ml-1" />
+          </b-button>
+        </b-col>
+      </b-row>
+    </b-form>
   </div>
 </template>
 
 <script>
-  import UserAuthForm from '~/components/UserAuthForm.vue'
+  // http://sahatyalkabov.com/how-to-implement-password-reset-in-nodejs/
   import Messages from '~/components/Messages'
   import { page } from '@/utils/phdcc'
 
-  page.title = 'Login'
+  page.title = 'Forgot password'
 
   export default {
-    components: { Messages, UserAuthForm },
+    components: { Messages },
 
     data() {
       return {
         error: '',
         message: '',
+        requested: false,
+        form: {
+          email: '',
+        },
       }
     },
     async mounted() {
       this.$store.dispatch('sitepages/fetch')
-      page.title = 'Login'
+      page.title = 'Forgot password'
       if (this.$auth.loggedIn) {
         this.$router.push('/panel')
         return
@@ -45,7 +66,7 @@
     },
     computed: {
       content() {
-        const sitepage = this.$store.getters['sitepages/get']('/login')
+        const sitepage = this.$store.getters['sitepages/get']('/forgotpwd')
         if (sitepage) {
           return sitepage.content
         }
@@ -53,8 +74,8 @@
       },
     },
     methods: {
-      async loginUser(loginInfo) {
-        //console.log(loginInfo)
+      async onSubmit(evt) {
+        console.log('this.form',this.form)
         this.error = ''
         this.message = ''
         let token = false
@@ -67,33 +88,24 @@
             this.error = 'Captcha not set'
             return
           }
-          //console.log('$recaptcha', token)
         }
-        loginInfo['g-recaptcha-response'] = token
+        this.form['g-recaptcha-response'] = token
         try {
-          const response = await this.$auth.loginWith('local', {
-            data: loginInfo
-          })
-          //console.log("response", response)
-          if (response.data.ret !== 0) {
-            console.log("SET ERROR", response.data.status)
-            this.error = response.data.status
+          let forgotten = await this.$api.user.forgotpwd(this.form)
+          console.log("forgotten", forgotten)
+          if (forgotten.err) {
+            this.error = forgotten.err
             return
           }
-          if (this.$auth.user) {
-            this.message = "Hello " + this.$auth.user.name
-            //console.log("GO TO PANEL")
-            this.$router.push('/panel')
-          } else {
-            console.log("NOT LOGGED IN AFTER ALL")
-            this.error = 'Hmmm - not logged in'
-          }
+          this.message = forgotten.msg
+          this.requested = true
         }
         catch (err) {
-          console.log("LOGIN FAIL", err)
+          console.log("FORGOTPWD FAIL", err)
           this.error = err.message
         }
       }
+
     }
   }
 </script>

@@ -41,6 +41,12 @@ export default class userAPI extends BaseAPI {
     return this.$patch('/user', params)
   }
 
+  async forgotpwd(params) {
+    console.log('userAPI forgotpwd')
+    const { forgotten } = await this.$post('/user/forgot', params)
+    return forgotten
+  }
+
   async masquerade(userid) {
     console.log('masquerade', userid)
     const { ok } = await this.$get('/users/masquerade/' + userid)
