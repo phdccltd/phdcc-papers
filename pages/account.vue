@@ -1,21 +1,35 @@
 <template>
   <div>
     <Messages :error="error" :message="message" />
+    <div v-html="content">
+    </div>
     <b-form @submit="onSubmit" @submit.stop.prevent>
-      <b-form-group label="Name:" label-for="name">
+      <b-row no-gutters>
+        <b-col cols="3" class="col-form-label">
+          Username:
+        </b-col>
+        <b-col cols="9" class="col-form-label">
+          {{$auth.user.username}}
+        </b-col>
+      </b-row>
+      <b-form-group label="Name:" label-for="name" label-cols-sm="3">
         <b-form-input id="name"
                       v-model="form.name"
                       autocomplete="name"
                       placeholder="Enter name"></b-form-input>
       </b-form-group>
-      <b-form-group label="New password:" label-for="password">
+      <b-form-group label="New password:" label-for="password" label-cols-sm="3">
         <b-form-input id="password"
                       v-model="form.password"
                       type="password"
                       autocomplete="new-password"
                       placeholder="Optionally enter password"></b-form-input>
       </b-form-group>
-      <b-button type="submit" variant="primary">Save</b-button>
+      <b-row no-gutters>
+        <b-col cols="9" offset-md="3">
+          <b-button type="submit" variant="primary">Save</b-button>
+        </b-col>
+      </b-row>
     </b-form>
   </div>
 </template>
@@ -40,8 +54,8 @@
       }
     },
     async mounted() {
+      this.$store.dispatch('sitepages/fetch')
       page.title = 'Account'
-      //console.log('account MOUNTED')
       if (!this.$auth.loggedIn) {
         this.$router.push('/login')
         return
@@ -49,10 +63,14 @@
       this.$store.commit("page/setTitle", page.title)
     },
 
-    head() {
-      return {
-        title: page.title,
-      }
+    computed: {
+      content() {
+        const sitepage = this.$store.getters['sitepages/get']('/account')
+        if (sitepage) {
+          return sitepage.content
+        }
+        return ''
+      },
     },
     methods: {
       async onSubmit(evt) {
@@ -80,7 +98,12 @@
           this.error = err.message
         }
       }
-    }
+    },
+    head() {
+      return {
+        title: page.title,
+      }
+    },
   }
 </script>
 

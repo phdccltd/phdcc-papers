@@ -3,31 +3,6 @@
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
-    <b-form @submit="onSubmit" @submit.stop.prevent>
-      <b-row no-gutters>
-        <b-col sm="3" class="col-form-label">
-          Username:
-        </b-col>
-        <b-col sm="9" class="col-form-label">
-          {{form.username}}
-        </b-col>
-      </b-row>
-      <b-form-group label="Password:" label-for="password" label-cols-sm="3">
-        <b-form-input id="password"
-                      v-model="form.password"
-                      type="password"
-                      autocomplete="current-password"
-                      required
-                      placeholder="Enter password"></b-form-input>
-      </b-form-group>
-      <b-row no-gutters>
-        <b-col cols="9" offset-md="3">
-          <b-button type="submit" variant="primary">
-            Change password
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-form>
   </div>
 </template>
 
@@ -43,14 +18,18 @@
     data() {
       return {
         error: '',
-        message: '',
-        form: {
-          username: 'brian',
-          password: '',
-        },
+        message: 'Please wait, logging you in...',
       }
     },
     async mounted() {
+      console.log('resetpwd', window.location.search)
+      if (!window.location.search || (window.location.search.substring(0, 3) !== '?t=')) {
+        this.error = 'Invalid reset password request'
+        this.message = ''
+        return
+      }
+      const token = window.location.search.substring(3)
+      console.log('resetpwd token', token)
       this.$store.dispatch('sitepages/fetch')
       page.title = 'Reset password'
       if (this.$auth.loggedIn) {
@@ -58,10 +37,34 @@
         return
       }
       this.$store.commit("page/setTitle", page.title)
+      let recaptcha = false
       if (process.env.RECAPTCHA_BYPASS) {
-        this.message = 'Recaptcha bypass'
+        this.message += '. Recaptcha bypass'
+        recaptcha = process.env.RECAPTCHA_BYPASS
       } else {
-        await this.$recaptcha.init()
+        try {
+          await this.$recaptcha.init()
+          console.log('RECAPTCHA INITED')
+          recaptcha = await this.$recaptcha.execute('login')
+          console.log('RECAPTCHA EXECUTED')
+        } catch (e) {
+          this.error = 'Captcha not set'
+          this.message = ''
+          return
+        }
+      }
+      const resetpwdinfo = {
+        reset: token,
+      }
+      resetpwdinfo['g-recaptcha-response'] = recaptcha
+      const response = await this.$auth.loginWith('local', {
+        data: resetpwdinfo
+      })
+      if (response.data.ret === 0) {
+        this.$router.push('/account')
+      } else {
+        this.error = response.data.status
+        this.message = ''
       }
     },
 
@@ -79,10 +82,6 @@
         return ''
       },
     },
-    methods: {
-      async onSubmit(evt) {
-      },
-    }
   }
 </script>
 
