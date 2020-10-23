@@ -26,10 +26,8 @@
       console.log('resetpwd', window.location.search)
       let token = false
       if (window.location.search) {
-        if (window.location.search.substring(0, 3) === '?t=') {
+        if (window.location.search.substring(0, 1) === '?') {
           token = window.location.search.substring(3)
-        } else if (window.location.search.substring(0, 8) === '?t&#x3D;') {
-          token = window.location.search.substring(8)
         }
       }
       if (!token) {
