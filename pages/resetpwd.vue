@@ -27,7 +27,7 @@
       let token = false
       if (window.location.search) {
         if (window.location.search.substring(0, 1) === '?') {
-          token = window.location.search.substring(3)
+          token = window.location.search.substring(1)
         }
       }
       if (!token) {
