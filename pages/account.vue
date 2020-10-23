@@ -23,7 +23,7 @@
                       v-model="form.password"
                       type="password"
                       autocomplete="new-password"
-                      placeholder="Optionally enter password"></b-form-input>
+                      placeholder="Optionally enter a new password"></b-form-input>
       </b-form-group>
       <b-row no-gutters>
         <b-col cols="9" offset-md="3">
