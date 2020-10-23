@@ -33,7 +33,7 @@
         <b-list-group v-if="flow.visible" class="flows">
           <p class="m-1">{{flow.description}}</p>
           <b-list-group-item v-for="(submit, index) in flow.filteredsubmits" :key="index" :class="'submit ' + (submit.ismine?'':'submitnotmine')">
-            <SubmitSummary :showtype="1" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmitName="editSubmitName" :setError="setError" :setMessage="setMessage" />
+            <SubmitSummary :showtype="1" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="showingadminoptions" :editSubmit="editSubmit" :setError="setError" :setMessage="setMessage" />
           </b-list-group-item>
         </b-list-group>
       </b-list-group-item>
@@ -45,15 +45,19 @@
       <strong>Nothing submitted yet</strong>
     </div>
 
-    <b-modal id="bv-modal-edit-submit-title" centered @ok="okTitleEdited">
+    <b-modal id="bv-modal-edit-submit" centered @ok="okEdited">
       <template v-slot:modal-title>
-        Edit submission title
+        Edit submission title and author
       </template>
       <form ref="form" @submit.stop.prevent>
         <b-form-group label="Title"
                       label-for="new-title"
                       invalid-feedback="Title is required">
           <b-form-input id="new-title" required v-model="newtitle"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Author"
+                      label-for="newauthor">
+          <b-form-select v-model="newauthor" :options="newauthoroptions"></b-form-select>
         </b-form-group>
       </form>
     </b-modal>
@@ -91,6 +95,8 @@
         showingadminoptions: false,
         submitbeingedited: false,
         newtitle: '',
+        newauthor: 0,
+        newauthoroptions: [],
       }
     },
     computed: {
@@ -147,28 +153,40 @@
         console.log('toggleFlowShow', flow.visible)
         flow.visible = !flow.visible
       },
-      editSubmitName(submit) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
+      async editSubmit(submit) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
+        this.newauthoroptions = []
+        const { pubusers } = await this.$api.user.getPubUsers(this.pubid)
+        for (const user of pubusers.users) {
+          this.newauthoroptions.push({ value: user.id, text: user.username })
+        }
         this.newtitle = submit.name
+        this.newauthor = submit.userId
         this.submitbeingedited = submit
-        this.$bvModal.show('bv-modal-edit-submit-title')
+        this.$bvModal.show('bv-modal-edit-submit')
       },
-      okTitleEdited(bvModalEvt) {
+      okEdited(bvModalEvt) {
         bvModalEvt.preventDefault()
-        this.doEditTitle()
+        this.doEditSubmit()
       },
-      async doEditTitle() {
+      async doEditSubmit() {
         try {
           const newtitle = this.newtitle.trim()
           if (newtitle.length === 0) return await this.$bvModal.msgBoxOk('No new title given!')
-          const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle)
-          if (!amended) return await this.$bvModal.msgBoxOk('Error changing title')
+          let newauthor = 0
+          if (this.newauthor !== this.submitbeingedited.userId) {
+            const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to change the author?')
+            if (!OK) return
+            newauthor = this.newauthor
+          }
+          const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle, newauthor)
+          if (!amended) return await this.$bvModal.msgBoxOk('Error changing submit')
           this.$store.dispatch('submits/fetchpub', this.pubid)
           this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-edit-submit-title')
-            this.$bvModal.msgBoxOk('Title changed')
+            this.$bvModal.hide('bv-modal-edit-submit')
+            this.$bvModal.msgBoxOk('Submit changed')
           })
         } catch (e) {
-          await this.$bvModal.msgBoxOk('Error changing title: ' + e.message)
+          await this.$bvModal.msgBoxOk('Error changing submit: ' + e.message)
         }
       },
       async deleteSubmit(submit) {

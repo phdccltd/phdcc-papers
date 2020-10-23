@@ -16,7 +16,7 @@
             {{ submit.name }}
           </nuxt-link>
           {{ submit.user }}
-          <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
+          <b-btn v-if="showingadminoptions" variant="link" @click="editSubmit(submit)">
             <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
           </b-btn>
         </h3>
@@ -51,7 +51,7 @@
             {{ submit.name }}
           </span>
           {{ submit.user }}
-          <b-btn v-if="showingadminoptions" variant="link" @click="editSubmitName(submit)">
+          <b-btn v-if="showingadminoptions" variant="link" @click="editSubmit(submit)">
             <v-icon name="edit" scale="1.5" class="btn-outline-warning" />
           </b-btn>
         </h2>
@@ -243,7 +243,7 @@
         type: Boolean,
         required: true,
       },
-      editSubmitName: {
+      editSubmit: {
         type: Function,
       },
       setError: {
