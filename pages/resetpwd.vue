@@ -22,13 +22,21 @@
       }
     },
     async mounted() {
+
       console.log('resetpwd', window.location.search)
-      if (!window.location.search || (window.location.search.substring(0, 3) !== '?t=')) {
+      let token = false
+      if (window.location.search) {
+        if (window.location.search.substring(0, 3) === '?t=') {
+          token = window.location.search.substring(3)
+        } else if (window.location.search.substring(0, 8) === '?t&#x3D;') {
+          token = window.location.search.substring(8)
+        }
+      }
+      if (!token) {
         this.error = 'Invalid reset password request'
         this.message = ''
         return
       }
-      const token = window.location.search.substring(3)
       console.log('resetpwd token', token)
       this.$store.dispatch('sitepages/fetch')
       page.title = 'Reset password'

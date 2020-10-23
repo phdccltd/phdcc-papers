@@ -91,8 +91,8 @@
         }
         this.form['g-recaptcha-response'] = token
         try {
-          let forgotten = await this.$api.user.forgotpwd(this.form)
-          console.log("forgotten", forgotten)
+          const forgotten = await this.$api.user.forgotpwd(this.form)
+          //console.log("forgotten", forgotten)
           if (forgotten.err) {
             this.error = forgotten.err
             return
