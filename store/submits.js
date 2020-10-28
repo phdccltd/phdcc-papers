@@ -76,7 +76,7 @@ export const getters = {
                 entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
               }
               submit.status = 'Status not set'
-              submit.dtstatus = false
+              submit.dtstatus = ''
               submit.owneradvice = false
               let foundvisible = false
               for (const submitstatus of submit.statuses) {
