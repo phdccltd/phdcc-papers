@@ -1,46 +1,46 @@
 export class APIError extends Error {
-  constructor({ request, response }, message) {
+  constructor ({ request, response }, message) {
     super(message)
     Object.assign(this, { request, response })
   }
 }
 
 export class LoginError extends Error {
-  constructor(ret, status) {
+  constructor (ret, status) {
     super(status)
     Object.assign(this, { ret, status })
   }
 }
 
 export class SignUpError extends Error {
-  constructor(ret, status) {
+  constructor (ret, status) {
     super(status)
     Object.assign(this, { ret, status })
   }
 }
 
 export default class BaseAPI {
-  constructor({ $axios, store }) {
+  constructor ({ $axios, store }) {
     this.$axios = $axios
     this.store = store
   }
 
-  async $request(method, path, config, logError = true) {
-    //console.log('REQUEST ', method, process.env.API, path)
+  async $request (method, path, config, logError = true) {
+    // console.log('REQUEST ', method, process.env.API, path)
 
     let status = null
     let data = null
 
     try {
-      //console.log('BaseAPI A', config, process.env.API + path)
+      // console.log('BaseAPI A', config, process.env.API + path)
       // Don't touch this...
       const ret = await this.$axios.request({
         ...config,
         method,
-        url: process.env.API + path,
+        url: process.env.API + path
       })
-      ;({ status, data } = ret)
-      //console.log('BaseAPI B', status, data)
+      ;({ status, data } = ret) // eslint-disable-line
+      // console.log('BaseAPI B', status, data)
 
       if (!status || !data) {
         // We're investigating some cases, with some evidence of it happening in page unload, where we don't go
@@ -63,11 +63,11 @@ export default class BaseAPI {
         await new Promise((resolve) => setTimeout(resolve, 2000))
 
         // Timeout.  Try again.  If it fails this time then we will throw another error.
-        console.log('BaseAPI timeout or empty - retry');
+        console.log('BaseAPI timeout or empty - retry')
         const ret = await this.$axios.request({
           ...config,
           method,
-          url: process.env.API + path,
+          url: process.env.API + path
         });
         ({ status, data } = ret)
       } else if (e.message.match(/.*aborted.*/i)) {
@@ -110,7 +110,7 @@ export default class BaseAPI {
         method,
         path,
         '->',
-        `ret: ${retstr} status: ${statusstr}`,
+        `ret: ${retstr} status: ${statusstr}`
       ].join(' ')
 
       throw new APIError(
@@ -120,12 +120,12 @@ export default class BaseAPI {
             method,
             headers: config.headers,
             params: config.params,
-            data: config.data,
+            data: config.data
           },
           response: {
             status,
-            data,
-          },
+            data
+          }
         },
         message
       )
@@ -134,38 +134,38 @@ export default class BaseAPI {
     return data
   }
 
-  $get(path, params = {}, logError = true) {
-    //console.log('GET ', path)
+  $get (path, params = {}, logError = true) {
+    // console.log('GET ', path)
     return this.$request('GET', path, { params }, logError)
   }
 
-  $post(path, data, logError = true) {
+  $post (path, data, logError = true) {
     return this.$request('POST', path, { data }, logError)
   }
 
-  $postOverride(overrideMethod, path, data, logError = true) {
+  $postOverride (overrideMethod, path, data, logError = true) {
     return this.$request(
       'POST',
       path,
       {
         data,
         headers: {
-          'X-HTTP-Method-Override': overrideMethod,
-        },
+          'X-HTTP-Method-Override': overrideMethod
+        }
       },
       logError
     )
   }
 
-  $put(path, data, logError = true) {
+  $put (path, data, logError = true) {
     return this.$postOverride('PUT', path, data, logError)
   }
 
-  $patch(path, data, logError = true) {
+  $patch (path, data, logError = true) {
     return this.$postOverride('PATCH', path, data, logError)
   }
 
-  $del(path, data, config = {}, logError = true) {
+  $del (path, data, config = {}, logError = true) {
     return this.$postOverride('DELETE', path, data, logError)
   }
 }

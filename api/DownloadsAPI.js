@@ -1,9 +1,9 @@
 import BaseAPI from '@/api/BaseAPI'
 
 export default class gradingsAPI extends BaseAPI {
-  async downloadAnonymousStageSubmissions(pubid, selectedstage ) {
+  async downloadAnonymousStageSubmissions (pubid, selectedstage) {
     const params = {
-      flowstageid: selectedstage,
+      flowstageid: selectedstage
     }
     const ret = await this.$axios.get(process.env.API + '/downloads/anon/' + pubid, {
       params,
@@ -12,9 +12,9 @@ export default class gradingsAPI extends BaseAPI {
     return ret
   }
 
-  async downloadSummary(pubid, selectedstage) {
+  async downloadSummary (pubid, selectedstage) {
     const params = {
-      flowstageid: selectedstage,
+      flowstageid: selectedstage
     }
     const ret = await this.$axios.get(process.env.API + '/downloads/summary/' + pubid, {
       params,
@@ -22,6 +22,4 @@ export default class gradingsAPI extends BaseAPI {
     })
     return ret
   }
-  
 }
-

@@ -8,27 +8,27 @@
  *    --- DO NOT EDIT ---
  */
 
-import acceptingsAPI from './acceptingsAPI.js'
-import downloadsAPI from './downloadsAPI.js'
-import gradingsAPI from './gradingsAPI.js'
-import mailAPI from './mailAPI.js'
-import pubAPI from './pubAPI.js'
-import reviewersAPI from './reviewersAPI.js'
-import sitepagesAPI from './sitepagesAPI.js'
-import submitAPI from './submitAPI.js'
-import userAPI from './userAPI.js'
+import AcceptingsAPI from './AcceptingsAPI.js'
+import DownloadsAPI from './DownloadsAPI.js'
+import GradingsAPI from './GradingsAPI.js'
+import MailAPI from './MailAPI.js'
+import PubAPI from './PubAPI.js'
+import ReviewersAPI from './ReviewersAPI.js'
+import SitePagesAPI from './SitePagesAPI.js'
+import SubmitAPI from './SubmitAPI.js'
+import UserAPI from './UserAPI.js'
 
 export default ({ $axios, store }) => {
   const options = { $axios, store }
   return {
-    acceptings: new acceptingsAPI(options),
-    downloads: new downloadsAPI(options),
-    gradings: new gradingsAPI(options),
-    mail: new mailAPI(options),
-    pub: new pubAPI(options),
-    reviewers: new reviewersAPI(options),
-    sitepages: new sitepagesAPI(options),
-    submit: new submitAPI(options),
-    user: new userAPI(options),
+    acceptings: new AcceptingsAPI(options),
+    downloads: new DownloadsAPI(options),
+    gradings: new GradingsAPI(options),
+    mail: new MailAPI(options),
+    pub: new PubAPI(options),
+    reviewers: new ReviewersAPI(options),
+    sitepages: new SitePagesAPI(options),
+    submit: new SubmitAPI(options),
+    user: new UserAPI(options)
   }
 }

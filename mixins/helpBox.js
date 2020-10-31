@@ -1,22 +1,22 @@
-//console.log('init helpBox')
+// console.log('init helpBox')
 
 export default {
-  data: function() {
+  data: function () {
     return {
       id: null
     }
   },
   computed: {
-    helpKey() {
+    helpKey () {
       return 'help-' + this.id
     },
-    showHelp() {
+    showHelp () {
       return !this.$store.getters['misc/get'](this.helpKey)
     }
   },
   methods: {
-    toggleHelp() {
-      //console.log('helpBox toggleHelp', this.helpKey, this.showHelp)
+    toggleHelp () {
+      // console.log('helpBox toggleHelp', this.helpKey, this.showHelp)
       this.$store.dispatch('misc/set', {
         key: this.helpKey,
         value: this.showHelp

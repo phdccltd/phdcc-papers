@@ -19,4 +19,3 @@ require('vue-awesome/icons/sign-out-alt')
 require('vue-awesome/icons/times-circle')
 
 Vue.component('v-icon', Icon)
-

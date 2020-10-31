@@ -1,29 +1,29 @@
-//console.log('init store page')
+// console.log('init store page')
 export const state = () => ({
   title: '',
-  titlesuffix: '',
+  titlesuffix: ''
 })
 
 export const mutations = {
-  setTitle(state, title) {
+  setTitle (state, title) {
     state.title = title
     state.titlesuffix = ''
   },
-  setTitleSuffix(state, titlesuffix) {
+  setTitleSuffix (state, titlesuffix) {
     state.titlesuffix = titlesuffix
-  },
+  }
 }
 export const getters = {
-  title(state) {
+  title (state) {
     return state.title
   },
-  titlesuffix(state) {
+  titlesuffix (state) {
     return state.titlesuffix
-  },
+  }
 }
-/*export const actions = {
+/* export const actions = {
   setTitle({ commit }, title) {
     console.log('action setTitle')
     commit('setTitle', title)
   }
-}*/
+} */

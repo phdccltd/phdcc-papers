@@ -39,10 +39,10 @@ const source = []
 
 const filenames = readdirSync(__dirname)
 
-function format(input) {
+function format (input) {
   return prettier.format(input, {
     parser: 'babel',
-    ...prettierConfig,
+    ...prettierConfig
   })
 }
 
@@ -55,7 +55,7 @@ const entries = filenames
     return { name, filename, className }
   })
 
-function generateImports(entries) {
+function generateImports (entries) {
   return entries
     .map(
       ({ className, filename }) => `import ${className} from './${filename}'`
@@ -63,7 +63,7 @@ function generateImports(entries) {
     .join('\n')
 }
 
-function generateIndex(entries) {
+function generateIndex (entries) {
   source.push(
     DO_NOT_EDIT_WARNING,
     '',
@@ -85,7 +85,7 @@ function generateIndex(entries) {
   return format(source.join('\n'))
 }
 
-function generateTyping(entries) {
+function generateTyping (entries) {
   const source = []
   source.push(
     DO_NOT_EDIT_WARNING,

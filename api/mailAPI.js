@@ -1,36 +1,37 @@
 import BaseAPI from '@/api/BaseAPI'
 
 export default class mailAPI extends BaseAPI {
-  getTemplates(pubid) {
+  getTemplates (pubid) {
     return this.$get('/mail/templates/' + pubid)
   }
-  async deleteMailTemplate(pubid, templateid) {
+
+  async deleteMailTemplate (pubid, templateid) {
     const data = {
-      templateid,
+      templateid
     }
     const { ok } = await this.$del('/mail/templates/' + pubid, data)
     return ok
   }
-  async addEditMailTemplate(pubid, templateid, templatename, templatesubject, templatebody) {
+
+  async addEditMailTemplate (pubid, templateid, templatename, templatesubject, templatebody) {
     const data = {
       templateid,
       templatename,
       templatesubject,
-      templatebody,
+      templatebody
     }
     const { ok } = await this.$post('/mail/templates/' + pubid, data)
     return ok
   }
-  async sendMail(pubid, selecteduser, selectedrole, mailsubject, mailtext) {
+
+  async sendMail (pubid, selecteduser, selectedrole, mailsubject, mailtext) {
     const data = {
       selecteduser,
       selectedrole,
       mailsubject,
-      mailtext,
+      mailtext
     }
     const { ok } = await this.$post('/mail/' + pubid, data)
     return ok
   }
-
 }
-

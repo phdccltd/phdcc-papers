@@ -5,12 +5,12 @@ export const state = () => ({
 })
 
 export const mutations = {
-  set(state, params) {
+  set (state, params) {
     Vue.set(state.items, params.key, params.value)
   },
-  clearAll(state) {
+  clearAll (state) {
     state.items = {}
-  },
+  }
 }
 
 export const getters = {
@@ -18,10 +18,10 @@ export const getters = {
 }
 
 export const actions = {
-  set({ commit }, params) {
+  set ({ commit }, params) {
     commit('set', params)
   },
-  clear({ commit }) {
+  clear ({ commit }) {
     commit('clearAll')
-  },
+  }
 }
