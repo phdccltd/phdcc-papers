@@ -381,7 +381,6 @@
             return
           }
           await this.$bvModal.msgBoxOk('Submission deleted')
-          await this.$bvModal.msgBoxOk('NEED TO REMOVE REVIEWS, ETC???')
           this.$store.dispatch('submits/fetchpub', this.pubid)
         } catch (e) {
           await this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
