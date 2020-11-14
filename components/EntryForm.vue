@@ -379,7 +379,7 @@
                 }
               }
               if (field.maxwords && tocheckmax) {
-                const matches = tocheckmax.match(/\S+/g);
+                const matches = tocheckmax.match(/\S+/g)
                 if (matches && (matches.length > field.maxwords)) {
                   field.message += 'You have ' + matches.length + ' words - the maximum is ' + field.maxwords + '. '
                   anyerror = true

@@ -120,6 +120,12 @@
       this.$store.dispatch('mailtemplates/fetch', this.pubid)
       this.$store.dispatch('pubs/fetch')
       this.$store.dispatch('submits/fetchpub', this.pubid)
+      const flows = this.$store.getters['submits/flows'](this.pubid)
+      for (const flow of flows) {
+        for (const stage of flow.stages) {
+          this.$store.dispatch('submits/fetchformfields', stage.id)
+        }
+      }
     },
     computed: {
       pub() {
@@ -154,8 +160,10 @@
           for (const stage of flow.stages) {
             substitutions += '\r' + stage.name + ':\r'
             const entry = this.$store.getters['submits/stagefields'](stage.id)
-            for (const field of entry.fields) {
-              substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r'
+            if (entry) {
+              for (const field of entry.fields) {
+                substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r'
+              }
             }
           }
         }
