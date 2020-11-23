@@ -18,6 +18,12 @@
                       autocomplete="name"
                       placeholder="Enter name"></b-form-input>
       </b-form-group>
+      <b-form-group label="Email:" label-for="email" label-cols-sm="3">
+        <b-form-input id="email"
+                      v-model="form.email"
+                      type="email"
+                      placeholder="Enter email"></b-form-input>
+      </b-form-group>
       <b-form-group label="New password:" label-for="password" label-cols-sm="3">
         <b-form-input id="password"
                       v-model="form.password"
@@ -47,6 +53,7 @@
       return {
         form: {
           name: this.$auth.user.name,
+          email: this.$auth.user.email,
           password: '',
         },
         error: '',
@@ -61,6 +68,9 @@
         return
       }
       this.$store.commit("page/setTitle", page.title)
+      await this.$auth.fetchUser()
+      this.form.name = this.$auth.user.name
+      this.form.email = this.$auth.user.email
     },
 
     computed: {
@@ -77,9 +87,14 @@
         this.error = ''
         this.message = ''
         //console.log('this.form', this.form)
+        this.form.name = this.form.name.trim()
+        this.form.email = this.form.email.trim()
+        if (this.form.name.length === 0) { this.error = 'No name given'; return }
+        if (this.form.email.length === 0) { this.error = 'No email given'; return }
         const changedName = this.form.name !== this.$auth.user.name
+        const changedEmail = this.form.email !== this.$auth.user.email
         const changedPassword = this.form.password
-        if (!changedName && !changedPassword) {
+        if (!changedName && !changedEmail && !changedPassword) {
           this.error = 'No changes'
           return
         }
@@ -89,7 +104,7 @@
           if (response.ret !== 0) {
             this.error = response.status
           } else {
-            if (changedName) this.$auth.user.name = this.form.name
+            await this.$auth.fetchUser()
             this.message = 'Changes saved'
           }
         }
