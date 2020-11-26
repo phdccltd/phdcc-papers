@@ -55,6 +55,11 @@ Thanks to all the developers who produced the open-source modules that are used,
 * [Nuxt](https://nuxtjs.org), which is [Vue](https://vuejs.org/) 
 * [BootstrapVue](https://bootstrap-vue.js.org/), which is Bootstrap v4 for Vue/Nuxt. 
 
+# Sponsors
+
+This development has kindly been supported by 
+[![IRCOBI](./docs/ircobi-picto.png)](http://ircobi.org/).
+
 # License
 
 [MIT](LICENCE)
