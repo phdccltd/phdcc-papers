@@ -192,7 +192,7 @@
         this.acceptingid = accepting.id
         this.chosenstage = accepting.flowstageId
         this.chosenopen = accepting.open
-        this.chosenstatus = accepting.flowstatusId
+        this.chosenstatus = accepting.flowstatusId || 0
         this.$bvModal.show('bv-modal-accepting')
       },
       /* ************************ */
