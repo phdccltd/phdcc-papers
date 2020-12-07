@@ -24,7 +24,8 @@
       <b-col sm="8" class="formfieldview">
         <a href='#' v-if="existingfile" @click.prevent="downloadItem()">
           {{existingfilename}}
-        </a>
+        </a><br />
+        <div class="alert-warning">{{downloaderror}}</div>
       </b-col>
       <b-col sm="1" class="formfieldview text-right">
         <span v-if="help" v-b-tooltip.hover.left :title="help">
@@ -39,6 +40,7 @@
   export default {
     data() {
       return {
+        downloaderror: ''
       }
     },
     props: {
@@ -65,8 +67,19 @@
     methods: {
       async downloadItem() {
         //console.log('downloadItem', this.relpath)
+        this.downloaderror = ''
         const ret = await this.$api.submit.getFile(this.relpath)
         const blob = new Blob([ret.data], { type: ret.data.type })
+        if (ret.data.type === 'application/json') { // Error eg {ret: 1, status: "Sorry: file not available /1/2/1/20/92/file.docx"}
+          this.downloaderror = 'Download error'
+          const reader = new FileReader()
+          reader.addEventListener('loadend', (e) => {
+            const data = JSON.parse(e.srcElement.result)
+            this.downloaderror = data.status
+          })
+          reader.readAsText(blob)
+          return
+        }
         const link = document.createElement('a')
         link.href = URL.createObjectURL(blob)
         link.download = path.basename(this.existingfile)
