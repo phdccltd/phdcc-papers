@@ -32,7 +32,6 @@ export default class BaseAPI {
     let data = null
 
     try {
-      // console.log('BaseAPI A', config, process.env.API + path)
       // Don't touch this...
       const ret = await this.$axios.request({
         ...config,
@@ -40,7 +39,6 @@ export default class BaseAPI {
         url: process.env.API + path
       })
       ;({ status, data } = ret) // eslint-disable-line
-      // console.log('BaseAPI B', status, data)
 
       if (!status || !data) {
         // We're investigating some cases, with some evidence of it happening in page unload, where we don't go

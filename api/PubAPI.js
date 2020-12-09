@@ -7,16 +7,12 @@ export default class pubAPI extends BaseAPI {
     return this.$get('/pubs', params)
   }
 
-  /* register(params) {
-    console.log('userAPI register')
-    return this.$post('/user/register', params)
+  /// //////////
+  // POST bulk op: for all submits at FROM status, add new TO status
+  async bulkSubmitStatusUpdate(pubid, fromstatus, tostatus) {
+    console.log('pubAPI bulkSubmitStatusUpdateaddSubmitStatus', pubid, fromstatus, tostatus)
+    const data = { fromstatus, tostatus }
+    const { status } = await this.$postOverride('POST', '/pubs/' + pubid, data)
+    return status
   }
-
-  share(id, uid) {
-    return this.$post('/users', { id, uid, action: 'Do' })
-  }
-
-  hide(id, uid) {
-    return this.$post('/users', { id, uid, action: 'Hide' })
-  } */
 }
