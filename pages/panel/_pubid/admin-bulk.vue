@@ -18,7 +18,7 @@
             <p>
               This option will find all submissions at the FROM status and add a new TO status.
             </p>
-            <b-form-group label="Choose a submission stage to move FROM:" label-for="fromid" label-cols-sm="5">
+            <b-form-group label="Choose a submission status to move FROM:" label-for="fromid" label-cols-sm="5">
               <b-form-select :options="allstatuses"
                              id="fromid"
                              size="sm"
@@ -26,7 +26,7 @@
                              style="width:auto;">
               </b-form-select>
             </b-form-group>
-            <b-form-group label="Choose a submission stage to move TO:" label-for="toid" label-cols-sm="5">
+            <b-form-group label="Choose a submission status to move TO:" label-for="toid" label-cols-sm="5">
               <b-form-select :options="allstatuses"
                              id="toid"
                              size="sm"
