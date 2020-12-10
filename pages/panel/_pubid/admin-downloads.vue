@@ -26,8 +26,6 @@
           </div>
           <b-btn variant="success" @click="downloadAnonymousStageSubmissions()">Download anonymised submissions</b-btn>
           <b-btn variant="success" @click="downloadSummary()">Download summary</b-btn>
-        </b-list-group-item>
-        <b-list-group-item>
           <b-btn variant="success" @click="downloadAll()">Download all</b-btn>
         </b-list-group-item>
         <b-list-group-item>
@@ -149,7 +147,10 @@
         }
       },
       async downloadAll() {
-        await this.$bvModal.msgBoxOk('NOT IMPLEMENTED', { title: 'HOLD ON', headerBgVariant: 'warning' })
+        if (this.selectedstage == 0) return await this.$bvModal.msgBoxOk('No stage chosen!')
+
+        const ret = await this.$api.downloads.downloadAll(this.pubid, this.selectedstage)
+        this.handleDownloadReturn(ret)
       },
       async downloadReviewerPerformance() {
         await this.$bvModal.msgBoxOk('NOT IMPLEMENTED', { title: 'HOLD ON', headerBgVariant: 'warning' })

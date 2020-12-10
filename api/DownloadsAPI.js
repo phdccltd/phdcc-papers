@@ -22,4 +22,15 @@ export default class gradingsAPI extends BaseAPI {
     })
     return ret
   }
+
+  async downloadAll(pubid, selectedstage) {
+    const params = {
+      flowstageid: selectedstage
+    }
+    const ret = await this.$axios.get(process.env.API + '/downloads/all/' + pubid, {
+      params,
+      responseType: 'blob'
+    })
+    return ret
+  }
 }

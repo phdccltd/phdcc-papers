@@ -35,7 +35,8 @@
       <span style="color:lightgrey">
         built: {{BUILD_DATE}}.
         Copyright &copy; 2020 PHD Computer Consultants Ltd.
-      </span>
+      </span><br />
+      <a href="https://www.phdcc.com/feedback.html" target="_blank">Get in touch if you want to try out Papers for your conference or journal.</a>
     </div>
   </div>
 </template>
