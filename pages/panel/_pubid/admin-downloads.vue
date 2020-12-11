@@ -30,12 +30,13 @@
         </b-list-group-item>
         <b-list-group-item>
           <div class="mb-2">
-            <strong>Choose a grading type:</strong>
+            <strong>Choose one or more grading types:</strong>
             <b-form-select :options="allgrades"
                            size="sm"
+                           multiple
                            value-field="id"
                            text-field="name"
-                           v-model="selectedgrade"
+                           v-model="selectedgrades"
                            style="width:auto;">
             </b-form-select>
           </div>
@@ -64,7 +65,7 @@
         error: '',
         message: '',
         selectedstage: 0,
-        selectedgrade: 0,
+        selectedgrades: [],
       }
     },
     async mounted() { // Client only
@@ -130,6 +131,7 @@
         try {
           if (this.selectedstage == 0) return await this.$bvModal.msgBoxOk('No stage chosen!')
 
+          this.message = 'Please wait...'
           const ret = await this.$api.downloads.downloadAnonymousStageSubmissions(this.pubid, this.selectedstage)
           this.handleDownloadReturn(ret)
         } catch (e) {
@@ -140,6 +142,7 @@
         try {
           if (this.selectedstage == 0) return await this.$bvModal.msgBoxOk('No stage chosen!')
 
+          this.message = 'Please wait...'
           const ret = await this.$api.downloads.downloadSummary(this.pubid, this.selectedstage)
           this.handleDownloadReturn(ret)
         } catch (e) {
@@ -149,11 +152,16 @@
       async downloadAll() {
         if (this.selectedstage == 0) return await this.$bvModal.msgBoxOk('No stage chosen!')
 
+        this.message = 'Please wait...'
         const ret = await this.$api.downloads.downloadAll(this.pubid, this.selectedstage)
         this.handleDownloadReturn(ret)
       },
       async downloadReviewerPerformance() {
-        await this.$bvModal.msgBoxOk('NOT IMPLEMENTED', { title: 'HOLD ON', headerBgVariant: 'warning' })
+        if (this.selectedgrades.length == 0) return await this.$bvModal.msgBoxOk('No grade(s) chosen!')
+
+        this.message = 'Please wait...'
+        const ret = await this.$api.downloads.downloadReviewerPerformance(this.pubid, this.selectedgrades)
+        this.handleDownloadReturn(ret)
       },
       handleDownloadReturn(ret) {
         if (ret.data.type == 'application/json') {
@@ -164,6 +172,7 @@
             if ('status' in rv) {
               await this.$bvModal.msgBoxOk('Error: ' + rv.status)
             }
+            this.message = ''
           });
           reader.readAsText(ret.data)
           return
@@ -182,6 +191,7 @@
         link.download = path.basename(filename)
         link.click()
         URL.revokeObjectURL(link.href)
+        this.message = ''
       },
     },
     /* ************************ */
