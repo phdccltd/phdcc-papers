@@ -48,6 +48,18 @@ npm run build
 pm2 start ./node_modules/nuxt/bin/nuxt.js --name papers -- start
 ```
 
+## Updating
+
+An existing installation had best do a full install rather than an update:
+
+```
+git pull
+rm package-lock.json
+rm -r node_modules
+npm install
+```
+
+
 ## Used with thanks
 
 Thanks to all the developers who produced the open-source modules that are used, including
