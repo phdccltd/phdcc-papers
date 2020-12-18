@@ -57,8 +57,10 @@ git pull
 rm package-lock.json
 rm -r node_modules
 npm install
+npm run build
 ```
 
+Then restart eg using pm2.
 
 ## Used with thanks
 
