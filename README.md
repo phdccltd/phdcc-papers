@@ -1,5 +1,7 @@
 # phdcc-papers
 
+[![Dependencies](https://david-dm.org/phdccltd/phdcc-papers.svg)](https://david-dm.org/phdccltd/phdcc-papers)
+
 **Papers**: [PHDCC journal/conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
 
 To be used in conjuction with [phdcc-papers-api](https://github.com/phdccltd/phdcc-papers-api).
