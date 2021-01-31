@@ -34,25 +34,25 @@ export const getters = {
   flows (_state) {
     return (pubid) => {
       // console.log('getter submits.flows pubid', pubid)
-      const flows = _.find(_state.pubflows, (flows, thispubid) => { return parseInt(thispubid) === pubid })
+      const flows = _.find(_state.pubflows, (_flows, thispubid) => { return parseInt(thispubid) === pubid })
       return flows
     }
   },
   entry (_state) {
     return (entryid) => {
-      const entry = _.find(_state.entries, entry => { return entry.id === entryid })
+      const entry = _.find(_state.entries, _entry => { return _entry.id === entryid })
       return entry
     }
   },
   stagefields (_state) {
     return (flowstageid) => {
-      const entry = _.find(_state.flowfields, (entry, thisflowstageid) => { return parseInt(thisflowstageid) === flowstageid })
+      const entry = _.find(_state.flowfields, (_entry, thisflowstageid) => { return parseInt(thisflowstageid) === flowstageid })
       return entry
     }
   },
   submit (_state) {
     return (pubid, submitid) => {
-      const flows = _.find(_state.pubflows, (flows, thispubid) => { return parseInt(thispubid) === pubid })
+      const flows = _.find(_state.pubflows, (_flows, thispubid) => { return parseInt(thispubid) === pubid })
       if (flows) {
         for (const flow of flows) {
           for (const submit of flow.submits) {
@@ -68,7 +68,7 @@ export const getters = {
               let foundvisible = false
               for (const submitstatus of submit.statuses) {
                 submitstatus.status = 'Unknown'
-                const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submitstatus.flowstatusId })
+                const flowstatus = _.find(flow.statuses, _flowstatus => { return _flowstatus.id === submitstatus.flowstatusId })
                 if (flowstatus) {
                   submitstatus.status = flowstatus.status
                   if (!foundvisible) {
@@ -103,7 +103,7 @@ export const actions = {
           flowgrade.visible = true
           flowgrade.summary = true
           flowgrade.tickcolour = tickcolours[tickcolourno]
-          tickcolourno = ++tickcolourno % tickcolours.length
+          tickcolourno = (tickcolourno + 1) % tickcolours.length
         }
       }
       commit('addPubFlow', { pubid, flows })
