@@ -28,7 +28,7 @@ export const getters = {
     // console.log('getter users.pubusers.pubid')
     return (pubid) => {
       // console.log('getter users.pubusers.pubid', pubid)
-      const pubusers = _.find(_state.pubpubusers, (pubusers, thispubid) => { return parseInt(thispubid) === pubid })
+      const pubusers = _.find(_state.pubpubusers, (_pubusers, thispubid) => { return parseInt(thispubid) === pubid })
       return pubusers
     }
   },

@@ -23,7 +23,7 @@ export const getters = {
     return (path) => {
       // console.log('getter sitepages.get path', path)
       // console.log('getter sitepages.get list', state.list)
-      const sitepage = _.find(_state.list, sitepage => { return sitepage.path === path })
+      const sitepage = _.find(_state.list, _sitepage => { return _sitepage.path === path })
       return sitepage
     }
   }
