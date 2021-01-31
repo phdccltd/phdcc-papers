@@ -78,7 +78,7 @@
         const pubid = parseInt(this.$route.params.pubid)
         const pub = this.$store.getters['pubs/getPub'](pubid)
         if (!pub) return []
-        const publookup = _.find(pub.publookups, publookup => { return publookup.id === this.publookupId })
+        const publookup = _.find(pub.publookups, _publookup => { return _publookup.id === this.publookupId })
         //console.log('publookup', publookup)
         if (publookup && publookup.values) {
           publookup.values.forEach(v => {
@@ -90,5 +90,3 @@
     }
   }
 </script>
-<style>
-</style>

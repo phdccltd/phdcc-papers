@@ -83,7 +83,7 @@
         const pub = this.$store.getters['pubs/getPub'](pubid)
         if (!pub) return []
 
-        const publookup = _.find(pub.publookups, publookup => { return publookup.id === this.publookupId })
+        const publookup = _.find(pub.publookups, _publookup => { return _publookup.id === this.publookupId })
         if (!publookup) return []
         //console.log('publookup', publookup)
         if (publookup && publookup.values) {
@@ -96,5 +96,3 @@
     }
   }
 </script>
-<style>
-</style>

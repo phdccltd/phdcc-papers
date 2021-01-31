@@ -490,5 +490,3 @@
     },
   }
 </script>
-<style>
-</style>
