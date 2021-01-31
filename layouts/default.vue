@@ -42,7 +42,6 @@
 </template>
 
 <script>
-  import { page } from '@/utils/phdcc'
   export default {
     // Note: asyncData NOT CALLED IN LAYOUT
     data() { // Client and Server

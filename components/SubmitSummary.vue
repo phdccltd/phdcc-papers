@@ -292,7 +292,7 @@
       newrevieweroptions() {
         const options = []
         for (const reviewer of this.pub.reviewers) {
-          const already = _.find(this.submit.reviewers, (already) => { return already.userId === reviewer.id })
+          const already = _.find(this.submit.reviewers, _already => { return _already.userId === reviewer.id })
           if (!already) {
             options.push({ value: reviewer.id, text: reviewer.name + ' - ' + reviewer.roles })
           }
@@ -306,7 +306,7 @@
         const gradingicons = []
         for (const grading of this.submit.gradings) {
           if (grading.userId === reviewer.userId) {
-            const flowgrade = _.find(flowgrades, (flowgrade) => { return grading.flowgradeId === flowgrade.id })
+            const flowgrade = _.find(flowgrades, _flowgrade => { return grading.flowgradeId === _flowgrade.id })
             gradingicons.push({ id: grading.id, name: flowgrade ? flowgrade.name : '', colour: flowgrade ? flowgrade.tickcolour : 'green' })
           }
         }
@@ -403,7 +403,7 @@
       async addSubmitStatus(flow, submit) {
         try {
           if (!submit.newstatusid) return await this.$bvModal.msgBoxOk('Please choose a new status')
-          const flowstatus = _.find(flow.statuses, flowstatus => { return flowstatus.id === submit.newstatusid })
+          const flowstatus = _.find(flow.statuses, _flowstatus => { return _flowstatus.id === submit.newstatusid })
           if (!flowstatus) return await this.$bvModal.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
           if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
           const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
@@ -453,7 +453,7 @@
         this.submitaction = submitaction
         this.modaltitle = 'Add ' + submitaction.name
         this.decisionoptions = []
-        const flowgrade = _.find(this.flow.flowgrades, (flowgrade) => { return flowgrade.id === submitaction.flowgradeid })
+        const flowgrade = _.find(this.flow.flowgrades, _flowgrade => { return _flowgrade.id === submitaction.flowgradeid })
         if (!flowgrade) return this.$bvModal.msgBoxOk('Could not find flowgrade info')
         this.helptext = flowgrade.helptext
         this.helplinktext = flowgrade.helplinktext

@@ -63,7 +63,7 @@
         },
       },
       yesno() {
-        const option = _.find(this.options, option => { return option.value === this.value })
+        const option = _.find(this.options, _option => { return _option.value === this.value })
         if (option) return option.text
         return 'Unknown'
       }

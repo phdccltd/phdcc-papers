@@ -126,14 +126,14 @@
         const filteredflows = []
         let countsubmits = 0
         for (const flow of flows) {
-          let anysubmithidden = false
+          //let anysubmithidden = false
           if (!this.flowid || this.flowid === flow.id) filteredflows.push(flow)
 
           flow.filteredsubmits = []
           for (const fsubmit of flow.submits) {
             const submit = this.$store.getters['submits/submit'](this.pubid, fsubmit.id)
             flow.filteredsubmits.push(submit)
-            if (!submit.visible) anysubmithidden = true
+            //if (!submit.visible) anysubmithidden = true
 
             for (const entry of submit.entries) {
               entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })

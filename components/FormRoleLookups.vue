@@ -97,7 +97,7 @@
         if (!entry) return []
 
         console.log('FormRoleLookups this.pubroleId', this.pubroleId)
-        const pubrolelookup = _.find(entry.pubrolelookups, pubrolelookup => { return pubrolelookup.pubroleId === this.pubroleId })
+        const pubrolelookup = _.find(entry.pubrolelookups, _pubrolelookup => { return _pubrolelookup.pubroleId === this.pubroleId })
         if (!pubrolelookup) {
           console.log('FormRoleLookups NOPE')
           return []
