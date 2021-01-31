@@ -1,6 +1,7 @@
 # phdcc-papers
 
 [![Dependencies](https://david-dm.org/phdccltd/phdcc-papers.svg)](https://david-dm.org/phdccltd/phdcc-papers)
+<a href="https://sonarcloud.io/dashboard?id=phdccltd_phdcc-papers"><img src="https://sonarcloud.io/images/project_badges/sonarcloud-white.svg" height="20" alt="SonarCloud" ></a>
 
 **Papers**: [PHDCC journal/conference abstract and paper submission and review system](https://www.phdcc.com/papers/).
 

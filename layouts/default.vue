@@ -109,7 +109,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     display: inline;
-    NOwhite-space: nowrap;
+    /*white-space: nowrap;*/
   }
 
 

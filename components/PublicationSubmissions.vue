@@ -126,7 +126,7 @@
         const filteredflows = []
         let countsubmits = 0
         for (const flow of flows) {
-          const anysubmithidden = false
+          let anysubmithidden = false
           if (!this.flowid || this.flowid === flow.id) filteredflows.push(flow)
 
           flow.filteredsubmits = []
