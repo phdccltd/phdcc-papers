@@ -18,9 +18,7 @@
           <b-col sm="9">
             {{ pub.description }}
           </b-col>
-          <!--b-col sm="2">
-            {{ pub.tz }}
-          </b-col-->
+          {{ pub.tz }}
         </b-row>
       </b-container>
       <div v-if="nowtavailable">
