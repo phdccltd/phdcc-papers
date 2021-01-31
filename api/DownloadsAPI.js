@@ -1,6 +1,6 @@
 import BaseAPI from '@/api/BaseAPI'
 
-export default class gradingsAPI extends BaseAPI {
+export default class downloadsAPI extends BaseAPI {
   async downloadAnonymousStageSubmissions (pubid, selectedstage) {
     const params = {
       flowstageid: selectedstage

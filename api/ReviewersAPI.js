@@ -1,6 +1,6 @@
 import BaseAPI from '@/api/BaseAPI'
 
-export default class acceptingsAPI extends BaseAPI {
+export default class reviewersAPI extends BaseAPI {
   async removeReviewer (submitid, submitreviewerid) {
     const data = {
       submitreviewerid

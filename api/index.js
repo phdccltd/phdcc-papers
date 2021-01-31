@@ -1,13 +1,3 @@
-/*    --- DO NOT EDIT ---
- *
- * This file was generating using api/index.generate.js
- * You can regenerate it by running:
- *
- *     node api/index.generate.js
- *
- *    --- DO NOT EDIT ---
- */
-
 import AcceptingsAPI from './AcceptingsAPI.js'
 import DownloadsAPI from './DownloadsAPI.js'
 import GradingsAPI from './GradingsAPI.js'
