@@ -5,11 +5,11 @@ export const state = () => ({
 })
 
 export const mutations = {
-  setTitle(_state, title) {
+  setTitle (_state, title) {
     _state.title = title
     _state.titlesuffix = ''
   },
-  setTitleSuffix(_state, titlesuffix) {
+  setTitleSuffix (_state, titlesuffix) {
     _state.titlesuffix = titlesuffix
   }
 }

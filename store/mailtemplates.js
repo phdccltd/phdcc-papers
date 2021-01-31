@@ -8,20 +8,20 @@ export const state = () => ({
 })
 
 export const mutations = {
-  addMailTemplate(_state, fmtholder) {
+  addMailTemplate (_state, fmtholder) {
     console.log('addMailTemplate', fmtholder)
     Vue.set(_state.mailtemplates, fmtholder.pubid, fmtholder.pubmails)
   },
-  setError(_state, error) {
+  setError (_state, error) {
     _state.error = error
   }
 }
 
 export const getters = {
-  get(_state) {
+  get (_state) {
     return (pubid) => {
       console.log('store mailtemplates getter get pubid', pubid)
-      const mailtemplates = _.find(_state.mailtemplates, (mailtemplates, thispubid) => { return parseInt(thispubid) === pubid })
+      const mailtemplates = _.find(_state.mailtemplates, (_mailtemplates, thispubid) => { return parseInt(thispubid) === pubid })
       return mailtemplates
     }
   },

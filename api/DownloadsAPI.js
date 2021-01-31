@@ -23,7 +23,7 @@ export default class downloadsAPI extends BaseAPI {
     return ret
   }
 
-  async downloadAll(pubid, selectedstage) {
+  async downloadAll (pubid, selectedstage) {
     const params = {
       flowstageid: selectedstage
     }
@@ -34,7 +34,7 @@ export default class downloadsAPI extends BaseAPI {
     return ret
   }
 
-  async downloadReviewerPerformance(pubid, selectedgrade) {
+  async downloadReviewerPerformance (pubid, selectedgrade) {
     const params = {
       flowgradeids: selectedgrade.join(',')
     }

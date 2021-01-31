@@ -8,39 +8,39 @@ export const state = () => ({
 })
 
 export const mutations = {
-  setPubs (state, pubs) {
+  setPubs (_state, pubs) {
     // console.log('setPubs', pubs)
-    state.pubs = {}
+    _state.pubs = {}
     if (pubs) {
       for (const pub of pubs) {
-        Vue.set(state.pubs, pub.id, pub)
+        Vue.set(_state.pubs, pub.id, pub)
       }
     }
   },
-  setError (state, error) {
+  setError (_state, error) {
     // console.log('submit.setError', error)
-    state.error = error
+    _state.error = error
   },
 
-  clearAll (state) {
+  clearAll (_state) {
     // console.log('clearAll pubs')
-    state.pubs = {}
-    state.error = false
+    _state.pubs = {}
+    _state.error = false
   }
 }
 
 export const getters = {
-  get (state) {
+  get (_state) {
     // console.log('getter pubs.get')
-    return state.pubs
+    return _state.pubs
   },
-  getPub (state) {
+  getPub (_state) {
     return (pubid) => {
       // console.log('getter pubs.getPub', pubid, typeof pubid)
-      return _.find(state.pubs, pub => { return pub.id === pubid })
+      return _.find(_state.pubs, pub => { return pub.id === pubid })
     }
   },
-  error: state => state.error
+  error: _state => _state.error
 }
 
 export const actions = {

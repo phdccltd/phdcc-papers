@@ -8,31 +8,31 @@ export const state = () => ({
 })
 
 export const mutations = {
-  addPubUsers (state, puholder) {
+  addPubUsers (_state, puholder) {
     // console.log('addPubFlow', pubflow)
-    Vue.set(state.pubpubusers, puholder.pubid, puholder.pubusers)
+    Vue.set(_state.pubpubusers, puholder.pubid, puholder.pubusers)
   },
-  setError (state, error) {
+  setError (_state, error) {
     // console.log('users.setError', error)
-    state.error = error
+    _state.error = error
   },
-  clearAll (state) {
+  clearAll (_state) {
     // console.log('clearAll user')
-    state.pubpubusers = {}
-    state.error = false
+    _state.pubpubusers = {}
+    _state.error = false
   }
 }
 
 export const getters = {
-  pubusers (state) {
+  pubusers (_state) {
     // console.log('getter users.pubusers.pubid')
     return (pubid) => {
       // console.log('getter users.pubusers.pubid', pubid)
-      const pubusers = _.find(state.pubpubusers, (pubusers, thispubid) => { return parseInt(thispubid) === pubid })
+      const pubusers = _.find(_state.pubpubusers, (pubusers, thispubid) => { return parseInt(thispubid) === pubid })
       return pubusers
     }
   },
-  error: state => state.error
+  error: _state => _state.error
 }
 
 export const actions = {

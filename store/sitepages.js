@@ -6,24 +6,24 @@ export const state = () => ({
 })
 
 export const mutations = {
-  setList (state, list) {
+  setList (_state, list) {
     // console.log('setList sitepages', list)
-    state.list = list
+    _state.list = list
   },
 
-  clearAll (state) {
+  clearAll (_state) {
     console.log('clearAll sitepages')
-    state.list = []
+    _state.list = []
   }
 }
 
 export const getters = {
-  get: (state) => {
+  get: (_state) => {
     // console.log('getter sitepages.get')
     return (path) => {
       // console.log('getter sitepages.get path', path)
       // console.log('getter sitepages.get list', state.list)
-      const sitepage = _.find(state.list, sitepage => { return sitepage.path === path })
+      const sitepage = _.find(_state.list, sitepage => { return sitepage.path === path })
       return sitepage
     }
   }

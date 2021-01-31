@@ -9,7 +9,7 @@ export default class pubAPI extends BaseAPI {
 
   /// //////////
   // POST bulk op: for all submits at FROM status, add new TO status
-  async bulkSubmitStatusUpdate(pubid, fromstatus, tostatus) {
+  async bulkSubmitStatusUpdate (pubid, fromstatus, tostatus) {
     console.log('pubAPI bulkSubmitStatusUpdateaddSubmitStatus', pubid, fromstatus, tostatus)
     const data = { fromstatus, tostatus }
     const { status } = await this.$postOverride('POST', '/pubs/' + pubid, data)

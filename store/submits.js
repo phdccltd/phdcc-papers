@@ -9,50 +9,50 @@ export const state = () => ({
 })
 
 export const mutations = {
-  addPubFlow (state, pubflow) {
-    Vue.set(state.pubflows, pubflow.pubid, pubflow.flows)
+  addPubFlow (_state, pubflow) {
+    Vue.set(_state.pubflows, pubflow.pubid, pubflow.flows)
   },
-  addEntry (state, item) {
-    Vue.set(state.entries, item.entryid, item.entry)
+  addEntry (_state, item) {
+    Vue.set(_state.entries, item.entryid, item.entry)
   },
-  addFormFieldEntry (state, item) {
-    Vue.set(state.flowfields, item.flowstageid, item.entry)
+  addFormFieldEntry (_state, item) {
+    Vue.set(_state.flowfields, item.flowstageid, item.entry)
   },
-  setError (state, error) {
-    state.error = error
+  setError (_state, error) {
+    _state.error = error
   },
 
-  clearAll (state) {
-    state.pubflows = {}
-    state.entries = {}
-    state.flowfields = {}
-    state.error = false
+  clearAll (_state) {
+    _state.pubflows = {}
+    _state.entries = {}
+    _state.flowfields = {}
+    _state.error = false
   }
 }
 
 export const getters = {
-  flows (state) {
+  flows (_state) {
     return (pubid) => {
       // console.log('getter submits.flows pubid', pubid)
-      const flows = _.find(state.pubflows, (flows, thispubid) => { return parseInt(thispubid) === pubid })
+      const flows = _.find(_state.pubflows, (flows, thispubid) => { return parseInt(thispubid) === pubid })
       return flows
     }
   },
-  entry (state) {
+  entry (_state) {
     return (entryid) => {
-      const entry = _.find(state.entries, entry => { return entry.id === entryid })
+      const entry = _.find(_state.entries, entry => { return entry.id === entryid })
       return entry
     }
   },
-  stagefields (state) {
+  stagefields (_state) {
     return (flowstageid) => {
-      const entry = _.find(state.flowfields, (entry, thisflowstageid) => { return parseInt(thisflowstageid) === flowstageid })
+      const entry = _.find(_state.flowfields, (entry, thisflowstageid) => { return parseInt(thisflowstageid) === flowstageid })
       return entry
     }
   },
-  submit (state) {
+  submit (_state) {
     return (pubid, submitid) => {
-      const flows = _.find(state.pubflows, (flows, thispubid) => { return parseInt(thispubid) === pubid })
+      const flows = _.find(_state.pubflows, (flows, thispubid) => { return parseInt(thispubid) === pubid })
       if (flows) {
         for (const flow of flows) {
           for (const submit of flow.submits) {
@@ -87,7 +87,7 @@ export const getters = {
       return false
     }
   },
-  error: state => state.error
+  error: _state => _state.error
 }
 
 export const actions = {
