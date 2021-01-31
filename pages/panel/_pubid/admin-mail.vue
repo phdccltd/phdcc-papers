@@ -177,7 +177,7 @@
         else if (iselectedrole === -2) {
           return 'Submitters'
         }
-        const pubrole = _.find(this.pubusers.pubroles, (pubrole) => { return pubrole.id === iselectedrole })
+        const pubrole = _.find(this.pubusers.pubroles, _pubrole => { return _pubrole.id === iselectedrole })
         return pubrole ? pubrole.name: ''
       },
       selectedrolecount() {

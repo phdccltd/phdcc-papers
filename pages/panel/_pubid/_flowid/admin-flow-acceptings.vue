@@ -133,7 +133,7 @@
         // Get flows and work out follow-on properties
         let flows = this.$store.getters['submits/flows'](this.pubid)
         if (!flows) return false
-        const flow = _.find(flows, flow => { return flow.id === this.flowid })
+        const flow = _.find(flows, _flow => { return _flow.id === this.flowid })
         return flow
       },
       acceptings() {
@@ -155,12 +155,12 @@
           accepting.opentext = accepting.open ? 'OPEN FOR SUBMISSIONS' : 'NOT OPEN FOR SUBMISSIONS'
 
           accepting.flowstagename = 'NOT-FOUND'
-          const stage = _.find(flow.stages, stage => { return stage.id === accepting.flowstageId })
+          const stage = _.find(flow.stages, _stage => { return _stage.id === accepting.flowstageId })
           if (stage) accepting.flowstagename = stage.name
           
           accepting.flowstatusname = ""
           if (accepting.flowstatusId) {
-            const status = _.find(flow.statuses, status => { return status.id === accepting.flowstatusId })
+            const status = _.find(flow.statuses, _status => { return _status.id === accepting.flowstatusId })
             if (status) accepting.flowstatusname = 'IF AT STATUS '+status.status
             else accepting.flowstatusname = 'IF AT: STATUS NOT FOUND: ' + accepting.flowstatusId
           }

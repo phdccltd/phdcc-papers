@@ -105,7 +105,7 @@
       flow() {
         const flows = this.$store.getters['submits/flows'](this.pubid)
         if (!flows) return false
-        const flow = _.find(flows, flow => { return flow.id === this.flowid })
+        const flow = _.find(flows, _flow => { return _flow.id === this.flowid })
         return flow
       },
       submit() {

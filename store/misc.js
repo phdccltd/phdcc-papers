@@ -5,16 +5,16 @@ export const state = () => ({
 })
 
 export const mutations = {
-  set (state, params) {
-    Vue.set(state.items, params.key, params.value)
+  set (_state, params) {
+    Vue.set(_state.items, params.key, params.value)
   },
-  clearAll (state) {
-    state.items = {}
+  clearAll (_state) {
+    _state.items = {}
   }
 }
 
 export const getters = {
-  get: state => key => state.items[key]
+  get: _state => key => _state.items[key]
 }
 
 export const actions = {
