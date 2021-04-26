@@ -7,6 +7,15 @@ export default class pubAPI extends BaseAPI {
     return this.$get('/pubs', params)
   }
 
+  async addPub (pubname, pubdescr) {
+    const data = {
+      pubname,
+      pubdescr
+    }
+    const { ok } = await this.$post('/pubs', data)
+    return ok
+  }
+
   /// //////////
   // POST bulk op: for all submits at FROM status, add new TO status
   async bulkSubmitStatusUpdate (pubid, fromstatus, tostatus) {

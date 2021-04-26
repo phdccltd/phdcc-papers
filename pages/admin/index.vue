@@ -6,6 +6,30 @@
     <div class="mt-2">
       <b-btn variant="outline-success" to="/admin/site-pages" class="ml-2">Site pages</b-btn>
     </div>
+    <div class="mt-2">
+      <b-btn @click="addpub()" variant="outline-success" class="ml-2">Add publication</b-btn>
+    </div>
+    <b-modal id="bv-modal-add-pub" size="lg" centered @ok="okAddPub" title="Add publication">
+      <form ref="form" @submit.stop.prevent>
+        <b-form-group label="Name"
+                      label-for="pubname"
+                      label-cols-sm="2">
+          <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="Description"
+                      label-for="pubdescr"
+                      label-cols-sm="2">
+          <b-form-textarea id="pubdescr"
+                           v-model="pubdescr"
+                           rows="3"
+                           max-rows="10"
+                           style="overflow-y: auto;"
+                           placeholder="Required"
+                           required>
+          </b-form-textarea>
+        </b-form-group>
+      </form>
+    </b-modal>
   </div>
 </template>
 
@@ -25,6 +49,8 @@
       return {
         error: '',
         message: '',
+        pubname: '',
+        pubdescr: ''
       }
     },
 
@@ -42,6 +68,37 @@
     },
 
     methods: {
+      /* ************************ */
+      addpub() {
+        this.pubname = ''
+        this.pubdescr = ''
+        this.$bvModal.show('bv-modal-add-pub')
+      },
+      /* ************************ */
+      async okAddPub(bvModalEvt) {
+        //console.log('okAddPub', this.pubname, this.pubdescr)
+        bvModalEvt.preventDefault()
+        try {
+          this.pubname = this.pubname.trim()
+          this.pubdescr = this.pubdescr.trim()
+          if (this.pubname.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication name')
+          if (this.pubdescr.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication description')
+
+          const ok = await this.$api.pub.addPub(this.pubname, this.pubdescr)
+
+          if (ok) {
+            this.$store.dispatch('pubs/fetch')
+            this.$nextTick(() => {
+              this.$bvModal.hide('bv-modal-add-pub')
+              this.$bvModal.msgBoxOk('Publication added')
+            })
+          } else {
+            await this.$bvModal.msgBoxOk('Add went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          }
+        } catch (e) {
+          await this.$bvModal.msgBoxOk('Error adding publication: ' + e.message)
+        }
+      }
     },
 
     head() {

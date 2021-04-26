@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="'container'+($auth.user && $auth.user.masquerading ? ' alert-warning':'')">
+    <div :class="'container'+($auth.user && $auth.user.super ? ' header-super' : $auth.user && $auth.user.masquerading ? ' header-masquerading':'')">
       <div class="border border-primary rounded p-3">
         <div class="float-right">
           <div v-if="$auth.loggedIn">
