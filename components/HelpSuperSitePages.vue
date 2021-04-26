@@ -9,7 +9,7 @@
         <strong>{{custom}}</strong>
       </p>
       <p>
-        Use this page to change the extra information pages on your site
+        Use this page to change the extra information pages on this site
       </p>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
