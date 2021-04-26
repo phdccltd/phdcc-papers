@@ -1,21 +1,25 @@
 <template>
   <!-- SUPER-ADMIN PAGE -->
   <div>
-    <HelpAdmin />
+    <HelpSuper />
     <Messages :error="error" :message="message" />
+    <div class="mt-2">
+      <b-btn variant="outline-success" to="/admin/site-pages" class="ml-2">Site pages</b-btn>
+    </div>
   </div>
 </template>
 
 <script>
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
   import Messages from '~/components/Messages'
-  import HelpAdmin from '~/components/HelpAdmin'
+  import HelpSuper from '~/components/HelpSuper'
 
-  page.title = 'Site admin'
+  const pagetitle = 'Site admin'
+  page.title = pagetitle
 
   export default {
     middleware: 'authsuper',
-    components: { Messages, HelpAdmin },
+    components: { Messages, HelpSuper },
 
     data({ app, params, store }) {
       return {
@@ -29,8 +33,9 @@
       this.message = ''
       this.$store.dispatch('pubs/clearError')
       this.$store.dispatch('pubs/fetch')
-      this.$store.commit("page/setTitle", page.title)
-      document.title = page.title
+      this.$store.commit("page/setTitle", pagetitle)
+      document.title = pagetitle
+      page.title = pagetitle
     },
 
     computed: {
@@ -41,7 +46,7 @@
 
     head() {
       return {
-        title: page.title,
+        title: pagetitle
       }
     }
   }

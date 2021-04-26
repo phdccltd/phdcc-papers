@@ -27,7 +27,7 @@
 <script>
   // http://sahatyalkabov.com/how-to-implement-password-reset-in-nodejs/
   import Messages from '~/components/Messages'
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
 
   page.title = 'Forgot password'
 

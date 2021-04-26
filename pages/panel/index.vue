@@ -29,7 +29,7 @@
 </template>
 
 <script>
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
   import Messages from '~/components/Messages'
   import HelpHome from '~/components/HelpHome'
 

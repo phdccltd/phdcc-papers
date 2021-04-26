@@ -80,7 +80,7 @@
   const _ = require('lodash/core')
   import HelpAdminFlowAcceptings from '~/components/HelpAdminFlowAcceptings'
   import Messages from '~/components/Messages'
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
   page.title = ''
   export default {
     middleware: 'authuser',

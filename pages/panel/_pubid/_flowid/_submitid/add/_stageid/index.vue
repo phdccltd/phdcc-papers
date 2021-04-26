@@ -7,7 +7,7 @@
 
 <script>
   import EntryForm from '~/components/EntryForm'
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
 
   page.title = ''
 

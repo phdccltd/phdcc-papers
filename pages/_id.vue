@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
 
   page.title = 'Welcome'
 

@@ -55,7 +55,7 @@
   import HelpAdminBulk from '~/components/HelpAdminBulk'
   import Messages from '~/components/Messages'
   
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
 
   page.title = ''
 

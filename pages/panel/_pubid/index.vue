@@ -17,7 +17,7 @@
   import Messages from '~/components/Messages'
   import PublicationSubmissions from '~/components/PublicationSubmissions'
   
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
 
   page.title = ''
 

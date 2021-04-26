@@ -155,7 +155,7 @@
   import FormText from '~/components/FormText'
   import FormYes from '~/components/FormYes'
   import FormYesNo from '~/components/FormYesNo'
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
 
   export default {
     components: { HelpAddStage, HelpAddSubmit, HelpEntry, Messages, SubmitSummary, PaperDate, FormFile, FormInput, FormLookup, FormLookups, FormRoleLookups, FormText, FormYes, FormYesNo },

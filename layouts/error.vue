@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
   page.title = 'Error'
 
   export default {

@@ -69,7 +69,7 @@
   import SubmitSummary from '~/components/SubmitSummary'
   import PaperDate from '~/components/PaperDate'
   const _ = require('lodash/core')
-  import { page } from '@/utils/phdcc'
+  import { page } from '@/utils/page'
 
   export default {
     components: { SubmitSummary, PaperDate, },
