@@ -5,7 +5,7 @@
     <b-alert v-if="fatalerror" variant="warning" :show="true">
       ERROR {{fatalerror}}
     </b-alert>
-    <div v-else-if="!pub.isowner">
+    <div v-else-if="!(pub.isowner || $auth.user.super)">
       You cannot administer this publication
     </div>
     <div v-else>
@@ -41,12 +41,12 @@
           </h3>
           <b-container v-if="mailtemplate.visible">
             <b-row no-gutters>
-                <b-col sm="2">
-                  Subject
-                </b-col>
-                <b-col sm="10" class="formfieldview">
-                  {{mailtemplate.subject}}
-                </b-col>
+              <b-col sm="2">
+                Subject
+              </b-col>
+              <b-col sm="10" class="formfieldview">
+                {{mailtemplate.subject}}
+              </b-col>
             </b-row>
             <b-row no-gutters>
               <b-col sm="2">

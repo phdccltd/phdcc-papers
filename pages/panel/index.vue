@@ -9,7 +9,7 @@
       <Messages :error="error" :message="message" />
       <h2>{{ subtitle }}</h2>
       <b-container v-for="(pub, index) in pubs" :key="index" class="mt-2 pl-0">
-        <b-row no-gutters>
+        <b-row no-gutters :class="'p-2 '+(pub.owner?'pub-owner':(pub.notowner?'pub-notowner':($auth.user.super?'pub-super':'pub-weird')))">
           <b-col sm="3">
             <b-btn variant="outline-primary" :to="'/panel/'+pub.id">
               {{ pub.name }}
@@ -18,7 +18,6 @@
           <b-col sm="9">
             {{ pub.description }}
           </b-col>
-          {{ pub.tz }}
         </b-row>
       </b-container>
       <div v-if="nowtavailable">

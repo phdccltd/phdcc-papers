@@ -436,11 +436,26 @@ form .col-form-label{
 }
 
 .header-super {
-  background-color: lightyellow;
+  background-color: $color-super;
   border-color: $color-orange--dark;
 }
 
 .header-masquerading {
   background-color: #fff3cd;
   border-color: #ffeeba;
+}
+
+.pub-owner {
+  background-color: $color-author;
+}
+.pub-notowner {
+  background-color: white;
+}
+.pub-super {
+  background-color: $color-super;
+}
+.pub-weird {
+  background-color: 
+
+    $color-weird;
 }

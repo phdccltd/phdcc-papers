@@ -49,6 +49,10 @@ export const actions = {
       // console.log('store fetch pubs.actions')
       commit('setError', false)
       const { pubs } = await this.$api.pub.fetch({})
+      for (const pub of pubs) {
+        pub.owner = Boolean(_.find(pub.myroles, mr => { return mr.isowner }))
+        pub.notowner = pub.owner ? false : pub.myroles.length > 0
+      }
       // console.log('fetch setpubs', pubs)
       commit('setPubs', pubs)
     } catch (e) {

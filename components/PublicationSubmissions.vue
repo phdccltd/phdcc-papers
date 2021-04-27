@@ -2,7 +2,7 @@
   <!-- Main code to display submits etc for a publication, ie for all flows -->
   <!-- Displays all the submits that a user can see ie those they've written and those they can grade - or all for owners -->
   <div>
-    <div v-if="pub.isowner" class="pl-1 mt-1 mb-1">
+    <div v-if="pub.isowner || $auth.user.super" class="pl-1 mt-1 mb-1">
       <strong>ADMIN</strong>
       <b-btn variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>

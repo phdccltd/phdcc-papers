@@ -4,7 +4,7 @@
       <div class="border border-primary rounded p-3">
         <div class="float-right">
           <div v-if="$auth.loggedIn">
-            <b-btn to="/admin" v-if="$auth.user.super" variant="outline-warning" class="mr-2">Super</b-btn>
+            <b-btn to="/admin" v-if="$auth.user.super" variant="outline-danger" class="mr-2">Super</b-btn>
             <b-btn to="/account" variant="outline-secondary" class="mr-2">{{ $auth.user.name }}</b-btn>
             <b-btn @click="logout()" variant="outline-secondary" class="mr-2" title="Logout">
               <v-icon name="sign-out-alt" scale="1" /><br />

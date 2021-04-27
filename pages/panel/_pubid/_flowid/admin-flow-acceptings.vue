@@ -5,7 +5,7 @@
     <b-alert v-if="fatalerror" variant="warning" :show="true">
       ERROR {{fatalerror}}
     </b-alert>
-    <div v-else-if="!pub.isowner">
+    <div v-else-if="!(pub.isowner || $auth.user.super)">
       You cannot administer this publication flow
     </div>
     <div v-else>

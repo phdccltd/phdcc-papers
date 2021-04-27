@@ -5,13 +5,12 @@
     <b-alert v-if="fatalerror" variant="warning" :show="true">
       ERROR {{fatalerror}}
     </b-alert>
-    <div v-else-if="!pub.isowner">
+    <div v-else-if="!(pub.isowner || $auth.user.super)">
       You cannot administer this publication
     </div>
     <div v-else>
       <HelpAdminBulk />
       <Messages :error="error" :message="message" />
-
       <b-list-group>
         <b-list-group-item>
           <div class="mb-2">
