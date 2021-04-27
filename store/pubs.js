@@ -52,6 +52,7 @@ export const actions = {
       for (const pub of pubs) {
         pub.owner = Boolean(_.find(pub.myroles, mr => { return mr.isowner }))
         pub.notowner = pub.owner ? false : pub.myroles.length > 0
+        pub.superedit = false
       }
       // console.log('fetch setpubs', pubs)
       commit('setPubs', pubs)

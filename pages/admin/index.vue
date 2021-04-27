@@ -16,21 +16,36 @@
           <b-btn @click="addpub()" variant="outline-success" class="mr-2 float-right">Add publication</b-btn>
         </h2>
         <b-container class="p-0">
-          <b-row v-for="(pub, index) in pubs" :key="index"
-                 style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
-                 no-gutters :class="'p-2 '+(pub.owner?'pub-owner':(pub.notowner?'pub-notowner':($auth.user.super?'pub-super':'pub-weird')))">
-            <b-col sm="3">
-              <b-btn variant="outline-primary" :to="'/panel/'+pub.id">
-                {{ pub.name }}
-              </b-btn>
-            </b-col>
-            <b-col sm="2">
-              <strong v-if="!pub.enabled">DISABLED</strong>
-            </b-col>
-            <b-col sm="7">
-              {{ pub.description }}
-            </b-col>
-          </b-row>
+          <div v-for="(pub, index) in pubs" :key="index">
+            <b-row style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
+                   no-gutters :class="'p-2 '+(pub.owner?'pub-owner':(pub.notowner?'pub-notowner':($auth.user.super?'pub-super':'pub-weird')))">
+              <b-col sm="1">
+                <b-btn variant="link" @click="togglePubEdit(pub)">
+                  <v-icon v-if="pub.superedit" name="minus-square" scale="2" class="btn-outline-warning" />
+                  <v-icon v-if="!pub.superedit" name="plus-square" scale="2" class="btn-outline-warning" />
+                </b-btn>
+              </b-col>
+              <b-col sm="3">
+                <b-btn variant="outline-primary" :to="'/panel/'+pub.id">
+                  {{ pub.name }}
+                </b-btn>
+              </b-col>
+              <b-col sm="6">
+                {{ pub.description }}
+              </b-col>
+              <b-col sm="2">
+                <strong v-if="!pub.enabled">DISABLED</strong>
+              </b-col>
+            </b-row>
+            <b-row v-if="pub.superedit" style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
+                   no-gutters class="p-2">
+              <b-col sm="12">
+                <b-btn variant="outline-danger" @click="togglePubEnable(pub)">
+                  {{ pub.enabled?'DISABLE':'ENABLE'}}
+                </b-btn>
+              </b-col>
+            </b-row>
+          </div>
         </b-container>
       </b-list-group-item>
     </b-list-group>
@@ -131,7 +146,18 @@
         } catch (e) {
           await this.$bvModal.msgBoxOk('Error adding publication: ' + e.message)
         }
+      },
+      togglePubEdit(pub) {
+        pub.superedit = !pub.superedit
+      },
+      async togglePubEnable(pub) {
+        console.log('togglePubEnable')
+        const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?')
+        if (OK) {
+          pub.enabled = !pub.enabled
+        }
       }
+      
     },
 
     head() {
