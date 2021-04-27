@@ -7,8 +7,37 @@
       <b-btn variant="outline-success" to="/admin/site-pages" class="ml-2">Site pages</b-btn>
     </div>
     <div class="mt-2">
-      <b-btn @click="addpub()" variant="outline-success" class="ml-2">Add publication</b-btn>
     </div>
+
+    <b-list-group>
+      <b-list-group-item class="flow">
+        <h2 class="bg-yellow pl-2 pt-2">
+          Publications
+          <b-btn @click="addpub()" variant="outline-success" class="mr-2 float-right">Add publication</b-btn>
+        </h2>
+        <b-container class="p-0">
+          <b-row v-for="(pub, index) in pubs" :key="index"
+                 style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
+                 no-gutters :class="'p-2 '+(pub.owner?'pub-owner':(pub.notowner?'pub-notowner':($auth.user.super?'pub-super':'pub-weird')))">
+            <b-col sm="3">
+              <b-btn variant="outline-primary" :to="'/panel/'+pub.id">
+                {{ pub.name }}
+              </b-btn>
+            </b-col>
+            <b-col sm="2">
+              <strong v-if="!pub.enabled">DISABLED</strong>
+            </b-col>
+            <b-col sm="7">
+              {{ pub.description }}
+            </b-col>
+          </b-row>
+        </b-container>
+      </b-list-group-item>
+    </b-list-group>
+
+
+
+
     <b-modal id="bv-modal-add-pub" size="lg" centered @ok="okAddPub" title="Add publication">
       <form ref="form" @submit.stop.prevent>
         <b-form-group label="Name"
@@ -65,6 +94,10 @@
     },
 
     computed: {
+      pubs() {
+        const pubs = this.$store.getters['pubs/get']
+        return pubs
+      }
     },
 
     methods: {

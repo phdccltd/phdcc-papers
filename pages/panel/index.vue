@@ -16,6 +16,7 @@
             </b-btn>
           </b-col>
           <b-col sm="9">
+            <strong v-if="!pub.enabled">DISABLED FOR USERS<br/></strong>
             {{ pub.description }}
           </b-col>
         </b-row>
