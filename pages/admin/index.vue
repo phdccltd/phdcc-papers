@@ -166,7 +166,19 @@
         console.log('deletePub')
         const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this publication?', { title: 'CHECK THAT ALL TRACES REMOVED', okVariant: 'danger', okTitle: 'YES', cancelTitle: 'NO',})
         if (OK) {
-          await this.$bvModal.msgBoxOk('Not implemented yet')
+          try {
+            const ok = await this.$api.pub.deletePub(pub.id)
+            if (ok) {
+              this.$store.dispatch('pubs/fetch')
+              this.$nextTick(() => {
+                this.$bvModal.msgBoxOk('Publication deleted')
+              })
+            } else {
+              await this.$bvModal.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+            }
+          } catch (e) {
+            await this.$bvModal.msgBoxOk('Error deleting publication: ' + e.message)
+          }
         }
       }
     },

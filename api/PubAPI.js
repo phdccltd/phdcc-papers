@@ -16,6 +16,12 @@ export default class pubAPI extends BaseAPI {
     return ok
   }
 
+  async deletePub(pubid) {
+    console.log('deletePub', pubid)
+    const { ok } = await this.$del('/pubs/' + pubid)
+    return ok
+  }
+
   /// //////////
   // POST bulk op: for all submits at FROM status, add new TO status
   async bulkSubmitStatusUpdate (pubid, fromstatus, tostatus) {
