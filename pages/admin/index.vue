@@ -158,8 +158,17 @@
         console.log('togglePubEnable')
         const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?')
         if (OK) {
-          pub.enabled = !pub.enabled
-          await this.$bvModal.msgBoxOk('Not really done')
+          try {
+            const ok = await this.$api.pub.toggleEnablePub(pub.id, !pub.enabled)
+            if (ok) {
+              pub.enabled = !pub.enabled
+              this.$store.dispatch('pubs/fetch')
+            } else {
+              await this.$bvModal.msgBoxOk('Toggling enable went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+            }
+          } catch (e) {
+            await this.$bvModal.msgBoxOk('Error toggling enable on publication: ' + e.message)
+          }
         }
       },
       async deletePub(pub) {
