@@ -16,13 +16,13 @@ export default class pubAPI extends BaseAPI {
     return ok
   }
 
-  async deletePub(pubid) {
+  async deletePub (pubid) {
     console.log('deletePub', pubid)
     const { ok } = await this.$del('/pubs/' + pubid)
     return ok
   }
 
-  async toggleEnablePub(pubid, enabled) {
+  async toggleEnablePub (pubid, enabled) {
     const data = {
       enabled
     }
