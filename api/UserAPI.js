@@ -8,6 +8,10 @@ export default class userAPI extends BaseAPI {
     return users
   } */
 
+  getUsers() {
+    return this.$get('/users')
+  }
+
   getPubUsers (pubid) {
     return this.$get('/users/pub/' + pubid)
   }

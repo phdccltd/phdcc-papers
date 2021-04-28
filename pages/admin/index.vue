@@ -40,12 +40,19 @@
             <b-row v-if="pub.superedit" style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
                    no-gutters class="p-2">
               <b-col sm="12">
-                <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
-                  {{ pub.enabled?'DISABLE':'ENABLE'}}
-                </b-btn>
-                <b-btn variant="outline-danger" @click="deletePub(pub)" class="float-right">
-                  DELETE
-                </b-btn>
+                <div>
+                  <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
+                    {{ pub.enabled?'DISABLE':'ENABLE'}}
+                  </b-btn>
+                  <b-btn variant="outline-danger" @click="deletePub(pub)" class="float-right">
+                    DELETE
+                  </b-btn>
+                </div>
+                <div>
+                  <div v-for="(user, index) in allusers" :key="index">
+                    {{user.username}}
+                  </div>
+                </div>
               </b-col>
             </b-row>
           </div>
@@ -107,12 +114,17 @@
       this.message = ''
       this.$store.dispatch('pubs/clearError')
       this.$store.dispatch('pubs/fetch')
+      this.$store.dispatch('users/clearError')
+      this.$store.dispatch('users/fetchallusers')
       this.$store.commit("page/setTitle", pagetitle)
       document.title = pagetitle
       page.title = pagetitle
     },
 
     computed: {
+      allusers() {
+        return this.$store.getters['users/getall']
+      },
       pubs() {
         const pubs = this.$store.getters['pubs/get']
         return pubs

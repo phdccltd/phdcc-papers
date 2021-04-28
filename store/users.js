@@ -3,11 +3,16 @@ import Vue from 'vue'
 const _ = require('lodash/core')
 
 export const state = () => ({
+  allusers: [],
   pubpubusers: {},
   error: false
 })
 
 export const mutations = {
+  setAllUsers(_state, allusers) {
+    // console.log('setUsers', allusers)
+    _state.allusers = allusers
+  },
   addPubUsers (_state, puholder) {
     // console.log('addPubFlow', pubflow)
     Vue.set(_state.pubpubusers, puholder.pubid, puholder.pubusers)
@@ -24,6 +29,10 @@ export const mutations = {
 }
 
 export const getters = {
+  getall(_state) {
+    // console.log('getter users.getall')
+    return _state.allusers
+  },
   pubusers (_state) {
     // console.log('getter users.pubusers.pubid')
     return (pubid) => {
@@ -36,6 +45,17 @@ export const getters = {
 }
 
 export const actions = {
+  async fetchallusers({ commit }) {
+    try {
+      // console.log('store fetchallusers users.actions', pubid)
+      const { allusers } = await this.$api.user.getUsers()
+      commit('setAllUsers', allusers)
+    } catch (e) {
+      console.log('users fetchallusers', e.message)
+      commit('setError', e.message)
+    }
+  },
+
   async fetchpubusers ({ commit }, pubid) {
     try {
       // console.log('store fetchpubusers users.actions', pubid)
