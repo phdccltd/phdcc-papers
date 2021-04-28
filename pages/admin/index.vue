@@ -34,14 +34,17 @@
                 {{ pub.description }}
               </b-col>
               <b-col sm="2">
-                <strong v-if="!pub.enabled">DISABLED</strong>
+                <b-badge v-if="!pub.enabled" pill variant="danger">DISABLED</b-badge>
               </b-col>
             </b-row>
             <b-row v-if="pub.superedit" style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
                    no-gutters class="p-2">
               <b-col sm="12">
-                <b-btn variant="outline-danger" @click="togglePubEnable(pub)">
+                <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
                   {{ pub.enabled?'DISABLE':'ENABLE'}}
+                </b-btn>
+                <b-btn variant="outline-danger" @click="deletePub(pub)" class="float-right">
+                  DELETE
                 </b-btn>
               </b-col>
             </b-row>
@@ -81,13 +84,14 @@
   import { page } from '@/utils/page'
   import Messages from '~/components/Messages'
   import HelpSuper from '~/components/HelpSuper'
+  import { BBadge } from 'bootstrap-vue'
 
   const pagetitle = 'Site admin'
   page.title = pagetitle
 
   export default {
     middleware: 'authsuper',
-    components: { Messages, HelpSuper },
+    components: { Messages, HelpSuper, BBadge },
 
     data({ app, params, store }) {
       return {
@@ -155,9 +159,16 @@
         const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?')
         if (OK) {
           pub.enabled = !pub.enabled
+          await this.$bvModal.msgBoxOk('Not really done')
+        }
+      },
+      async deletePub(pub) {
+        console.log('deletePub')
+        const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this publication?', { title: 'CHECK THAT ALL TRACES REMOVED', okVariant: 'danger', okTitle: 'YES', cancelTitle: 'NO',})
+        if (OK) {
+          await this.$bvModal.msgBoxOk('Not implemented yet')
         }
       }
-      
     },
 
     head() {

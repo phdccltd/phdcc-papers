@@ -16,7 +16,8 @@
             </b-btn>
           </b-col>
           <b-col sm="9">
-            <strong v-if="!pub.enabled">DISABLED FOR USERS<br/></strong>
+            <b-badge v-if="!pub.enabled" pill variant="danger">DISABLED FOR USERS</b-badge>
+            <br v-if="!pub.enabled" />
             {{ pub.description }}
           </b-col>
         </b-row>
@@ -32,15 +33,13 @@
   import { page } from '@/utils/page'
   import Messages from '~/components/Messages'
   import HelpHome from '~/components/HelpHome'
+  import { BBadge } from 'bootstrap-vue'
 
   page.title = 'Publications'
 
   export default {
     middleware: 'authuser',
-    components: {
-      Messages,
-      HelpHome,
-    },
+    components: { Messages, HelpHome, BBadge },
 
     /*async asyncData({ req, res }) { // this (component) not available
       //console.log('panel index asyncData')
