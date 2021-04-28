@@ -11,6 +11,17 @@
     <div v-else>
       <HelpAdminSetup />
       <Messages :error="error" :message="message" />
+      <div class="mb-2">
+        <b-badge v-if="!pub.enabled" pill variant="danger">DISABLED FOR USERS</b-badge>
+      </div>
+      <div>
+        <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
+          {{ pub.enabled?'DISABLE':'ENABLE'}}
+        </b-btn>
+        <b-btn variant="outline-danger" @click="deletePub(pub)" class="float-right">
+          DELETE
+        </b-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -19,14 +30,14 @@
   const _ = require('lodash/core')
   import HelpAdminSetup from '~/components/HelpAdminSetup'
   import Messages from '~/components/Messages'
-  
+  import { BBadge } from 'bootstrap-vue'
   import { page } from '@/utils/page'
 
   page.title = ''
 
   export default {
     middleware: 'authuser',
-    components: { Messages, HelpAdminSetup },
+    components: { Messages, HelpAdminSetup, BBadge },
     data({ app, params, store }) {
       //console.log('_id data')
       return {
@@ -70,6 +81,44 @@
       /* ************************ */
       setMessage(msg) {
         this.message = msg
+      },
+
+      async togglePubEnable(pub) {
+        console.log('togglePubEnable')
+        const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?')
+        if (OK) {
+          try {
+            const ok = await this.$api.pub.toggleEnablePub(pub.id, !pub.enabled)
+            if (ok) {
+              // pub.enabled = !pub.enabled
+              this.$store.dispatch('pubs/fetch')
+            } else {
+              await this.$bvModal.msgBoxOk('Toggling enable went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+            }
+          } catch (e) {
+            await this.$bvModal.msgBoxOk('Error toggling enable on publication: ' + e.message)
+          }
+        }
+      },
+
+      async deletePub(pub) {
+        console.log('deletePub')
+        const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this publication?', { title: 'CHECK THAT ALL TRACES REMOVED', okVariant: 'danger', okTitle: 'YES', cancelTitle: 'NO', })
+        if (OK) {
+          try {
+            const ok = await this.$api.pub.deletePub(pub.id)
+            if (ok) {
+              this.$store.dispatch('pubs/fetch')
+              this.$nextTick(() => {
+                this.$bvModal.msgBoxOk('Publication deleted')
+              })
+            } else {
+              await this.$bvModal.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+            }
+          } catch (e) {
+            await this.$bvModal.msgBoxOk('Error deleting publication: ' + e.message)
+          }
+        }
       }
     },
     /* ************************ */
