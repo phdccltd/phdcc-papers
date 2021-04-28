@@ -49,9 +49,9 @@
                   </b-btn>
                 </div>
                 <div>
-                  <div v-for="(user, index) in allusers" :key="index">
-                    {{user.username}}
-                  </div>
+                  <b-form-group label="Add owner">
+                    <b-form-select v-model="pub.addownerid" :options="allusersoptions"></b-form-select>
+                  </b-form-group>
                 </div>
               </b-col>
             </b-row>
@@ -128,6 +128,14 @@
       pubs() {
         const pubs = this.$store.getters['pubs/get']
         return pubs
+      },
+      allusersoptions() {
+        const allusers = this.$store.getters['users/getall']
+        const allusersoptions = []
+        for (const user of allusers) {
+          allusersoptions.push({ value: user.id, text: user.username })
+        }
+        return allusersoptions
       }
     },
 
