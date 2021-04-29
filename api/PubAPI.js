@@ -30,7 +30,7 @@ export default class pubAPI extends BaseAPI {
     return ok
   }
 
-  async addPubRoleOwner(pubid) {
+  async addPubRoleOwner (pubid) {
     const data = {
       addPubRoleOwner: true
     }
@@ -38,14 +38,13 @@ export default class pubAPI extends BaseAPI {
     return ok
   }
 
-  async addPubOwner(pubid,userid) {
+  async addPubOwner (pubid, userid) {
     const data = {
       addPubOwner: userid
     }
     const { ok } = await this.$post('/pubs/' + pubid, data)
     return ok
   }
-  
 
   /// //////////
   // POST bulk op: for all submits at FROM status, add new TO status

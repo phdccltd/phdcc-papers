@@ -9,7 +9,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-  setAllUsers(_state, allusers) {
+  setAllUsers (_state, allusers) {
     // console.log('setUsers', allusers)
     _state.allusers = allusers
   },
@@ -29,7 +29,7 @@ export const mutations = {
 }
 
 export const getters = {
-  getall(_state) {
+  getall (_state) {
     // console.log('getter users.getall')
     return _state.allusers
   },
@@ -45,7 +45,7 @@ export const getters = {
 }
 
 export const actions = {
-  async fetchallusers({ commit }) {
+  async fetchallusers ({ commit }) {
     try {
       // console.log('store fetchallusers users.actions', pubid)
       const { allusers } = await this.$api.user.getUsers()

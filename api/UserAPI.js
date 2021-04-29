@@ -8,7 +8,7 @@ export default class userAPI extends BaseAPI {
     return users
   } */
 
-  getUsers() {
+  getUsers () {
     return this.$get('/users')
   }
 
