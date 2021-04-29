@@ -46,15 +46,20 @@
             <div v-if="pub.superedit">
               <b-row style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
                      no-gutters class="p-2">
-                <b-col sm="12">
-                  <div>
-                    <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
-                      {{ pub.enabled?'DISABLE':'ENABLE'}}
-                    </b-btn>
-                    <b-btn variant="outline-danger" @click="deletePub(pub)" class="float-right">
-                      DELETE
-                    </b-btn>
-                  </div>
+                <b-col sm="4">
+                  <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
+                    {{ pub.enabled?'DISABLE':'ENABLE'}}
+                  </b-btn>
+                </b-col>
+                <b-col sm="4">
+                  <b-btn variant="outline-danger" @click="duplicatePub(pub)">
+                    Duplicate
+                  </b-btn>
+                </b-col>
+                <b-col sm="4">
+                  <b-btn variant="outline-danger" @click="deletePub(pub)" class="text-right">
+                    DELETE
+                  </b-btn>
                 </b-col>
               </b-row>
 
@@ -73,13 +78,19 @@
                   </b-list-group>
                 </b-col>
                 <b-col sm="6">
-                  <div v-if="pub.hasownerrole">
-                    <b-form inline @submit.stop.prevent>
-                      <label class="ml-2 mr-2">User:</label>
-                      <b-form-select v-model="pub.addownerid" :options="allusersoptions" class="mr-2"></b-form-select>
-                      <b-btn variant="outline-success" @click="addPubOwner(pub)">
-                        Add owner
-                      </b-btn>
+                  <div v-if="pub.hasanyrole">
+                    <b-form @submit.stop.prevent class="ml-5">
+                      <b-form-group label="User:" label-cols-sm="2">
+                        <b-form-select v-model="pub.adduserid" :options="allusersoptions" class="mr-2"></b-form-select>
+                      </b-form-group>
+                      <b-form-group label="Role:" label-cols-sm="2">
+                        <b-form-select v-model="pub.addroleid" :options="allrolesoptions(pub.id)" class="mr-2"></b-form-select>
+                      </b-form-group>
+                      <b-form-group label="" label-cols-sm="3">
+                        <b-btn variant="outline-success" @click="addPubRole(pub)">
+                          Add role
+                        </b-btn>
+                      </b-form-group>
                     </b-form>
                   </div>
                   <div v-else>
@@ -95,8 +106,6 @@
         </b-container>
       </b-list-group-item>
     </b-list-group>
-
-
 
 
     <b-modal id="bv-modal-add-pub" size="lg" centered @ok="okAddPub" title="Add publication">
@@ -117,6 +126,24 @@
                            placeholder="Required"
                            required>
           </b-form-textarea>
+        </b-form-group>
+      </form>
+    </b-modal>
+
+    <b-modal id="bv-modal-dup-pub" size="lg" centered @ok="okDupPub" title="Duplicate publication">
+      <form ref="form" @submit.stop.prevent>
+        <ul>
+          <li>
+            This function will duplicate a publication, ie copy the set up but not copy the submissions.
+          </li>
+          <li>
+            You can choose whether or not to copy the users and their roles to the new publication.
+          </li>
+        </ul>
+        <b-form-group label="Name"
+                      label-for="pubname"
+                      label-cols-sm="2">
+          <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
         </b-form-group>
       </form>
     </b-modal>
@@ -141,7 +168,8 @@
         error: '',
         message: '',
         pubname: '',
-        pubdescr: ''
+        pubdescr: '',
+        pubdupusers: true
       }
     },
 
@@ -168,6 +196,21 @@
           allusersoptions.push({ value: user.id, text: user.username + ' - ' + user.email })
         }
         return allusersoptions
+      },
+      allrolesoptions() {
+        return (pubid) => {
+          const pubs = this.$store.getters['pubs/get']
+          const allrolesoptions = []
+          for (const pub of Object.values(pubs)) {
+            if (pub.id === pubid) {
+              for (const pubrole of pub.pubroles) {
+                allrolesoptions.push({ value: pubrole.id, text: pubrole.name })
+              }
+              break
+            }
+          }
+          return allrolesoptions
+        }
       }
     },
 
@@ -254,10 +297,11 @@
           await this.$bvModal.msgBoxOk('Error adding owner role: ' + e.message)
         }
       },
-      async addPubOwner(pub) {
+      async addPubRole(pub) {
         try {
-          if (pub.addownerid === 0) return await this.$bvModal.msgBoxOk('Please select a user to add as an owner')
-          const ok = await this.$api.pub.addPubOwner(pub.id, pub.addownerid)
+          if (pub.adduserid === 0) return await this.$bvModal.msgBoxOk('Please select a user to add')
+          if (pub.addroleid === 0) return await this.$bvModal.msgBoxOk('Please select a role to add')
+          const ok = await this.$api.pub.addPubRole(pub.id, pub.adduserid, pub.addroleid)
           if (ok) {
             this.$store.dispatch('pubs/fetch')
           } else {
@@ -265,6 +309,33 @@
           }
         } catch (e) {
           await this.$bvModal.msgBoxOk('Error adding owner: ' + e.message)
+        }
+      },
+      duplicatePub(pub) {
+        this.pubname = pub.name+' COPY'
+        this.pubdupusers = true
+        this.$bvModal.show('bv-modal-dup-pub')
+      },
+      async okDupPub(bvModalEvt) {
+        //console.log('okDupPub', this.pubname)
+        bvModalEvt.preventDefault()
+        try {
+          this.pubname = this.pubname.trim()
+          if (this.pubname.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication name')
+
+          const ok = await this.$api.pub.duplicatePub(this.pubname)
+
+          if (ok) {
+            this.$store.dispatch('pubs/fetch')
+            this.$nextTick(() => {
+              this.$bvModal.hide('bv-modal-dup-pub')
+              this.$bvModal.msgBoxOk('Publication duplicated')
+            })
+          } else {
+            await this.$bvModal.msgBoxOk('Duplicate went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          }
+        } catch (e) {
+          await this.$bvModal.msgBoxOk('Error duplicating publication: ' + e.message)
         }
       }
     },

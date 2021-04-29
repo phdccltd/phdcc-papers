@@ -38,9 +38,10 @@ export default class pubAPI extends BaseAPI {
     return ok
   }
 
-  async addPubOwner (pubid, userid) {
+  async addPubRole (pubid, userid, roleid) {
     const data = {
-      addPubOwner: userid
+      addroleid: roleid,
+      addroleuserid: userid
     }
     const { ok } = await this.$post('/pubs/' + pubid, data)
     return ok

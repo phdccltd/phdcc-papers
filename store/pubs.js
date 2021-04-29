@@ -53,12 +53,11 @@ export const actions = {
         pub.owner = Boolean(_.find(pub.myroles, mr => { return mr.isowner }))
         pub.notowner = pub.owner ? false : (pub.myroles.length > 0)
         pub.superedit = false
-        pub.addownerid = 0
-        pub.hasownerrole = false
+        pub.adduserid = 0
+        pub.addroleid = 0
+        pub.hasanyrole = false
         if ('superpubroles' in pub) {
-          for (const superpubrole of pub.superpubroles) {
-            if (superpubrole.isowner) pub.hasownerrole = true
-          }
+          pub.hasanyrole = pub.superpubroles.length > 0
         }
       }
       // console.log('fetch setpubs', pubs)
