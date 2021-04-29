@@ -49,10 +49,17 @@ export const actions = {
       // console.log('store fetch pubs.actions')
       commit('setError', false)
       const { pubs } = await this.$api.pub.fetch({})
-      for (const pub of pubs) {
+      for (const pub of pubs) { // Add working variables here (so they are reactive)
         pub.owner = Boolean(_.find(pub.myroles, mr => { return mr.isowner }))
-        pub.notowner = pub.owner ? false : pub.myroles.length > 0
+        pub.notowner = pub.owner ? false : (pub.myroles.length > 0)
         pub.superedit = false
+        pub.addownerid = 0
+        pub.hasownerrole = false
+        if ('superpubroles' in pub) {
+          for (const superpubrole of pub.superpubroles) {
+            if (superpubrole.isowner) pub.hasownerrole = true
+          }
+        }
       }
       // console.log('fetch setpubs', pubs)
       commit('setPubs', pubs)

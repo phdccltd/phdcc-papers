@@ -3,11 +3,17 @@
   <div>
     <HelpSuper />
     <Messages :error="error" :message="message" />
-    <div class="mt-2">
-      <b-btn variant="outline-success" to="/admin/site-pages" class="ml-2">Site pages</b-btn>
-    </div>
-    <div class="mt-2">
-    </div>
+
+    <b-list-group>
+      <b-list-group-item class="flow">
+        <h2 class="bg-yellow pl-2 pt-2">
+          General
+        </h2>
+        <div class="mt-2 mb-2">
+          <b-btn variant="outline-success" to="/admin/site-pages" class="ml-2">Site pages</b-btn>
+        </div>
+      </b-list-group-item>
+    </b-list-group>
 
     <b-list-group>
       <b-list-group-item class="flow">
@@ -17,7 +23,7 @@
         </h2>
         <b-container class="p-0">
           <div v-for="(pub, index) in pubs" :key="index">
-            <b-row style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
+            <b-row style="border-top:1px solid rgba(0, 0, 0, 0.125);"
                    no-gutters :class="'p-2 '+(pub.owner?'pub-owner':(pub.notowner?'pub-notowner':($auth.user.super?'pub-super':'pub-weird')))">
               <b-col sm="1">
                 <b-btn variant="link" @click="togglePubEdit(pub)">
@@ -37,24 +43,54 @@
                 <b-badge v-if="!pub.enabled" pill variant="danger">DISABLED</b-badge>
               </b-col>
             </b-row>
-            <b-row v-if="pub.superedit" style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
-                   no-gutters class="p-2">
-              <b-col sm="12">
-                <div>
-                  <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
-                    {{ pub.enabled?'DISABLE':'ENABLE'}}
-                  </b-btn>
-                  <b-btn variant="outline-danger" @click="deletePub(pub)" class="float-right">
-                    DELETE
-                  </b-btn>
-                </div>
-                <div>
-                  <b-form-group label="Add owner">
-                    <b-form-select v-model="pub.addownerid" :options="allusersoptions"></b-form-select>
-                  </b-form-group>
-                </div>
-              </b-col>
-            </b-row>
+            <div v-if="pub.superedit">
+              <b-row style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
+                     no-gutters class="p-2">
+                <b-col sm="12">
+                  <div>
+                    <b-btn variant="outline-warning" @click="togglePubEnable(pub)">
+                      {{ pub.enabled?'DISABLE':'ENABLE'}}
+                    </b-btn>
+                    <b-btn variant="outline-danger" @click="deletePub(pub)" class="float-right">
+                      DELETE
+                    </b-btn>
+                  </div>
+                </b-col>
+              </b-row>
+
+              <b-row style="border-bottom:1px solid rgba(0, 0, 0, 0.125);"
+                     no-gutters class="p-2">
+                <b-col sm="6">
+                  <b-list-group>
+                    <b-list-group-item v-for="(superpubrole, index) in pub.superpubroles" :key="index">
+                      {{superpubrole.name}} &times; {{superpubrole.users.length}}
+                      <ul v-if="superpubrole.isowner" class="mb-0">
+                        <li v-for="(user, index2) in superpubrole.users" :key="index2">
+                          {{user.username}} - {{user.email}}
+                        </li>
+                      </ul>
+                    </b-list-group-item>
+                  </b-list-group>
+                </b-col>
+                <b-col sm="6">
+                  <div v-if="pub.hasownerrole">
+                    <b-form inline @submit.stop.prevent>
+                      <label class="ml-2 mr-2">User:</label>
+                      <b-form-select v-model="pub.addownerid" :options="allusersoptions" class="mr-2"></b-form-select>
+                      <b-btn variant="outline-success" @click="addPubOwner(pub)">
+                        Add owner
+                      </b-btn>
+                    </b-form>
+                  </div>
+                  <div v-else>
+                    No owner role:
+                    <b-btn variant="outline-success" @click="addPubRoleOwner(pub)">
+                      Add owner role
+                    </b-btn>
+                  </div>
+                </b-col>
+              </b-row>
+            </div>
           </div>
         </b-container>
       </b-list-group-item>
@@ -93,7 +129,7 @@
   import HelpSuper from '~/components/HelpSuper'
   import { BBadge } from 'bootstrap-vue'
 
-  const pagetitle = 'Site admin'
+  const pagetitle = 'Site super admin'
   page.title = pagetitle
 
   export default {
@@ -122,18 +158,14 @@
     },
 
     computed: {
-      allusers() {
-        return this.$store.getters['users/getall']
-      },
       pubs() {
-        const pubs = this.$store.getters['pubs/get']
-        return pubs
+        return this.$store.getters['pubs/get']
       },
       allusersoptions() {
         const allusers = this.$store.getters['users/getall']
         const allusersoptions = []
         for (const user of allusers) {
-          allusersoptions.push({ value: user.id, text: user.username })
+          allusersoptions.push({ value: user.id, text: user.username + ' - ' + user.email })
         }
         return allusersoptions
       }
@@ -208,6 +240,31 @@
           } catch (e) {
             await this.$bvModal.msgBoxOk('Error deleting publication: ' + e.message)
           }
+        }
+      },
+      async addPubRoleOwner(pub) {
+        try {
+          const ok = await this.$api.pub.addPubRoleOwner(pub.id)
+          if (ok) {
+            this.$store.dispatch('pubs/fetch')
+          } else {
+            await this.$bvModal.msgBoxOk('Add owner role went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          }
+        } catch (e) {
+          await this.$bvModal.msgBoxOk('Error adding owner role: ' + e.message)
+        }
+      },
+      async addPubOwner(pub) {
+        try {
+          if (pub.addownerid === 0) return await this.$bvModal.msgBoxOk('Please select a user to add as an owner')
+          const ok = await this.$api.pub.addPubOwner(pub.id, pub.addownerid)
+          if (ok) {
+            this.$store.dispatch('pubs/fetch')
+          } else {
+            await this.$bvModal.msgBoxOk('Add owner went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          }
+        } catch (e) {
+          await this.$bvModal.msgBoxOk('Error adding owner: ' + e.message)
         }
       }
     },

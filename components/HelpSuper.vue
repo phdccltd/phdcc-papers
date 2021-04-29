@@ -11,6 +11,13 @@
       <p>
         Super-admin control panel
       </p>
+      <ul>
+        <li>Enable and disable publications</li>
+        <li>Add owners to publications</li>
+      </ul>
+      <p>
+        Note: to remove or change other roles, click through to administer the publication.
+      </p>
     </NoticeMessage>
     <div v-else class="text-primary text-right clickme" @click="toggleHelp">
       <v-icon name="question-circle" />
