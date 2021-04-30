@@ -47,7 +47,7 @@ export default class pubAPI extends BaseAPI {
     return ok
   }
 
-  async duplicatePub(pubid, pubname, pubdupusers) {
+  async duplicatePub (pubid, pubname, pubdupusers) {
     const data = {
       pubname,
       pubdupusers
@@ -55,7 +55,6 @@ export default class pubAPI extends BaseAPI {
     const { ok } = await this.$post('/pubs/' + pubid, data)
     return ok
   }
-  
 
   /// //////////
   // POST bulk op: for all submits at FROM status, add new TO status
