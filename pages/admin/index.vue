@@ -137,13 +137,20 @@
             This function will duplicate a publication, ie copy the set up but not copy the submissions.
           </li>
           <li>
-            You can choose whether or not to copy the users and their roles to the new publication.
+            You can choose whether or not to give the current publication users access to the new publication - and copy their roles across.
           </li>
         </ul>
         <b-form-group label="Name"
                       label-for="pubname"
                       label-cols-sm="2">
           <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="Users"
+                      label-for="pubdupusers"
+                      label-cols-sm="2">
+          <b-form-checkbox id="pubdupusers" v-model="pubdupusers" class="mt-2">
+            Give users access and copy roles
+          </b-form-checkbox>
         </b-form-group>
       </form>
     </b-modal>
@@ -169,7 +176,8 @@
         message: '',
         pubname: '',
         pubdescr: '',
-        pubdupusers: true
+        pubdupusers: true,
+        pubduppubid: 0
       }
     },
 
@@ -314,16 +322,16 @@
       duplicatePub(pub) {
         this.pubname = pub.name+' COPY'
         this.pubdupusers = true
+        this.pubduppubid = pub.id
         this.$bvModal.show('bv-modal-dup-pub')
       },
       async okDupPub(bvModalEvt) {
-        //console.log('okDupPub', this.pubname)
         bvModalEvt.preventDefault()
         try {
           this.pubname = this.pubname.trim()
           if (this.pubname.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication name')
 
-          const ok = await this.$api.pub.duplicatePub(this.pubname)
+          const ok = await this.$api.pub.duplicatePub(this.pubduppubid, this.pubname, this.pubdupusers)
 
           if (ok) {
             this.$store.dispatch('pubs/fetch')
