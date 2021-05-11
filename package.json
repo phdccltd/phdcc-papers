@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "private": true,
@@ -23,7 +23,7 @@
     "bootstrap": "4.6.0",
     "bootstrap-vue": "2.21.2",
     "cross-env": "7.0.3",
-    "dotenv": "9.0.1",
+    "dotenv": "9.0.2",
     "nuxt": "2.15.5",
     "promise-polyfill": "8.2.0",
     "vue-awesome": "4.1.0",
@@ -45,7 +45,6 @@
     "node-sass": "5.0.0",
     "nodemon": "2.0.7",
     "prettier": "2.3.0",
-    "sass-loader": "10.1.1",
-    "vue-jest": "4.0.0-rc.1"
+    "sass-loader": "10.1.1"
   }
 }
