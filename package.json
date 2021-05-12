@@ -24,7 +24,7 @@
     "bootstrap-vue": "2.21.2",
     "cross-env": "7.0.3",
     "dotenv": "9.0.2",
-    "nuxt": "2.15.5",
+    "nuxt": "2.15.6",
     "promise-polyfill": "8.2.0",
     "vue-awesome": "4.1.0",
     "vuex-persistedstate": "3.2.0"

@@ -153,6 +153,7 @@
           </b-form-checkbox>
         </b-form-group>
       </form>
+      <div class="text-center bg-warning m-2" v-if="showdupwait">Please wait...</div>
     </b-modal>
   </div>
 </template>
@@ -177,7 +178,8 @@
         pubname: '',
         pubdescr: '',
         pubdupusers: true,
-        pubduppubid: 0
+        pubduppubid: 0,
+        showdupwait: false
       }
     },
 
@@ -323,6 +325,7 @@
         this.pubname = pub.name+' COPY'
         this.pubdupusers = true
         this.pubduppubid = pub.id
+        this.showdupwait = false
         this.$bvModal.show('bv-modal-dup-pub')
       },
       async okDupPub(bvModalEvt) {
@@ -331,6 +334,7 @@
           this.pubname = this.pubname.trim()
           if (this.pubname.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication name')
 
+          this.showdupwait = true
           const ok = await this.$api.pub.duplicatePub(this.pubduppubid, this.pubname, this.pubdupusers)
 
           if (ok) {
@@ -340,9 +344,11 @@
               this.$bvModal.msgBoxOk('Publication duplicated')
             })
           } else {
+            this.showdupwait = false
             await this.$bvModal.msgBoxOk('Duplicate went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
           }
         } catch (e) {
+          this.showdupwait = false
           await this.$bvModal.msgBoxOk('Error duplicating publication: ' + e.message)
         }
       }

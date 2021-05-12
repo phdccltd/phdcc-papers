@@ -4,8 +4,8 @@
   <div>
     <div v-if="pub.isowner || $auth.user.super" class="pl-1 mt-1 mb-1">
       <strong>ADMIN</strong>
-      <b-badge v-if="!pub.enabled" pill variant="danger">DISABLED FOR USERS</b-badge>
       <b-btn variant="outline-danger" class="float-right" :to="'/panel/'+pubid+'/admin-setup'">Setup</b-btn>
+      <b-badge v-if="!pub.enabled" pill variant="danger" class="float-right m-2">DISABLED FOR USERS</b-badge>
       <b-btn variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-users'" class="ml-2">Users</b-btn>
       <b-btn v-if="showingadminoptions" variant="outline-success" :to="'/panel/'+pubid+'/admin-bulk'" class="ml-2">Bulk</b-btn>
