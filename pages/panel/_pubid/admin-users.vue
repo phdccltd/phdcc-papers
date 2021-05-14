@@ -40,7 +40,7 @@
               <strong>{{pubuser.id}} {{pubuser.name}}</strong>
               {{pubuser.email}}
               <br />
-              Submissions: {{pubuser.submits.length}}
+              Submissions: {{pubuser.submitcount}}
               <b-btn v-if="$auth.user.super && $auth.user.id!=pubuser.id" @click="masquerade(pubuser)" variant="outline-warning" size="sm" class="mr-2" >Masquerade</b-btn>
             </b-col>
             <b-col sm="6">
