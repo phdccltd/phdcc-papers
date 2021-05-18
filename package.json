@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@nuxtjs/auth": "4.9.1",
-    "@nuxtjs/axios": "5.13.1",
+    "@nuxtjs/axios": "5.13.4",
     "@nuxtjs/proxy": "2.1.0",
     "@nuxtjs/recaptcha": "1.0.4",
     "bootstrap": "4.6.0",
@@ -26,7 +26,7 @@
     "dotenv": "9.0.2",
     "nuxt": "2.15.6",
     "promise-polyfill": "8.2.0",
-    "vue-awesome": "4.1.0",
+    "vue-awesome": "4.3.0",
     "vuex-persistedstate": "3.2.0"
   },
   "devDependencies": {
