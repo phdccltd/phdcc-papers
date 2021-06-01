@@ -3,7 +3,7 @@
 // https://fontawesome.com/icons?d=gallery&m=free
 
 import Vue from 'vue'
-import Icon from 'vue-awesome/components/Icon.vue'
+import Icon from 'vue-awesome/components/Icon.js'
 
 require('vue-awesome/icons/check-circle')
 require('vue-awesome/icons/edit')
