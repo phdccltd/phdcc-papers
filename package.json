@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "private": true,
@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
-    "babel-jest": "27.0.6",
+    "babel-jest": "27.3.1",
     "node-sass": "5.0.0",
-    "nodemon": "2.0.12",
+    "nodemon": "2.0.13",
     "sass-loader": "10.1.1"
   }
 }
