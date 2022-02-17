@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "private": true,
@@ -15,7 +15,8 @@
   },
   "comments": {
     "comment1": "Keep at boostrap@4.6.x",
-    "comment2": "Cannot remember re dotenv, node-sass, sass-loader, vuex-persistedstate"
+    "comment2": "Cannot remember re dotenv, node-sass, sass-loader, vuex-persistedstate",
+    "comment3": "https://nuxtjs.org/docs/get-started/upgrading/"
   },
   "dependencies": {
     "@nuxtjs/auth": "4.9.1",
