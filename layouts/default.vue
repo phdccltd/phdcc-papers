@@ -35,7 +35,7 @@
       <a href="https://www.phdcc.com/papers/">Papers {{ version }}/{{apiversion}}</a>,
       <span style="color:lightgrey">
         built: {{BUILD_DATE}}.
-        Copyright &copy; 2021 PHD Computer Consultants Ltd.
+        Copyright &copy; 2022 PHD Computer Consultants Ltd.
       </span><br />
       <a href="https://www.phdcc.com/feedback.html" target="_blank" rel="noopener">Get in touch if you want to try out Papers for your conference or journal.</a>
     </div>

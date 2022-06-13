@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "private": true,
@@ -14,15 +14,16 @@
     "standard": "standard api/*.js middleware/*.js mixins/*.js plugins/*.js store/*.js utils/*.js"
   },
   "comments": {
-    "comment1": "Keep at boostrap@4.6.x",
+    "comment1": "Keep at bootstrap@4.6.x",
     "comment2": "Cannot remember re node-sass, sass-loader, vuex-persistedstate",
-    "comment3": "https://nuxtjs.org/docs/get-started/upgrading/"
+    "comment3": "https://nuxtjs.org/docs/get-started/upgrading/",
+    "comment4": "Update year in layouts/default.vue"
   },
   "dependencies": {
     "@nuxtjs/auth": "4.9.1",
     "@nuxtjs/axios": "5.13.6",
     "@nuxtjs/proxy": "2.1.0",
-    "@nuxtjs/recaptcha": "1.0.4",
+    "@nuxtjs/recaptcha": "1.1.1",
     "bootstrap": "4.6.1",
     "bootstrap-vue": "2.22.0",
     "cross-env": "7.0.3",
@@ -34,7 +35,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
-    "babel-jest": "28.1.0",
+    "babel-jest": "28.1.1",
     "node-sass": "5.0.0",
     "nodemon": "2.0.16",
     "sass-loader": "10.1.1"
