@@ -72,7 +72,7 @@ export const getters = {
                 if (flowstatus) {
                   submitstatus.status = flowstatus.status
                   if (!foundvisible) {
-                    submit.owneradvice = flowstatus.owneradvice
+                    submit.owneradvice = flowstatus.owneradvice // eg "Awaiting: send to council"
                     submit.status = flowstatus.status
                     submit.dtstatus = submitstatus.dt
                     foundvisible = true
