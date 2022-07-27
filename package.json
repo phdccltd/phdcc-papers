@@ -14,6 +14,7 @@
     "standard": "standard api/*.js middleware/*.js mixins/*.js plugins/*.js store/*.js utils/*.js"
   },
   "comments": {
+    "comment0": "Keep at node 14",
     "comment1": "Keep at bootstrap@4.6.x",
     "comment2": "Keep at sass-loader@10.3.1",
     "comment3": "https://nuxtjs.org/docs/get-started/upgrading/",
