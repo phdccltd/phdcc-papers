@@ -7,5 +7,5 @@ export default ({ store }) => {
   new VuexPersistence({
     key: 'papers',
     storage: window.localStorage
-  }).plugin(store);
+  }).plugin(store)
 }
