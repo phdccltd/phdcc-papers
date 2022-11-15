@@ -10,27 +10,30 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "static": "npx nuxi generate",
-    "lint": "eslint --fix --ext .js,.jsx,.ts,.vue ."
+    "lint": "eslint --ext .js,.jsx,.ts,.vue .",
+    "lintfix": "eslint --fix --ext .js,.jsx,.ts,.vue ."
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
+    "@popperjs/core": "^2.11.6",
     "@vitejs/plugin-legacy": "^2.2.0",
     "bootstrap": "^5.2.2",
-    "bootstrap-vue-3": "^0.3.11",
+    "bootstrap-vue-3": "^0.4.8",
     "path-browserify": "^1.0.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^9.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
-    "nuxt": "3.0.0-rc.13",
     "eslint": "^8.13.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",    
+    "eslint-plugin-prettier": "^4.0.0",
+    "nuxt": "3.0.0-rc.13",
     "prettier": "^2.6.2",
     "sass": "^1.49.11",
+    "unplugin-vue-components": "^0.22.9",
     "vite-plugin-eslint": "^1.3.0"
   }
 }

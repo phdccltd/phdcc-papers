@@ -1,10 +1,10 @@
 // import config from "./config";
 
-import fs from "fs";
+import fs from 'fs'
 
-const packageJson = fs.readFileSync("./package.json");
-const version = JSON.parse(packageJson).version || 0;
-console.log("Building phdcc-papers", version);
+const packageJson = fs.readFileSync('./package.json')
+const version = JSON.parse(packageJson).version || 0
+console.log('Building phdcc-papers', version)
 
 export default defineNuxtConfig({
   // ssr: false,
@@ -13,12 +13,14 @@ export default defineNuxtConfig({
     // extractCSS: true
   },
 
+  modules: ['bootstrap-vue-3/nuxt'],
+
   runtimeConfig: {
     // The private keys which are only available server-side
 
     // Keys within public are also exposed client-side
     public: {
-      api: "/api",
+      api: '/api',
     },
   },
   vite: {
@@ -35,11 +37,12 @@ export default defineNuxtConfig({
     BUILD_DATE: new Date().toISOString(),
   },
   css: [
-    "@/node_modules/@fortawesome/fontawesome-svg-core/styles.css",
+    '@/node_modules/@fortawesome/fontawesome-svg-core/styles.css',
+    'bootstrap/dist/css/bootstrap.css',
     //,
     // '@/assets/css/_colors.scss'
   ],
   app: {
-    pageTransition: { name: "page", mode: "out-in" },
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
-});
+})

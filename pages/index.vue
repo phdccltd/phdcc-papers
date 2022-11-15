@@ -7,11 +7,11 @@
 
 <script setup>
 definePageMeta({
-  middleware: "auth",
-});
+  middleware: 'auth',
+})
 
-const runtimeConfig = useRuntimeConfig();
-console.log("INDEX.VUE", runtimeConfig.public.api); // public is on server and in client
+const runtimeConfig = useRuntimeConfig()
+console.log('INDEX.VUE', runtimeConfig.public.api) // public is on server and in client
 // const appConfig = useAppConfig()
 // console.log("INDEX.VUE",appConfig.testing) // on server and in client
 </script>
