@@ -1,24 +1,45 @@
-export default defineNuxtConfig({
-    //ssr: false,
-    runtimeConfig: {
-      // The private keys which are only available server-side
+// import config from "./config";
 
-      // Keys within public are also exposed client-side
-      public: {
-        api: '/api'
-      }
+import fs from "fs";
+
+const packageJson = fs.readFileSync("./package.json");
+const version = JSON.parse(packageJson).version || 0;
+console.log("Building phdcc-papers", version);
+
+export default defineNuxtConfig({
+  // ssr: false,
+  build: {
+    // Reduce size of CSS initial load.
+    // extractCSS: true
+  },
+
+  runtimeConfig: {
+    // The private keys which are only available server-side
+
+    // Keys within public are also exposed client-side
+    public: {
+      api: "/api",
     },
-    vite: {
-      css: {
-        preprocessorOptions: {
-          scss: {
-            additionalData: '@use "@/assets/_colors.scss" as *;'
-          }
-        }
-      }
+  },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "@/assets/css/_colors.scss" as *;',
+        },
+      },
     },
-    app: {
-      pageTransition: { name: 'page', mode: 'out-in' }
-    }
-  })
-  
+  },
+  publicRuntimeConfig: {
+    VERSION: version,
+    BUILD_DATE: new Date().toISOString(),
+  },
+  css: [
+    "@/node_modules/@fortawesome/fontawesome-svg-core/styles.css",
+    //,
+    // '@/assets/css/_colors.scss'
+  ],
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
+  },
+});
