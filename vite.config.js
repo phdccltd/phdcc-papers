@@ -1,5 +1,5 @@
 import path from 'path-browserify'
-import eslintPlugin from 'vite-plugin-eslint'
+// import eslintPlugin from 'vite-plugin-eslint'
 import legacy from '@vitejs/plugin-legacy'
 import config from './config'
 
@@ -23,7 +23,7 @@ export default {
 
   plugins: [
     // Make Lint errors cause build failures.
-    eslintPlugin(),
+    // eslintPlugin(),
     legacy({
       targets: [
         // We want to try to support XP.

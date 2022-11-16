@@ -19,6 +19,7 @@ import {
   faSignOutAlt,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
+
 import {} from '@fortawesome/free-brands-svg-icons'
 
 library.add(

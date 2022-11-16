@@ -20,7 +20,9 @@
         </h1>
       </div>
     </div>
-    <slot />
+    <div class="container">
+      <slot />
+    </div>
     <div class="container mt-3 pt-2 border-top" style="color: gray">
       <a href="https://www.phdcc.com/papers/">Papers {{ version }}/{{ apiversion }}</a
       >, <span style="color: lightgrey"> built: {{ BUILD_DATE }}. Copyright &copy; 2022 PHD Computer Consultants Ltd. </span><br />
