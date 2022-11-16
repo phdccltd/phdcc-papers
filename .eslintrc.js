@@ -13,9 +13,10 @@ module.exports = {
   extends: ['@nuxtjs', 'plugin:prettier/recommended'],
   // add your custom rules here
   rules: {
+    // 'prettier/prettier': 0,
     'no-console': 'off',
     // 'proseWrap': 'off',
-    'max-len': ['error', { code: 240 }],
+    // 'max-len': ['error', { code: 240 }],
     // no-v-model-argument rule is broken for Vue3, which requires that syntax for .sync.
     'vue/no-v-model-argument': 'off',
     'vue/multi-word-component-names': [
