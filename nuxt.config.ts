@@ -13,7 +13,14 @@ export default defineNuxtConfig({
     // extractCSS: true
   },
 
-  modules: ['bootstrap-vue-3/nuxt'],
+  alias: {
+    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
+  },
+
+  modules: ['bootstrap-vue-3/nuxt', '@pinia/nuxt'],
+  plugins: [
+    //'~/plugins/pinia-plugin-persist.client'
+  ],
 
   runtimeConfig: {
     // The private keys which are only available server-side

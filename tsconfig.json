@@ -1,4 +1,14 @@
 {
   // https://v3.nuxtjs.org/concepts/typescript
-  "extends": "./.nuxt/tsconfig.json"
+  "extends": "./.nuxt/tsconfig.json",
+  "paths":{
+    "pinia": [
+      "./node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia"
+    ],
+  },
+  "compilerOptions": {
+    "types": [
+      //"pinia-plugin-persist"
+    ]
+  }
 }
