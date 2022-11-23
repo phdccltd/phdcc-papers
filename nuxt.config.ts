@@ -1,5 +1,9 @@
 // import config from "./config";
 
+// .nuxt\tsconfig.json: "pinia": [
+//    "node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia"
+// ]
+
 import fs from 'fs'
 
 const packageJson = fs.readFileSync('./package.json')
