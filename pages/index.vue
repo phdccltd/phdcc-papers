@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Welcome to the homepage</h1>
+    <Messages :error="error" :message="message" />
     <AppAlert> This is an auto-imported component in AppAlert </AppAlert>
     <BlogPost :blog="bloggy"/>
   </div>
@@ -11,10 +12,18 @@ definePageMeta({
   middleware: 'auth',
 })
 
+import Messages from '../components/Messages.vue';
 import BlogPost from '../components/BlogPost.vue';
 import { useMiscStore } from "~/stores/misc";
 
 export default {
+  data() {
+      return {
+        error: '',
+        message: ''
+      }
+    },
+    
   setup() {
     const runtimeConfig = useRuntimeConfig()
     console.log('INDEX.VUE', runtimeConfig.public.api) // public is on server and in client

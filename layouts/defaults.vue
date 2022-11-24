@@ -4,9 +4,9 @@
       <div class="border border-primary rounded p-3">
         <div class="float-end">
           <div v-if="loggedin">
-            <b-btn @click="logout()" variant="outline-secondary" class="mr-2" title="Logout">
+            <b-button @click="logout()" variant="outline-secondary" class="mr-2" title="Logout">
               <v-icon icon="sign-out-alt" scale="1" /><br />
-            </b-btn>
+            </b-button>
           </div>
           <div v-else>
             <b-button @click="login()" variant="outline-success">IN</b-button>

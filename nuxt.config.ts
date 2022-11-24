@@ -11,7 +11,7 @@ const version = JSON.parse(packageJson).version || 0
 console.log('Building phdcc-papers', version)
 
 export default defineNuxtConfig({
-  // ssr: false,
+  ssr: false,
   build: {
     // Reduce size of CSS initial load.
     // extractCSS: true
@@ -29,9 +29,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // The private keys which are only available server-side
 
-    // Keys within public are also exposed client-side
+    // Keys within public are also exposed client-side + overridden by .env
     public: {
       api: '/api',
+      RECAPTCHA_SITE_KEY: '',
+      RECAPTCHA_BYPASS: '',
     },
   },
   vite: {
