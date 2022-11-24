@@ -10,9 +10,13 @@
 
 <script lang="ts">
   import { useSitePagesStore } from "~/stores/sitepages";
+  //import { useAuthStore } from '~/stores/auth'
   import Messages from '~/components/Messages.vue'
   import UserAuthForm from '~/components/UserAuthForm.vue'
   //import { page } from '@/utils/page'
+  import axios from 'axios'
+  import jwt_decode from 'jwt-decode'
+import { dataToEsm } from "@rollup/pluginutils";
 
   //page.title = 'Login'
 
@@ -21,6 +25,7 @@
 
     setup(){
       const sitePagesStore = useSitePagesStore()
+      //const authStore = useAuthStore()
       const runtimeConfig = useRuntimeConfig()
       const token = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
@@ -57,22 +62,41 @@
     },
     methods: {
       async loginUser(loginInfo: any) {
-        console.log(loginInfo)
+        console.log("loginUser")
+        console.log("===", loginInfo)
         this.error = ''
         this.message = ''
-        /*const runtimeConfig = useRuntimeConfig()
-        if( runtimeConfig.public.RECAPTCHA_BYPASS){
-          this.token = runtimeConfig.public.RECAPTCHA_BYPASS
-        } else {
-          try {
-            //this.token = await useVueRecaptcha();
-          } catch (e) {
-            this.error = 'Captcha not set'
-            return
-          }
-          //console.log('$recaptcha', token)
-        }*/
+        if( this.token==''){
+          this.error = 'Captcha not set'
+          return
+        }
         loginInfo['g-recaptcha-response'] = this.token
+
+        const runtimeConfig = useRuntimeConfig()
+        const api = runtimeConfig.public.API
+        console.log("===API",api)
+        const res = await axios.post(api + '/user/login',loginInfo) // login: { url: process.env.API + '/user/login', method: 'post', propertyName: 'token' },
+        console.log("---",res)
+        if( res.data.ret!==0){
+          this.error = res.data.status
+          return
+        }
+        const ppuser = jwt_decode(res.data.token)
+        console.log("===PPUSER",ppuser)
+        
+        const user = await axios.get(api + '/user',{
+          headers: {'Authorization': 'bearer '+res.data.token
+        }
+        }) // user: { url: process.env.API + '/user', method: 'get', propertyName: 'user' },
+        console.log("===USER",user)
+
+
+        /*this.authStore
+          .login({
+            email: this.email,
+            password: this.password,
+          })
+          .then(() => {}*/
         /*try {
           const response = await this.$auth.loginWith('local', {
             data: loginInfo

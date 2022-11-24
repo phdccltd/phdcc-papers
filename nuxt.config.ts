@@ -31,7 +31,7 @@ export default defineNuxtConfig({
 
     // Keys within public are also exposed client-side + overridden by .env
     public: {
-      api: '/api',
+      API: '/api',
       RECAPTCHA_SITE_KEY: '',
       RECAPTCHA_BYPASS: '',
     },

@@ -34,16 +34,6 @@ export default {
 
   server: {
     proxy: {
-      '/apiv1': {
-        target: config.APIv1,
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/apiv1/, '/'),
-      },
-      '/apiv2': {
-        target: config.APIv2,
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/apiv2/, '/'),
-      },
     },
   },
 }
