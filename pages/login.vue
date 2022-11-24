@@ -3,6 +3,7 @@
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
+    <p>Token: {{ token }}</p>
     <UserAuthForm buttonText="Login" :submitForm="loginUser" v-bind:isRegister="false" />
   </div>
 </template>
@@ -20,8 +21,10 @@
 
     setup(){
       const sitePagesStore = useSitePagesStore()
+      const runtimeConfig = useRuntimeConfig()
+      const token = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-      return { sitePagesStore }
+      return { sitePagesStore, token }
     },
     
     data() {
@@ -43,8 +46,7 @@
       if( runtimeConfig.public.RECAPTCHA_BYPASS){
         this.message = 'Recaptcha bypass'
       } else {
-        this.message = 'TODO: Init Recaptcha'
-        //await this.$recaptcha.init()
+        this.token = await useVueRecaptcha();
       }
     },
 
@@ -58,20 +60,19 @@
         console.log(loginInfo)
         this.error = ''
         this.message = ''
-        let token = ''
-        const runtimeConfig = useRuntimeConfig()
+        /*const runtimeConfig = useRuntimeConfig()
         if( runtimeConfig.public.RECAPTCHA_BYPASS){
-          token = runtimeConfig.public.RECAPTCHA_BYPASS
+          this.token = runtimeConfig.public.RECAPTCHA_BYPASS
         } else {
           try {
-            //token = await this.$recaptcha.execute('login')
+            //this.token = await useVueRecaptcha();
           } catch (e) {
             this.error = 'Captcha not set'
             return
           }
           //console.log('$recaptcha', token)
-        }
-        loginInfo['g-recaptcha-response'] = token
+        }*/
+        loginInfo['g-recaptcha-response'] = this.token
         /*try {
           const response = await this.$auth.loginWith('local', {
             data: loginInfo

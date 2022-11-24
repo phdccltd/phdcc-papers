@@ -37,8 +37,10 @@
 
     setup(){
       const sitePagesStore = useSitePagesStore()
+      const runtimeConfig = useRuntimeConfig()
+      const token = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-      return { sitePagesStore }
+      return { sitePagesStore, token }
     },
 
     data() {
@@ -63,7 +65,7 @@
       if( runtimeConfig.public.RECAPTCHA_BYPASS){
         this.message = 'Recaptcha bypass'
       } else {
-        //await this.$recaptcha.init()
+        this.token = await useVueRecaptcha();
       }
     },
 
