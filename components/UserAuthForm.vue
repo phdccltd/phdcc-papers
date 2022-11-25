@@ -72,7 +72,6 @@
     },
     methods: {
       onSubmit(_evt: any) {
-        //console.log('this.form',this.form)
         this.submitForm(this.form)
       }
       

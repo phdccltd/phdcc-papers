@@ -2,8 +2,6 @@
   <div>
     <h1>Welcome to the homepage</h1>
     <Messages :error="error" :message="message" />
-    <AppAlert> This is an auto-imported component in AppAlert </AppAlert>
-    <BlogPost :blog="bloggy"/>
   </div>
 </template>
 
@@ -13,7 +11,6 @@ definePageMeta({
 })
 
 import Messages from '../components/Messages.vue';
-import BlogPost from '../components/BlogPost.vue';
 import { useMiscStore } from "~/stores/misc";
 
 export default {
@@ -26,28 +23,28 @@ export default {
     
   setup() {
     const runtimeConfig = useRuntimeConfig()
-    console.log('INDEX.VUE', runtimeConfig.public.api) // public is on server and in client
+    console.log('INDEX.VUE', runtimeConfig.public.API) // public is on server and in client
     // const appConfig = useAppConfig()
     // console.log("INDEX.VUE",appConfig.testing) // on server and in client
 
     const miscStore = useMiscStore()
-    miscStore.set({
+    /*miscStore.set({
             key: 'hideglobalwarning',
             value: false,
           })
           miscStore.set({
             key: 'bloggy',
             value: 'datbloggy',
-          })
+          })*/
     return { miscStore }
   },
   computed: {
-    bloggy(){
+    /*bloggy(){
       return this.miscStore.get('bloggy')
     },
     globalwarning() {
       return this.miscStore.get('hideglobalwarning')
-    }
+    }*/
   },
 }
 </script>
