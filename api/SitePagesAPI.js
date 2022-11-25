@@ -1,7 +1,7 @@
 import BaseAPI from './BaseAPI'
 
 export default class SitePagesAPI extends BaseAPI {
-  fetch (params) {
+  async fetch (params) {
     console.log('SitePagesAPI fetch')
     return this.$get('/sitepages', params)
   }

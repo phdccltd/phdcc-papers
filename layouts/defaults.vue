@@ -70,8 +70,7 @@ export default {
     },
     apiversion() {
       // console.log('GET APIVERSION')
-      return 'API1x'
-      // return this.$store.getters['misc/get']('apiversion')
+      return this.miscStore.get('apiversion')
     },
     title() {
       return 'Page title'

@@ -34,6 +34,9 @@ export default defineNuxtConfig({
       API: '/api',
       RECAPTCHA_SITE_KEY: '',
       RECAPTCHA_BYPASS: '',
+      SITE: '',
+      VERSION: version,
+      BUILD_DATE: new Date().toISOString(),
     },
   },
   vite: {
@@ -44,10 +47,6 @@ export default defineNuxtConfig({
         },
       },
     },
-  },
-  publicRuntimeConfig: {
-    VERSION: version,
-    BUILD_DATE: new Date().toISOString(),
   },
   css: [
     '@/node_modules/@fortawesome/fontawesome-svg-core/styles.css',

@@ -1,4 +1,9 @@
+import _ from 'lodash/core'
 import { defineStore } from 'pinia'
+import api from '~/api'
+
+const $api = api()
+//console.log("---", $api)
 
 export const useSitePagesStore = defineStore('sitepages', {
   /*persist: {
@@ -12,16 +17,27 @@ export const useSitePagesStore = defineStore('sitepages', {
     ],
   },*/
   state: () => ({
-    vals: {},
+    list: [],
+    error: false
   }),
   actions: {
-    set(params) {
-      this.vals[params.key] = params.value
+    async fetch() {
+      const { sitepages } = await $api.sitepages.fetch({})
+      // console.log('fetch setList sitepages', sitepages)
+      for (const sitepage of sitepages) {
+        sitepage.visible = false
+      }
+      this.list = sitepages;
     },
+    //set(params) {
+    // this.list[params.key] = params.value
+    //},
   },
   getters: {
-    get: (state) => (key) => {
-      return state.vals[key]
+    get: (_state) => {
+      return (path) => {
+        return _.find(_state.list, _sitepage => { return _sitepage.path === path })
+      }
     },
   },
 })

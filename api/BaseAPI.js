@@ -42,10 +42,10 @@ export default class BaseAPI {
     let data = null
 
     try {
-      console.log(config)
-      if( config.params) console.log(config.params.headers)
+      //console.log(config)
+      //if( config.params) console.log(config.params.headers)
       const headers = config.params? (config.params.headers ? config.params.headers : {}):{}
-      console.log(headers)
+      //console.log(headers)
 
       const authStore = useAuthStore()
 

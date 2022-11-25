@@ -3,7 +3,6 @@
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
-    <p>Token: {{ token }}</p>
     <UserAuthForm buttonText="Login" :submitForm="loginUser" v-bind:isRegister="false" />
   </div>
 </template>
@@ -29,7 +28,6 @@
       const token = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
       const api = api2()
-      //console.log("[[[",api)
 
       return { api, sitePagesStore, token }
     },
@@ -42,6 +40,7 @@
     },
 
     async mounted() {
+      this.sitePagesStore.fetch()
       /*this.$store.dispatch('sitepages/fetch')
       page.title = 'Login'
       if (this.$auth.loggedIn) {
@@ -59,7 +58,11 @@
 
     computed: {
       content() {
-        return this.sitePagesStore.get('/login')
+        const sitepage = this.sitePagesStore.get('/login')
+        if (sitepage) {
+          return sitepage.content
+        }
+        return ''
       },
     },
     methods: {
