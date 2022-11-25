@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 export const useMiscStore = defineStore('misc', {
-  /*persist: {
+  persist: {
     enabled: true,
     strategies: [
       // These are sticky preferences.
@@ -10,7 +10,7 @@ export const useMiscStore = defineStore('misc', {
         paths: ['vals'],
       },
     ],
-  },*/
+  },
   state: () => ({
     time: null,
     breakpoint: null,

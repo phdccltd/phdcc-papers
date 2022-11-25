@@ -23,7 +23,7 @@ export default defineNuxtConfig({
 
   modules: ['bootstrap-vue-3/nuxt', '@pinia/nuxt'],
   plugins: [
-    //'~/plugins/pinia-plugin-persist.client'
+    '~/plugins/pinia-plugin-persist.client'
   ],
 
   runtimeConfig: {

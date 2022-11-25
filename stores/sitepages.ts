@@ -6,16 +6,16 @@ const $api = api()
 //console.log("---", $api)
 
 export const useSitePagesStore = defineStore('sitepages', {
-  /*persist: {
+  persist: {
     enabled: true,
     strategies: [
       // These are sticky preferences.
       {
         storage: localStorage,
-        paths: ['vals'],
+        paths: ['list'],
       },
     ],
-  },*/
+  },
   state: () => ({
     list: [],
     error: false
