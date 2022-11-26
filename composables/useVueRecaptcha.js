@@ -1,4 +1,4 @@
-/// DONE
+// DONE
 import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
 import { useNuxtApp } from '#app';
 

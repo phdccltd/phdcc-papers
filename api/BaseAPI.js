@@ -49,9 +49,11 @@ export default class BaseAPI {
 
       const authStore = useAuthStore()
 
-      if (authStore.persistent) {
+      console.log("AUTH")
+      if (authStore.authorization) {
+        console.log("AUTH TOKEN SET")
         // Use the persistent token (a kind of JWT) to authenticate the request.
-        headers.Authorization = 'bearer ' + JSON.stringify(authStore.persistent)
+        headers.Authorization = 'bearer ' + authStore.authorization
       }
 
       const ret = await this.$axios.request({

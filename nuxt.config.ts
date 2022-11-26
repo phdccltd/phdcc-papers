@@ -1,5 +1,6 @@
 // import config from "./config";
 
+// Generated brokenly:
 // .nuxt\tsconfig.json: "pinia": [
 //    "node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia"
 // ]

@@ -1,3 +1,4 @@
+// DONE
 // plugins/pinia-plugin-persist.client.ts
 
 import piniaPersist from '../utils/pinia-plugin-persist'

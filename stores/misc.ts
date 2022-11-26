@@ -17,6 +17,7 @@ export const useMiscStore = defineStore('misc', {
   }),
   actions: {
     set(params: any) {
+      console.log("SET",params.key,params.value)
       this.vals[params.key] = params.value
     },
     setTime() {
@@ -25,7 +26,9 @@ export const useMiscStore = defineStore('misc', {
   },
   getters: {
     get: (state: { vals: { [x: string]: any } }) => (key: string) => {
+      if( key in state.vals){
       return state.vals[key]
+      } else return null
     },
   },
 })

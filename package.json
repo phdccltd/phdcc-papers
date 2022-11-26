@@ -13,6 +13,9 @@
     "lint": "eslint --ext .js,.jsx,.ts,.vue .",
     "lintfix": "eslint --fix --ext .js,.jsx,.ts,.vue ."
   },
+  "comments": {
+    "1": "pinia-plugin-persist package code in utils\\pinia-plugin-persist.ts"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",

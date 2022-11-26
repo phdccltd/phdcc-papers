@@ -1,3 +1,4 @@
+/// DONE - FROM pinis-plugin-persist package
 import { PiniaPluginContext } from 'pinia'
 
 export interface PersistStrategy {

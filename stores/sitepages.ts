@@ -1,3 +1,4 @@
+// ALMOST DONE
 import _ from 'lodash/core'
 import { defineStore } from 'pinia'
 import api from '~/api'

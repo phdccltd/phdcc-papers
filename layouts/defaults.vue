@@ -9,7 +9,6 @@
             </b-button>
           </div>
           <div v-else>
-            <b-button @click="login()" variant="outline-success">IN</b-button>
             <b-button variant="outline-success" to="/login">Login</b-button>
             <b-button variant="outline-secondary" to="/register">Register</b-button>
           </div>
@@ -23,7 +22,6 @@
         <h1 class="menu-title">
           {{ title }}
           {{ titlesuffix }}
-          {{id}}
         </h1>
       </div>
     </div>
@@ -44,14 +42,12 @@
 
 <script lang="ts">
 
-import { useMiscStore } from "~/stores/misc";
+import { useAuthStore } from '~/stores/auth'
 
-// console.log("DEFAULTS.VUE")
 export default {
   setup() {
-    const miscStore = useMiscStore()
-    const id = 12345678;
-    return { id, miscStore }
+    const authStore = useAuthStore()
+    return { authStore }
   },
   computed: {
     // Client and Server
@@ -70,7 +66,8 @@ export default {
     },
     apiversion() {
       // console.log('GET APIVERSION')
-      return this.miscStore.get('apiversion')
+      //return this.miscStore.get('apiversion')
+      return 'APIVER'
     },
     title() {
       return 'Page title'
@@ -80,21 +77,13 @@ export default {
       // return this.$store.getters['page/titlesuffix'] // as changes reactively as we move about
     },
     loggedin(){
-      return this.miscStore.get('isloggedin')
+      return this.authStore.loggedin
     },
   },
   methods: {
-    login(){
-      this.miscStore.set({
-          key: 'isloggedin',
-          value: true,
-        })
-    },
     logout(){
-      this.miscStore.set({
-          key: 'isloggedin',
-          value: false,
-        })
+      this.authStore.logout()
+      navigateTo('/');
     }
     }
 }
