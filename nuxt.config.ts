@@ -6,7 +6,7 @@
 
 import fs from 'fs'
 
-const packageJson = fs.readFileSync('./package.json')
+const packageJson = fs.readFileSync('./package.json', 'utf8')
 const version = JSON.parse(packageJson).version || 0
 console.log('Building phdcc-papers', version)
 
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
 
   modules: ['bootstrap-vue-3/nuxt', '@pinia/nuxt'],
   plugins: [
-    '~/plugins/pinia-plugin-persist.client'
+    // No need but it's there: '~/plugins/pinia-plugin-persist.client'
   ],
 
   runtimeConfig: {

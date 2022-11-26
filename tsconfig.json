@@ -9,6 +9,7 @@
   "compilerOptions": {
     "types": [
       //"pinia-plugin-persist"
+      //"pinia", "lodash"
     ]
   }
 }

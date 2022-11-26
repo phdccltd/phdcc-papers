@@ -13,22 +13,18 @@ export const useMiscStore = defineStore('misc', {
   },
   state: () => ({
     time: null,
-    breakpoint: null,
     vals: {},
   }),
   actions: {
-    set(params) {
+    set(params: any) {
       this.vals[params.key] = params.value
     },
     setTime() {
       this.time = new Date()
     },
-    setBreakpoint(val) {
-      this.breakpoint = val
-    },
   },
   getters: {
-    get: (state) => (key) => {
+    get: (state: { vals: { [x: string]: any } }) => (key: string) => {
       return state.vals[key]
     },
   },

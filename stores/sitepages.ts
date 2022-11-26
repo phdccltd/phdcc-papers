@@ -34,9 +34,9 @@ export const useSitePagesStore = defineStore('sitepages', {
     //},
   },
   getters: {
-    get: (_state) => {
-      return (path) => {
-        return _.find(_state.list, _sitepage => { return _sitepage.path === path })
+    get: (_state: { list: any }) => {
+      return (path: any) => {
+        return _.find(_state.list, (_sitepage: { path: any }) => { return _sitepage.path === path })
       }
     },
   },
