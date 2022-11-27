@@ -50,14 +50,13 @@ export default {
 
     return { api, authStore, sitePagesStore }
   },
-  components: { Messages },
   data() {
     return {
       form: {
-          name: this.authStore.name,
-          email: this.authStore.email,
-          password: '',
-        },
+        name: this.authStore.name,
+        email: this.authStore.email,
+        password: '',
+      },
       error: '',
       message: '',
     }
