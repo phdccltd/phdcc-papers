@@ -18,6 +18,7 @@ export const useAuthStore = defineStore({
     loggedin: false,
     id: 0,
     name: '',
+    email: '',
     publicsettings: {},
     super: false,
     username: ''
@@ -31,6 +32,7 @@ export const useAuthStore = defineStore({
         this.loggedin = true;
         this.id = user.id;
         this.name = user.name
+        this.email = user.email
         this.publicsettings = user.publicsettings
         this.super = user.super;
         this.username = user.username;
@@ -43,6 +45,7 @@ export const useAuthStore = defineStore({
       this.loggedin = false;
       this.id = 0;
       this.name = ''
+      this.email = ''
       this.publicsettings = {};
       this.super = false;
       this.username = '';

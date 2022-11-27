@@ -3,6 +3,7 @@
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
+    HELLO INDEX
   </div>
 </template>
 

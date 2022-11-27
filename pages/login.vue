@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- MOSTLY DONE -->
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>

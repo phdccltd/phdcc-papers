@@ -1,8 +1,8 @@
 <template>
+  <div>
     <!-- MAIN PANEL SHOWING ALL PUBLICATIONS -->
-    <div>
-        <HelpHome />
-    </div>
+    <HelpHome />
+  </div>
 </template>
 <script lang="ts">
 import { useSitePagesStore } from "~/stores/sitepages";
@@ -22,7 +22,7 @@ export default {
         const api = api2()
 
         return { api, authStore, sitePagesStore, grecaptcha }
-    }, 
+    },
     data() { // Client and Server
         //console.log('PANEL data')
         //if ('publicsettings' in this.$auth.user && 'pubscalled' in this.$auth.user.publicsettings) {

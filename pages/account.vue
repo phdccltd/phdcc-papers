@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- MOSTLY DONE -->
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
@@ -62,15 +63,12 @@ export default {
     }
   },
   async mounted() {
-    this.sitePagesStore.fetch()
+    await this.sitePagesStore.fetch()
     //page.title = 'Account'
     if (!this.authStore.loggedin) {
       navigateTo('/login');
     }
     //this.$store.commit("page/setTitle", page.title)
-    //await this.$auth.fetchUser()
-    //this.form.name = this.$auth.user.name
-    //this.form.email = this.$auth.user.email
   },
 
   computed: {
@@ -79,39 +77,39 @@ export default {
       return sitepage ? sitepage.content : '';
     },
     username() {
-      return this.authStore.name
+      return this.authStore.username
     }
   },
   methods: {
-    async onSubmit(evt) {
-      /*this.error = ''
+    async onSubmit() {
+      this.error = ''
       this.message = ''
       //console.log('this.form', this.form)
       this.form.name = this.form.name.trim()
       this.form.email = this.form.email.trim()
       if (this.form.name.length === 0) { this.error = 'No name given'; return }
       if (this.form.email.length === 0) { this.error = 'No email given'; return }
-      const changedName = this.form.name !== this.$auth.user.name
-      const changedEmail = this.form.email !== this.$auth.user.email
+      const changedName = this.form.name !== this.authStore.name
+      const changedEmail = this.form.email !== this.authStore.email
       const changedPassword = this.form.password
       if (!changedName && !changedEmail && !changedPassword) {
         this.error = 'No changes'
         return
       }
       try {
-        const response = await this.$api.user.save(this.form)
-        //console.log(response)
+        const response = await this.api.auth.save(this.form)
         if (response.ret !== 0) {
           this.error = response.status
         } else {
-          await this.$auth.fetchUser()
+          const user = await this.api.auth.getuser()
+          this.authStore.setUser(user.user);
           this.message = 'Changes saved'
         }
       }
-      catch (err) {
+      catch (err: any) {
         console.log("ACCOUNT FAIL", err.message)
         this.error = err.message
-      }*/
+      }
     }
   },
   //head() {

@@ -42,16 +42,15 @@ export default class BaseAPI {
     let data = null
 
     try {
-      //console.log(config)
+      console.log(config)
       //if( config.params) console.log(config.params.headers)
-      const headers = config.params? (config.params.headers ? config.params.headers : {}):{}
-      //console.log(headers)
+      //const headers = config.params? (config.params.headers ? config.params.headers : {}):{}
+      const headers = config.headers ? config.headers : {}
+      console.log(headers)
 
       const authStore = useAuthStore()
 
-      console.log("AUTH")
       if (authStore.authorization) {
-        console.log("AUTH TOKEN SET")
         // Use the persistent token (a kind of JWT) to authenticate the request.
         headers.Authorization = 'bearer ' + authStore.authorization
       }
