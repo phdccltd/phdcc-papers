@@ -12,16 +12,11 @@ export const useMiscStore = defineStore('misc', {
     ],
   },
   state: () => ({
-    time: null,
     vals: {},
   }),
   actions: {
     set(params: any) {
-      console.log("SET",params.key,params.value)
       this.vals[params.key] = params.value
-    },
-    setTime() {
-      this.time = new Date()
     },
   },
   getters: {
