@@ -21,14 +21,15 @@ export const useAuthStore = defineStore({
     email: '',
     publicsettings: {},
     super: false,
-    username: ''
+    username: '',
+    masquerading: false
   }),
   actions: {
     setToken(authorization: string | null) {
       this.authorization = authorization
     },
-    setUser( user: any){
-      if( user!=null && user.id!==0){
+    setUser(user: any) {
+      if (user != null && user.id !== 0) {
         this.loggedin = true;
         this.id = user.id;
         this.name = user.name
@@ -36,11 +37,12 @@ export const useAuthStore = defineStore({
         this.publicsettings = user.publicsettings
         this.super = user.super;
         this.username = user.username;
+        this.masquerading = false;
       } else {
         this.logout();
       }
     },
-    logout(){
+    logout() {
       this.authorization = null;
       this.loggedin = false;
       this.id = 0;
@@ -49,7 +51,8 @@ export const useAuthStore = defineStore({
       this.publicsettings = {};
       this.super = false;
       this.username = '';
-      }
+      this.masquerading = false;
+    }
   },
   getters: {
     getToken: (state: { authorization: string | null }) => {

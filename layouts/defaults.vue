@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div :class="'container' + (issuper ? ' header-super' : ismasquerading ? ' header-masquerading' : '')">
       <div class="border border-primary rounded p-3">
         <div class="float-end">
           <div v-if="loggedin">
@@ -22,7 +22,10 @@
           <v-icon icon="home" />
         </b-button>
         <h1 class="menu-title">
-          {{ title }}
+          <nuxt-link v-if="pubid" :to="'/panel/' + pubid">{{ title }}</nuxt-link>
+          <span v-else>
+            {{ title }}
+          </span>
           {{ titlesuffix }}
         </h1>
       </div>
@@ -31,13 +34,13 @@
       <slot />
     </div>
     <div class="container mt-3 pt-2 border-top" style="color: gray">
-      <a href="https://www.phdcc.com/papers/">Papers {{ version }}/{{ apiversion }}</a>, 
+      <a href="https://www.phdcc.com/papers/">Papers {{ version }}/{{ apiversion }}</a>,
       <span style="color: lightgrey"> built: {{ BUILD_DATE }}. Copyright &copy; 2022 PHD Computer Consultants Ltd. </span><br />
       <a href="https://www.phdcc.com/feedback.html" target="_blank" rel="noopener">
         Get in touch if you want to try out Papers for your conference or journal.
-        </a>
-      <br/>
-      {{yourtime}}
+      </a>
+      <br />
+      {{ yourtime }}
     </div>
   </div>
 </template>
@@ -45,11 +48,13 @@
 <script lang="ts">
 
 import { useAuthStore } from '~/stores/auth'
+import { useMiscStore } from '~/stores/misc'
 
 export default {
   setup() {
     const authStore = useAuthStore()
-    return { authStore }
+    const miscStore = useMiscStore()
+    return { authStore, miscStore }
   },
   computed: {
     // Client and Server
@@ -67,9 +72,7 @@ export default {
       return runtimeConfig.public.BUILD_DATE
     },
     apiversion() {
-      // console.log('GET APIVERSION')
-      //return this.miscStore.get('apiversion')
-      return 'APIVER'
+      return this.miscStore.get('apiversion')
     },
     title() {
       return 'Page title'
@@ -78,22 +81,33 @@ export default {
       return 'suffix'
       // return this.$store.getters['page/titlesuffix'] // as changes reactively as we move about
     },
-    loggedin(){
+    loggedin() {
       return this.authStore.loggedin
     },
-    issuper(){
+    ismasquerading() {
+      return this.authStore.masquerading
+    },
+    issuper() {
       return this.authStore.super
     },
-    username(){
+    username() {
       return this.authStore.name
-    }
+    },
+    pubid() {
+      const route = useRoute()
+      const path = '/' + route.params.id
+      if ('pubid' in route.params)
+        return parseInt(route.params.pubid)
+      else
+        return false
+    },
   },
   methods: {
-    logout(){
+    logout() {
       this.authStore.logout()
       navigateTo('/');
     }
-    }
+  }
 }
 </script>
 
@@ -101,4 +115,13 @@ export default {
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins/_breakpoints';
+</style>
+
+<style>
+  .menu-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: inline;
+    /*white-space: nowrap;*/
+  }
 </style>
