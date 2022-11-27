@@ -83,7 +83,6 @@ export default {
     async onSubmit() {
       this.error = ''
       this.message = ''
-      //console.log('this.form', this.form)
       this.form.name = this.form.name.trim()
       this.form.email = this.form.email.trim()
       if (this.form.name.length === 0) { this.error = 'No name given'; return }

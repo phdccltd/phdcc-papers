@@ -11,8 +11,8 @@
             </b-button>
           </div>
           <div v-else>
-            <b-button variant="outline-success" to="/login">Login</b-button>
-            <b-button variant="outline-secondary" to="/register">Register</b-button>
+            <b-button variant="outline-success" to="/login" class="me-2">Login</b-button>
+            <b-button variant="outline-secondary" to="/register" class="me-2">Register</b-button>
           </div>
         </div>
         <b-button variant="outline-secondary" class="me-2" to="/" v-if="!loggedin" title="Home">

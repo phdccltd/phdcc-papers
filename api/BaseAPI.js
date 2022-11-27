@@ -42,11 +42,11 @@ export default class BaseAPI {
     let data = null
 
     try {
-      console.log(config)
+      //console.log(config)
       //if( config.params) console.log(config.params.headers)
       //const headers = config.params? (config.params.headers ? config.params.headers : {}):{}
       const headers = config.headers ? config.headers : {}
-      console.log(headers)
+      //console.log(headers)
 
       const authStore = useAuthStore()
 
@@ -125,7 +125,7 @@ export default class BaseAPI {
         // indicates whether we want to log this to Sentry - which can be a boolean or a function for more complex
         // decisions.
         const log = typeof logError === 'function' ? logError(data) : logError
-        console.log('Log it?', log)
+        //console.log('Log it?', log)
 
         if (log) {
           /*Sentry.captureException(
