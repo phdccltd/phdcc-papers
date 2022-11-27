@@ -18,7 +18,7 @@
   </script>
   
   <style scoped lang="scss">
-  /*@import 'color-vars';*/
+  @import '@/assets/css/_color-vars';
   
   .notice {
     border-width: 1px;

@@ -44,7 +44,6 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@use "@/assets/css/_color-vars.scss" as *;',
         },
       },
     },
@@ -52,8 +51,7 @@ export default defineNuxtConfig({
   css: [
     '@/node_modules/@fortawesome/fontawesome-svg-core/styles.css',
     'bootstrap/dist/css/bootstrap.css',
-    // '@/assets/css/global.scss',
-    //'@/assets/css/_colors.scss'
+    '@/assets/css/_global.scss',
   ],
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
