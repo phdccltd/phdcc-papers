@@ -18,7 +18,7 @@
   </script>
   
   <style scoped lang="scss">
-  /*@import 'color-vars';
+  /*@import 'color-vars';*/
   
   .notice {
     border-width: 1px;
@@ -47,6 +47,6 @@
     background-color: $color-red--lighter;
     border-color: $color-red--light;
     color: $color-red--dark;
-  }*/
+  }
   </style>
   

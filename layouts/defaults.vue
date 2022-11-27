@@ -4,8 +4,10 @@
       <div class="border border-primary rounded p-3">
         <div class="float-end">
           <div v-if="loggedin">
-            <b-button @click="logout()" variant="outline-secondary" class="mr-2" title="Logout">
-              <v-icon icon="sign-out-alt" scale="1" /><br />
+            <b-button to="/admin" v-if="issuper" variant="outline-danger" class="me-2">Super</b-button>
+            <b-button to="/account" variant="outline-secondary" class="me-2">{{ username }}</b-button>
+            <b-button @click="logout()" variant="outline-secondary" class="me-2" title="Logout">
+              <v-icon icon="sign-out-alt" />
             </b-button>
           </div>
           <div v-else>
@@ -13,11 +15,11 @@
             <b-button variant="outline-secondary" to="/register">Register</b-button>
           </div>
         </div>
-        <b-button variant="outline-secondary" class="mr-2" to="/" v-if="!loggedin" title="Home">
-          <v-icon icon="home" scale="1" />
+        <b-button variant="outline-secondary" class="me-2" to="/" v-if="!loggedin" title="Home">
+          <v-icon icon="home" />
         </b-button>
-        <b-button variant="outline-secondary" class="mr-2" to="/panel" v-if="loggedin" title="Control Panel">
-          <v-icon icon="home" scale="1" />
+        <b-button variant="outline-secondary" class="me-2" to="/panel" v-if="loggedin" title="Control Panel">
+          <v-icon icon="home" />
         </b-button>
         <h1 class="menu-title">
           {{ title }}
@@ -79,6 +81,12 @@ export default {
     loggedin(){
       return this.authStore.loggedin
     },
+    issuper(){
+      return this.authStore.super
+    },
+    username(){
+      return this.authStore.name
+    }
   },
   methods: {
     logout(){
