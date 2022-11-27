@@ -25,7 +25,8 @@ export default {
 
     computed: {
         content() {
-            const path = '/' + this.$route.params.id
+            const route = useRoute()
+            const path = '/' + route.params.id
             // console.log('_id content path', path)
             const sitepage: { content: string } = this.sitePagesStore.get(path)
             if (sitepage) {
