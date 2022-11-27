@@ -8,10 +8,6 @@
 </template>
 
 <script lang="ts">
-definePageMeta({
-  middleware: 'auth',
-})
-
 import { buildHead } from '~/composables/useBuildHead'
 import Messages from '~/components/Messages.vue';
 import { useMiscStore } from "~/stores/misc";
