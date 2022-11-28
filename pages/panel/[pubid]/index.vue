@@ -7,7 +7,7 @@
         <div v-else>
             <HelpPanel :custom="pub.description" />
             <Messages :error="error" :message="message" />
-            <!--PublicationSubmissions :setError="setError" :setMessage="setMessage" /-->
+            <PublicationSubmissions :setError="setError" :setMessage="setMessage" />
         </div>
     </div>
 </template>
@@ -17,7 +17,7 @@ import HelpPanel from '~/components/HelpPanel.vue'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import Messages from '~/components/Messages.vue'
-//import PublicationSubmissions from '~/components/PublicationSubmissions.vue'
+import PublicationSubmissions from '~/components/PublicationSubmissions.vue'
 
 export default {
     middleware: 'authuser',
@@ -51,7 +51,7 @@ export default {
         },
         pub() {
             const pub = this.pubsStore.getPub(this.pubid)
-            console.log("pub:",pub)
+            //console.log("pub:",pub)
             return pub ? pub : {}
         },
         fatalerror() {
