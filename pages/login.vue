@@ -9,8 +9,9 @@
 </template>
 
 <script lang="ts">
-import { useSitePagesStore } from "~/stores/sitepages";
 import { useAuthStore } from '~/stores/auth'
+import { useMiscStore } from '~/stores/misc'
+import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
 import UserAuthForm from '~/components/UserAuthForm.vue'
 //import { page } from '@/utils/page'
@@ -21,14 +22,15 @@ import { default as api2 } from '~/api'
 
 export default {
   setup() {
-    const sitePagesStore = useSitePagesStore()
     const authStore = useAuthStore()
+    const miscStore = useMiscStore()
+    const sitePagesStore = useSitePagesStore()
     const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
     const api = api2()
 
-    return { api, authStore, sitePagesStore, grecaptcha }
+    return { api, authStore, miscStore, sitePagesStore, grecaptcha }
   },
 
   data() {
@@ -40,13 +42,11 @@ export default {
 
   async mounted() {
     this.sitePagesStore.fetch() // Do not await as knackers useVueRecaptcha. WHY? TODO
-
     if (this.authStore.loggedin) {
       navigateTo('/panel');
     }
-    /*this.$store.dispatch('sitepages/fetch')
-    page.title = 'Login'*/
-    //this.$store.commit("page/setTitle", page.title)
+    //page.title = 'Login'
+    this.miscStore.set({ key: 'page-title', value: 'Login' })
     const runtimeConfig = useRuntimeConfig()
     if (runtimeConfig.public.RECAPTCHA_BYPASS) {
       this.message = 'Recaptcha bypass'

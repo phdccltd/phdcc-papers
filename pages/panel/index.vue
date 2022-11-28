@@ -56,22 +56,22 @@ export default {
     return { api, authStore, miscStore, pubsStore, sitePagesStore, grecaptcha }
   },
   data() { // Client and Server
-    //console.log('PANEL data')
-    //if ('publicsettings' in this.$auth.user && 'pubscalled' in this.$auth.user.publicsettings) {
-    //    page.title = this.$auth.user.publicsettings.pubscalled
-    //}
-    //const subtitle = 'Your ' + page.title.toLowerCase()
-    const subtitle = 'Your stuff'
-    //console.log('panel index data')
     return {
       error: '',
-      subtitle,
+      subtitle: '',
     }
   },
   async mounted() { // Client only
+    let title = 'Publications'
+    if( 'publicsettings' in this.authStore && 'pubscalled' in this.authStore.publicsettings) {
+      title = this.authStore.publicsettings.pubscalled
+      this.subtitle = 'Your ' + title.toLowerCase()
+    }
+    this.miscStore.set({ key: 'page-title', value: title })
     await this.pubsStore.clearError()
     await this.pubsStore.fetch()
   },
+  
 
   computed: {
     message() {

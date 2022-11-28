@@ -7,6 +7,7 @@
 </template>
   
 <script lang="ts">
+import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
 //import { page } from '@/utils/page'
 
@@ -15,12 +16,12 @@ import { useSitePagesStore } from "~/stores/sitepages";
 export default {
 
     setup() {
+        const miscStore = useMiscStore()
         const sitePagesStore = useSitePagesStore()
-        return { sitePagesStore }
+        return { miscStore, sitePagesStore }
     },
     async mounted() { // Client only
         this.sitePagesStore.fetch() // Do not await as knackers useVueRecaptcha. WHY? TODO
-        //this.$store.commit("page/setTitle", page.title)
     },
 
     computed: {
@@ -31,8 +32,7 @@ export default {
             const sitepage: { content: string } = this.sitePagesStore.get(path)
             if (sitepage) {
                 //page.title = sitepage.title
-                //this.$store.commit("page/setTitle", page.title)
-                return sitepage.content
+                this.miscStore.set({ key: 'page-title', value: sitepage.title })
             }
             return sitepage ? sitepage.content : '';
         }

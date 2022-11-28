@@ -8,8 +8,9 @@
 </template>
 
 <script lang="ts">
-import { useSitePagesStore } from "~/stores/sitepages";
 import { useAuthStore } from '~/stores/auth'
+import { useMiscStore } from '~/stores/misc'
+import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
 //import { page } from '@/utils/page'
 import { default as api2 } from '~/api'
@@ -18,14 +19,15 @@ import { default as api2 } from '~/api'
 
 export default {
   setup() {
-    const sitePagesStore = useSitePagesStore()
     const authStore = useAuthStore()
+    const miscStore = useMiscStore()
+    const sitePagesStore = useSitePagesStore()
     const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
     const api = api2()
 
-    return { api, authStore, sitePagesStore, grecaptcha }
+    return { api, authStore, miscStore, sitePagesStore, grecaptcha }
   },
 
   data() {
@@ -40,7 +42,7 @@ export default {
     if (this.authStore.loggedin) {
       navigateTo('/panel');
     }
-    //this.$store.commit("page/setTitle", page.title)
+    this.miscStore.set({ key: 'page-title', value: 'Reset password' })
 
     let token: string | boolean = false
     if (window.location.search) {

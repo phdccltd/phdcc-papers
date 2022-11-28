@@ -3,7 +3,6 @@
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
-    HELLO INDEX
   </div>
 </template>
 
@@ -22,22 +21,14 @@ export default {
   },
 
   setup() {
-    const runtimeConfig = useRuntimeConfig()
-    console.log('INDEX.VUE', runtimeConfig.public.API) // public is on server and in client
+    // const runtimeConfig = useRuntimeConfig()
+    // console.log('INDEX.VUE', runtimeConfig.public.API) // public is on server and in client
     // const appConfig = useAppConfig()
     // console.log("INDEX.VUE",appConfig.testing) // on server and in client
 
     const sitePagesStore = useSitePagesStore()
     const miscStore = useMiscStore()
-    /*miscStore.set({
-            key: 'hideglobalwarning',
-            value: false,
-          })
-          miscStore.set({
-            key: 'bloggy',
-            value: 'datbloggy',
-          })*/
-    
+
     useHead(
       buildHead(
         'Conferences',
@@ -48,26 +39,17 @@ export default {
   },
 
   mounted() { // Client only
-    //console.log('+++++ index MOUNTED')
     this.sitePagesStore.fetch()
-    //this.$store.dispatch('sitepages/fetch')
-    //this.$store.commit("page/setTitle", page.title)
   },
   computed: {
     content() {
       const sitepage = this.sitePagesStore.get('/')
-        if (sitepage) {
-          //page.title = sitepage.title
-          return sitepage.content
-        }
-        return ''
-            },
-    /*bloggy(){
-      return this.miscStore.get('bloggy')
+      if (sitepage) {
+        //page.title = sitepage.title
+        this.miscStore.set({ key: 'page-title', value: sitepage.title })
+      }
+      return sitepage ? sitepage.content : '';
     },
-    globalwarning() {
-      return this.miscStore.get('hideglobalwarning')
-    }*/
   },
 }
 </script>

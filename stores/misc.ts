@@ -17,6 +17,9 @@ export const useMiscStore = defineStore('misc', {
   actions: {
     set(params: any) {
       this.vals[params.key] = params.value
+      if( params.key==='page-title'){
+        this.vals['page-title-suffix'] = ''
+      }
     },
   },
   getters: {

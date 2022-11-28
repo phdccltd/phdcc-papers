@@ -75,11 +75,10 @@ export default {
       return this.miscStore.get('apiversion')
     },
     title() {
-      return 'Page title'
+      return this.miscStore.get('page-title')
     },
     titlesuffix() {
-      return 'suffix'
-      // return this.$store.getters['page/titlesuffix'] // as changes reactively as we move about
+      return this.miscStore.get('page-title-suffix')
     },
     loggedin() {
       return this.authStore.loggedin
