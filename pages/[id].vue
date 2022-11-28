@@ -9,9 +9,6 @@
 <script lang="ts">
 import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
-//import { page } from '@/utils/page'
-
-//page.title = 'Welcome'
 
 export default {
 
@@ -31,17 +28,11 @@ export default {
             // console.log('_id content path', path)
             const sitepage: { content: string } = this.sitePagesStore.get(path)
             if (sitepage) {
-                //page.title = sitepage.title
                 this.miscStore.set({ key: 'page-title', value: sitepage.title })
             }
             return sitepage ? sitepage.content : '';
         }
     },
-    //head() {
-    //    return {
-    //        title: page.title,
-    //    }
-    //},
 }
 </script>
   

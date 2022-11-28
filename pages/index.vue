@@ -16,7 +16,7 @@ export default {
   data() {
     return {
       error: '',
-      message: ''
+      message: '',
     }
   },
 
@@ -29,12 +29,6 @@ export default {
     const sitePagesStore = useSitePagesStore()
     const miscStore = useMiscStore()
 
-    useHead(
-      buildHead(
-        'Conferences',
-        "Welcome to Papers"
-      )
-    )
     return { miscStore, sitePagesStore }
   },
 
@@ -45,7 +39,6 @@ export default {
     content() {
       const sitepage = this.sitePagesStore.get('/')
       if (sitepage) {
-        //page.title = sitepage.title
         this.miscStore.set({ key: 'page-title', value: sitepage.title })
       }
       return sitepage ? sitepage.content : '';

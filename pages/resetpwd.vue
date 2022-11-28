@@ -12,10 +12,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
-//import { page } from '@/utils/page'
 import { default as api2 } from '~/api'
-
-//page.title = 'Reset password'
 
 export default {
   setup() {
@@ -38,7 +35,6 @@ export default {
   },
   async mounted() {
     this.sitePagesStore.fetch() // Do not await as knackers useVueRecaptcha. WHY? TODO
-    //page.title = 'Reset password'
     if (this.authStore.loggedin) {
       navigateTo('/panel');
     }
@@ -87,11 +83,6 @@ export default {
     }
   },
 
-  //head() {
-  //  return {
-  //    title: page.title,
-  //  }
-  //},
   computed: {
     content() {
       const sitepage = this.sitePagesStore.get('/resetpwd')

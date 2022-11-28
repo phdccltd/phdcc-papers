@@ -26,17 +26,14 @@ import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
 // http://sahatyalkabov.com/how-to-implement-password-reset-in-nodejs/
 import Messages from '~/components/Messages.vue'
-//import { page } from '@/utils/page'
 import { default as api2 } from '~/api'
-
-//page.title = 'Forgot password'
 
 export default {
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
-        const runtimeConfig = useRuntimeConfig()
+    const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
     const api = api2()
@@ -56,12 +53,11 @@ export default {
   },
   async mounted() {
     this.sitePagesStore.fetch()
-    //page.title = 'Forgot password'
     this.miscStore.set({ key: 'page-title', value: 'Forgot password' })
     if (this.authStore.loggedin) {
       navigateTo('/panel');
     }
-        const runtimeConfig = useRuntimeConfig()
+    const runtimeConfig = useRuntimeConfig()
     if (runtimeConfig.public.RECAPTCHA_BYPASS) {
       this.message = 'Recaptcha bypass'
     } else {
@@ -69,11 +65,6 @@ export default {
     }
   },
 
-  /*head() {
-    return {
-      title: page.title,
-    }
-  },*/
   computed: {
     content() {
       const sitepage = this.sitePagesStore.get('/forgotpwd')

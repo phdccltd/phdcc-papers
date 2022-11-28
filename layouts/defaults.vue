@@ -1,5 +1,10 @@
 <template>
   <div>
+    <Html>
+      <Head>
+        <Title>{{ title }}</Title>
+      </Head>
+    </Html>
     <div :class="'container' + (issuper ? ' header-super' : ismasquerading ? ' header-masquerading' : '')">
       <div class="border border-primary rounded p-3">
         <div class="float-end">

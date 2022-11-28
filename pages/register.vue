@@ -13,11 +13,8 @@ import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
 import UserAuthForm from '~/components/UserAuthForm.vue'
-//import { page } from '@/utils/page'
 //import jwt_decode from 'jwt-decode'
 import { default as api2 } from '~/api'
-
-//page.title = 'Register'
 
 export default {
   setup() {
@@ -39,7 +36,6 @@ export default {
   },
   async mounted() {
     this.sitePagesStore.fetch() // Do not await as knackers useVueRecaptcha. WHY? TODO
-    //page.title = 'Register'
     if (this.authStore.loggedin) {
       navigateTo('/panel');
     }
@@ -52,11 +48,6 @@ export default {
     }
   },
 
-  //head() {
-  //  return {
-  //    title: page.title,
-  //  }
-  //},
   computed: {
     content() {
       const sitepage = this.sitePagesStore.get('/register')
