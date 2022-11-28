@@ -75,6 +75,7 @@
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
+import { useSubmitsStore } from '~/stores/submits'
 import SubmitSummary from '~/components/SubmitSummary.vue'
 import PaperDate from '~/components/PaperDate.vue'
 import _ from 'lodash/core'
@@ -100,8 +101,9 @@ export default {
         const authStore = useAuthStore()
         const miscStore = useMiscStore()
         const pubsStore = usePubsStore()
+        const submitsStore = useSubmitsStore()
 
-        return { authStore, miscStore, pubsStore }
+        return { authStore, miscStore, pubsStore, submitsStore }
     },
     data: function () {
         return {
@@ -131,10 +133,8 @@ export default {
         },
         flows() {
             //console.log('PUB flows', this.pubid)
-            const filteredflows = []
-
-            /*// Get flows and work out follow-on properties
-            let flows = this.$store.getters['submits/flows'](this.pubid)
+            // Get flows and work out follow-on properties
+            let flows = this.submitsStore.flows(this.pubid)
             if (!flows) flows = []
             // Set starter addtype and get countsubmits
             const filteredflows = []
@@ -145,7 +145,7 @@ export default {
     
               flow.filteredsubmits = []
               for (const fsubmit of flow.submits) {
-                const submit = this.$store.getters['submits/submit'](this.pubid, fsubmit.id)
+                const submit = this.submitsStore.submit(this.pubid, fsubmit.id)
                 flow.filteredsubmits.push(submit)
                 //if (!submit.visible) anysubmithidden = true
     
@@ -156,7 +156,7 @@ export default {
               countsubmits += flow.submits.length
             }
             this.noflows = flows.length === 0
-            this.nowtavailable = !this.noflows && countsubmits === 0*/
+            this.nowtavailable = !this.noflows && countsubmits === 0
             return filteredflows
         },
         issuper() {

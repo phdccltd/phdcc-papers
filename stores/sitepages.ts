@@ -3,9 +3,6 @@ import _ from 'lodash/core'
 import { defineStore } from 'pinia'
 import api from '~/api'
 
-//const $api = api()
-//console.log("---", $api)
-
 export const useSitePagesStore = defineStore('sitepages', {
   persist: {
     enabled: true,

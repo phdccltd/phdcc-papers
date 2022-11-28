@@ -2,8 +2,6 @@ import _ from 'lodash/core'
 import { defineStore } from 'pinia'
 import api from '~/api'
 
-//const $api = api()
-
 export const usePubsStore = defineStore('pubs', {
   persist: {
     enabled: true,
