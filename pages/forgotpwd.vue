@@ -26,7 +26,7 @@ import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
 // http://sahatyalkabov.com/how-to-implement-password-reset-in-nodejs/
 import Messages from '~/components/Messages.vue'
-import { default as api2 } from '~/api'
+import api from '~/api'
 
 export default {
   setup() {
@@ -36,9 +36,7 @@ export default {
     const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    const api = api2()
-
-    return { api, authStore, miscStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, sitePagesStore, grecaptcha }
   },
 
   data() {
@@ -82,7 +80,7 @@ export default {
       }
       this.form.grecaptcharesponse = this.grecaptcha
       try {
-        const forgotten = await this.api.auth.forgotpwd(this.form)
+        const forgotten = await api.auth.forgotpwd(this.form)
         //console.log("forgotten", forgotten)
         if (forgotten.err) {
           this.error = forgotten.err

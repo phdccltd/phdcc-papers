@@ -3,7 +3,7 @@ import _ from 'lodash/core'
 import { defineStore } from 'pinia'
 import api from '~/api'
 
-const $api = api()
+//const $api = api()
 //console.log("---", $api)
 
 export const useSitePagesStore = defineStore('sitepages', {
@@ -23,7 +23,7 @@ export const useSitePagesStore = defineStore('sitepages', {
   }),
   actions: {
     async fetch() {
-      const { sitepages } = await $api.sitepages.fetch({})
+      const { sitepages } = await api.sitepages.fetch({})
       // console.log('fetch setList sitepages', sitepages)
       for (const sitepage of sitepages) {
         sitepage.visible = false

@@ -37,7 +37,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
-import { default as api2 } from '~/api'
+import api from '~/api'
 
 export default {
   setup() {
@@ -45,9 +45,7 @@ export default {
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
 
-    const api = api2()
-
-    return { api, authStore, miscStore, sitePagesStore }
+    return {  authStore, miscStore, sitePagesStore }
   },
   data() {
     return {
@@ -93,11 +91,11 @@ export default {
         return
       }
       try {
-        const response = await this.api.auth.save(this.form)
+        const response = await api.auth.save(this.form)
         if (response.ret !== 0) {
           this.error = response.status
         } else {
-          const user = await this.api.auth.getuser()
+          const user = await api.auth.getuser()
           this.authStore.setUser(user.user);
           this.message = 'Changes saved'
         }

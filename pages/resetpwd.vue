@@ -12,7 +12,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
-import { default as api2 } from '~/api'
+import api from '~/api'
 
 export default {
   setup() {
@@ -22,9 +22,7 @@ export default {
     const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    const api = api2()
-
-    return { api, authStore, miscStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, sitePagesStore, grecaptcha }
   },
 
   data() {
@@ -64,10 +62,10 @@ export default {
     }
     try {
       resetpwdinfo.grecaptcharesponse = this.grecaptcha
-      const res = await this.api.auth.login(resetpwdinfo)
+      const res = await api.auth.login(resetpwdinfo)
       if (res.ret === 0) {
         this.authStore.setToken(res.token)
-        const user = await this.api.auth.getuser()
+        const user = await api.auth.getuser()
 
         this.authStore.setUser(user.user);
         navigateTo('/account');

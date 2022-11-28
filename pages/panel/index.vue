@@ -36,7 +36,6 @@ import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import Messages from '~/components/Messages.vue'
 //import HelpHome from '~/components/HelpHome.vue'
-import { default as api2 } from '~/api'
 
 definePageMeta({
   middleware: 'authuser',
@@ -51,9 +50,7 @@ export default {
     const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    const api = api2()
-
-    return { api, authStore, miscStore, pubsStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, pubsStore, sitePagesStore, grecaptcha }
   },
   data() { // Client and Server
     return {

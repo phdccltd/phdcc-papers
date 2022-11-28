@@ -2,8 +2,7 @@ import _ from 'lodash/core'
 import { defineStore } from 'pinia'
 import api from '~/api'
 
-const $api = api()
-//console.log("---", $api)
+//const $api = api()
 
 export const usePubsStore = defineStore('pubs', {
   persist: {
@@ -25,7 +24,7 @@ export const usePubsStore = defineStore('pubs', {
       try {
         // console.log('store fetch pubs.actions')
         this.error = false
-        const { pubs } = await $api.pubs.fetch({})
+        const { pubs } = await api.pubs.fetch({})
         for (const pub of pubs) { // Add working variables here (so they are reactive)
           pub.owner = Boolean(_.find(pub.myroles, (mr: any ) => { return mr.isowner }))
           pub.notowner = pub.owner ? false : (pub.myroles.length > 0)

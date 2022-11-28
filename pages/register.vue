@@ -14,7 +14,7 @@ import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
 import UserAuthForm from '~/components/UserAuthForm.vue'
 //import jwt_decode from 'jwt-decode'
-import { default as api2 } from '~/api'
+import api from '~/api'
 
 export default {
   setup() {
@@ -24,9 +24,7 @@ export default {
     const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    const api = api2()
-
-    return { api, authStore, miscStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, sitePagesStore, grecaptcha }
   },
   data() {
     return {
@@ -64,7 +62,7 @@ export default {
       }
       registrationInfo.grecaptcharesponse = this.grecaptcha
       try {
-        let res = await this.api.auth.register(registrationInfo)
+        let res = await api.auth.register(registrationInfo)
         if (res.ret !== 0) {
           this.error = res.status
           return
@@ -72,10 +70,10 @@ export default {
 
         // Pass token to loginWith to stop duplicate recatcha validate
         registrationInfo.token = res.user.token
-        res = await this.api.auth.login(registrationInfo)
+        res = await api.auth.login(registrationInfo)
         this.authStore.setToken(res.token)
 
-        const user = await this.api.auth.getuser()
+        const user = await api.auth.getuser()
         this.authStore.setUser(user.user);
 
         navigateTo('/panel');

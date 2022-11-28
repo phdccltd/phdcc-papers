@@ -15,7 +15,7 @@ import { useSitePagesStore } from "~/stores/sitepages";
 import Messages from '~/components/Messages.vue'
 import UserAuthForm from '~/components/UserAuthForm.vue'
 //import jwt_decode from 'jwt-decode'
-import { default as api2 } from '~/api'
+import api from '~/api'
 
 export default {
   setup() {
@@ -25,9 +25,7 @@ export default {
     const runtimeConfig = useRuntimeConfig()
     const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    const api = api2()
-
-    return { api, authStore, miscStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, sitePagesStore, grecaptcha }
   },
 
   data() {
@@ -67,7 +65,7 @@ export default {
       }
       loginInfo.grecaptcharesponse = this.grecaptcha
 
-      const res = await this.api.auth.login(loginInfo)
+      const res = await api.auth.login(loginInfo)
       if (res.ret !== 0) {
         this.error = res.status
         return
@@ -76,7 +74,7 @@ export default {
       //console.log("===PPUSER",ppuser)
       this.authStore.setToken(res.token)
 
-      const user = await this.api.auth.getuser()
+      const user = await api.auth.getuser()
       this.authStore.setUser(user.user);
 
       navigateTo('/panel');
