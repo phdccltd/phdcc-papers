@@ -1,10 +1,10 @@
 <template>
   <div class="mt-1 mb-1">
     <NoticeMessage v-if="showHelp" variant="info">
-      <b-btn variant="link" class="float-end" @click="toggleHelp">
+      <b-button variant="link" class="float-end" @click="toggleHelp">
         <v-icon icon="info-circle" size="2x" title="Hide help" />
         Hide this
-      </b-btn>
+      </b-button>
       <p v-if="custom">
         <strong>{{custom}}</strong>
       </p>

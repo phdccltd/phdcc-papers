@@ -27,7 +27,7 @@ export const usePubsStore = defineStore('pubs', {
         this.error = false
         const { pubs } = await $api.pubs.fetch({})
         for (const pub of pubs) { // Add working variables here (so they are reactive)
-          pub.owner = Boolean(_.find(pub.myroles, mr => { return mr.isowner }))
+          pub.owner = Boolean(_.find(pub.myroles, (mr: any ) => { return mr.isowner }))
           pub.notowner = pub.owner ? false : (pub.myroles.length > 0)
           pub.superedit = false
           pub.adduserid = 0
@@ -39,7 +39,7 @@ export const usePubsStore = defineStore('pubs', {
         }
         // console.log('fetch setpubs', pubs)
         this.pubs = pubs
-      } catch (e) {
+      } catch (e: any) {
         console.log('store fetchpub error', e.message)
         this.error = e.message
       }
@@ -53,11 +53,9 @@ export const usePubsStore = defineStore('pubs', {
     }
   },
   getters: {
-    getPub: (state: { pubs: any }) => () => {
-      return (pubid: any) => {
-        // console.log('getter pubs.getPub', pubid, typeof pubid)
-        return _.find(state.pubs, (pub: { id: any }) => { return pub.id === pubid })
-      }
-    },
+    getPub: (state: { pubs: any }) => (pubid: any) => {
+      // console.log('getter pubs.getPub', pubid, typeof pubid)
+      return _.find(state.pubs, (pub: { id: any }) => { return pub.id === pubid })
+    }
   },
 })
