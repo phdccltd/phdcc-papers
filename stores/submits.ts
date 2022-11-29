@@ -2,7 +2,7 @@ import _ from 'lodash/core'
 import { defineStore } from 'pinia'
 import api from '~/api'
 
-export const useSubmitsStore = defineStore('pubs', {
+export const useSubmitsStore = defineStore('submits', {
   persist: {
     enabled: true,
     strategies: [
@@ -14,9 +14,9 @@ export const useSubmitsStore = defineStore('pubs', {
     ],
   },
   state: () => ({
-    pubflows: [],
-    entries: [],
-    flowfields: [],
+    pubflows: {},
+    entries: {},
+    flowfields: {},
     error: false
   }),
   actions: {
@@ -35,7 +35,7 @@ export const useSubmitsStore = defineStore('pubs', {
             tickcolourno = (tickcolourno + 1) % tickcolours.length
           }
         }
-        this.pubflows[pubflow.pubid] = pubflow.flows // commit('addPubFlow', { pubid, flows })
+        this.pubflows[pubid] = flows // commit('addPubFlow', { pubid, flows })
 
       } catch (e: any) {
         console.log('store fetchpub error', e.message)
@@ -78,13 +78,16 @@ export const useSubmitsStore = defineStore('pubs', {
       this.error = false
     },
 
-    clear() {
+    clearAll() {
       this.error = false
+      this.pubflows = {}
+      this.entries = {}
+      this.flowfields = {}
     }
   },
   getters: {
     flows: (state) => (pubid: number) => {
-      // console.log('getter submits.flows pubid', pubid)
+      console.log('getter submits.flows pubid', pubid)
       const flows = _.find(state.pubflows, (_flows, thispubid) => { return parseInt(thispubid) === pubid })
       return flows
     },

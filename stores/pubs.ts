@@ -44,9 +44,9 @@ export const usePubsStore = defineStore('pubs', {
     clearError() {
       this.error = false
     },
-
-    clear() {
+    clearAll() {
       this.error = false
+      this.pubs = {}
     }
   },
   getters: {

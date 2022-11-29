@@ -132,7 +132,7 @@ export default {
             return pub
         },
         flows() {
-            //console.log('PUB flows', this.pubid)
+            console.log('PUB flows', this.pubid)
             // Get flows and work out follow-on properties
             let flows = this.submitsStore.flows(this.pubid)
             if (!flows) flows = []

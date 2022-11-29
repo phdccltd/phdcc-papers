@@ -15,7 +15,8 @@
   },
   "comments": {
     "1": "pinia-plugin-persist package code in utils\\pinia-plugin-persist.ts",
-    "2": "Keep at sass-loader@10 ???"
+    "2": "Keep at sass-loader@10 ??? https://github.com/webpack-contrib/sass-loader",
+    "3": "https://www.npmjs.com/package/@fortawesome/vue-fontawesome?activeTab=versions"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",

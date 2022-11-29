@@ -1,9 +1,11 @@
 <template>
   <div>
     <Html>
-      <Head>
-        <Title>{{ title }}</Title>
-      </Head>
+
+    <Head>
+      <Title>{{ title }}</Title>
+    </Head>
+
     </Html>
     <div :class="'container' + (issuper ? ' header-super' : ismasquerading ? ' header-masquerading' : '')">
       <div class="border border-primary rounded p-3">
@@ -54,12 +56,16 @@
 
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
+import { usePubsStore } from '~/stores/pubs'
+import { useSubmitsStore } from '~/stores/submits'
 
 export default {
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
-    return { authStore, miscStore }
+    const pubsStore = usePubsStore()
+    const submitsStore = useSubmitsStore()
+    return { authStore, miscStore, pubsStore, submitsStore }
   },
   computed: {
     // Client and Server
@@ -109,6 +115,9 @@ export default {
   methods: {
     logout() {
       this.authStore.logout()
+      this.miscStore.clearAll();
+      this.pubsStore.clearAll();
+      this.submitsStore.clearAll();
       navigateTo('/');
     }
   }
@@ -122,10 +131,10 @@ export default {
 </style>
 
 <style>
-  .menu-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: inline;
-    /*white-space: nowrap;*/
-  }
+.menu-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: inline;
+  /*white-space: nowrap;*/
+}
 </style>

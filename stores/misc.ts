@@ -21,6 +21,9 @@ export const useMiscStore = defineStore('misc', {
         this.vals['page-title-suffix'] = ''
       }
     },
+    clearAll() {
+      this.vals = {}
+    }
   },
   getters: {
     get: (state: { vals: { [x: string]: any } }) => (key: string) => {
