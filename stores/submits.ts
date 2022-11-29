@@ -87,7 +87,7 @@ export const useSubmitsStore = defineStore('submits', {
   },
   getters: {
     flows: (state) => (pubid: number) => {
-      console.log('getter submits.flows pubid', pubid)
+      //console.log('getter submits.flows pubid', pubid)
       const flows = _.find(state.pubflows, (_flows, thispubid) => { return parseInt(thispubid) === pubid })
       return flows
     },
@@ -100,7 +100,7 @@ export const useSubmitsStore = defineStore('submits', {
       return entry
     },
     submit: (state) => (pubid: number, submitid: number) => {
-      const flows = _.find(_state.pubflows, (_flows, thispubid) => { return parseInt(thispubid) === pubid })
+      const flows = _.find(state.pubflows, (_flows, thispubid) => { return parseInt(thispubid) === pubid })
       if (flows) {
         for (const flow of flows) {
           for (const submit of flow.submits) {

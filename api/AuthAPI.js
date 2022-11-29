@@ -30,4 +30,31 @@ export default class AuthAPI extends BaseAPI {
         return ok
     }
 
+    async getUsers() {
+        return this.$get('/users')
+    }
+
+    async getPubUsers(pubid) {
+        return this.$get('/users/pub/' + pubid)
+    }
+
+    async removePubUser(pubid, userid) {
+        console.log('removePubUser', pubid, userid)
+        const { ok } = await this.$del('/users/pub/' + pubid + '/' + userid)
+        return ok
+    }
+
+    async deleteUserRole(pubid, userid, roleid) {
+        console.log('deleteUserRole', pubid, userid, roleid)
+        const { ok } = await this.$del('/users/pub/' + pubid + '/' + userid + '/' + roleid)
+        return ok
+    }
+
+    async addUserRole(pubid, userid, roleid) {
+        console.log('addUserRole', pubid, userid, roleid)
+        const { ok } = await this.$post('/users/pub/' + pubid + '/' + userid + '/' + roleid)
+        return ok
+    }
+
+
 }

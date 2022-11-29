@@ -27,8 +27,8 @@
             <b-list-group-item v-for="(flow, index) in flows" :key="index" class="flow">
                 <h2 class="bg-yellow clearfix">
                     <b-button variant="link" @click="toggleFlowShow(flow)">
-                        <v-icon v-if="flow.visible" name="minus-square" scale="2" class="btn-outline-warning" />
-                        <v-icon v-if="!flow.visible" name="plus-square" scale="2" class="btn-outline-warning" />
+                        <v-icon v-if="flow.visible" icon="minus-square" size="2x" class="btn-outline-warning" />
+                        <v-icon v-if="!flow.visible" icon="plus-square" size="2x" class="btn-outline-warning" />
                     </b-button>
                     {{ flow.name }}
                     <span v-for="flowaction in flow.actions">
@@ -54,7 +54,9 @@
             <strong>Nothing submitted yet</strong>
         </div>
 
-        <b-modal id="bv-modal-edit-submit" centered @ok="okEdited">
+        <SubmissionEditModal v-if="showSubmissionEditModal" :newtitle="newtitle" :newauthor="newauthor" ref="submissioneditmodal" />
+
+        <!--b-modal id="bv-modal-edit-submit" centered @ok="okEdited">
             <template v-slot:modal-title>
                 Edit submission title and author
             </template>
@@ -66,7 +68,7 @@
                     <b-form-select v-model="newauthor" :options="newauthoroptions"></b-form-select>
                 </b-form-group>
             </form>
-        </b-modal>
+        </b-modal-->
 
     </div>
 </template>
@@ -78,7 +80,9 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import SubmitSummary from '~/components/SubmitSummary.vue'
 import PaperDate from '~/components/PaperDate.vue'
+import SubmissionEditModal from './SubmissionEditModal.vue'
 import _ from 'lodash/core'
+import api from '~/api'
 
 export default {
     mixins: [],
@@ -114,6 +118,7 @@ export default {
             newtitle: '',
             newauthor: 0,
             newauthoroptions: [],
+            showSubmissionEditModal: false,
         }
     },
     computed: {
@@ -132,7 +137,7 @@ export default {
             return pub
         },
         flows() {
-            console.log('PUB flows', this.pubid)
+            //console.log('PUB flows', this.pubid)
             // Get flows and work out follow-on properties
             let flows = this.submitsStore.flows(this.pubid)
             if (!flows) flows = []
@@ -140,20 +145,20 @@ export default {
             const filteredflows = []
             let countsubmits = 0
             for (const flow of flows) {
-              //let anysubmithidden = false
-              if (!this.flowid || this.flowid === flow.id) filteredflows.push(flow)
-    
-              flow.filteredsubmits = []
-              for (const fsubmit of flow.submits) {
-                const submit = this.submitsStore.submit(this.pubid, fsubmit.id)
-                flow.filteredsubmits.push(submit)
-                //if (!submit.visible) anysubmithidden = true
-    
-                for (const entry of submit.entries) {
-                  entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
+                //let anysubmithidden = false
+                if (!this.flowid || this.flowid === flow.id) filteredflows.push(flow)
+
+                flow.filteredsubmits = []
+                for (const fsubmit of flow.submits) {
+                    const submit = this.submitsStore.submit(this.pubid, fsubmit.id)
+                    flow.filteredsubmits.push(submit)
+                    //if (!submit.visible) anysubmithidden = true
+
+                    for (const entry of submit.entries) {
+                        entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
+                    }
                 }
-              }
-              countsubmits += flow.submits.length
+                countsubmits += flow.submits.length
             }
             this.noflows = flows.length === 0
             this.nowtavailable = !this.noflows && countsubmits === 0
@@ -176,14 +181,18 @@ export default {
         },
         async editSubmit(submit) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
             this.newauthoroptions = []
-            const { pubusers } = await this.$api.user.getPubUsers(this.pubid)
+            const { pubusers } = await api.auth.getPubUsers(this.pubid)
             for (const user of pubusers.users) {
                 this.newauthoroptions.push({ value: user.id, text: user.username })
             }
-            this.newtitle = submit.name
-            this.newauthor = submit.userId
-            this.submitbeingedited = submit
-            this.$bvModal.show('bv-modal-edit-submit')
+            //this.newtitle = submit.name
+            //this.newauthor = submit.userId
+            //this.submitbeingedited = submit
+            //this.$bvModal.show('bv-modal-edit-submit')
+            this.showSubmissionEditModal = true
+            this.waitForRef('submissioneditmodal', () => {
+                this.$refs.submissioneditmodal.show()
+            })
         },
         okEdited(bvModalEvt) {
             bvModalEvt.preventDefault()
@@ -199,7 +208,7 @@ export default {
                     if (!OK) return
                     newauthor = this.newauthor
                 }
-                const amended = await this.$api.submit.changeSubmitTitle(this.submitbeingedited, newtitle, newauthor)
+                const amended = await api.submit.changeSubmitTitle(this.submitbeingedited, newtitle, newauthor)
                 if (!amended) return await this.$bvModal.msgBoxOk('Error changing submit')
                 this.$store.dispatch('submits/fetchpub', this.pubid)
                 this.$nextTick(() => {
@@ -215,7 +224,7 @@ export default {
                 console.log('deleteSubmit', submit.id)
                 const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this submission and all its entries?', { title: submit.name })
                 if (!OK) return
-                const deleted = await this.$api.submit.deleteSubmit(submit.id)
+                const deleted = await api.submit.deleteSubmit(submit.id)
                 //console.log('deleteSubmitted', deleted)
                 if (!deleted) {
                     await this.$bvModal.msgBoxOk('Could not delete this submission')
