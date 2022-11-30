@@ -17,7 +17,7 @@ export const useMiscStore = defineStore('misc', {
   actions: {
     set(params: any) {
       this.vals[params.key] = params.value
-      if( params.key==='page-title'){
+      if (params.key === 'page-title') {
         this.vals['page-title-suffix'] = ''
       }
     },
@@ -31,8 +31,8 @@ export const useMiscStore = defineStore('misc', {
   },
   getters: {
     get: (state: { vals: { [x: string]: any } }) => (key: string) => {
-      if( key in state.vals){
-      return state.vals[key]
+      if (key in state.vals) {
+        return state.vals[key]
       } else return null
     },
   },

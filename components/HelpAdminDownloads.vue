@@ -6,7 +6,7 @@
         Hide this
       </b-button>
       <p v-if="custom">
-        <strong>{{custom}}</strong>
+        <strong>{{ custom }}</strong>
       </p>
       <p>
         Use this page to download data about your publications' submissions
@@ -20,19 +20,19 @@
   </div>
 </template>
 <script>
-  import NoticeMessage from './NoticeMessage.vue'
-  import helpBox from '@/mixins/helpBox'
+import NoticeMessage from './NoticeMessage.vue'
+import helpBox from '@/mixins/helpBox'
 
-  export default {
-    components: { NoticeMessage },
-    mixins: [helpBox],
-    data: function () {
-      return {
-        id: 'admin-downloads'
-      }
-    },
-    props: {
-      custom: { type: String },
-    },
-  }
+export default {
+  components: { NoticeMessage },
+  mixins: [helpBox],
+  data: function () {
+    return {
+      id: 'admin-downloads'
+    }
+  },
+  props: {
+    custom: { type: String },
+  },
+}
 </script>

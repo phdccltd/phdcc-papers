@@ -1,31 +1,17 @@
 <template>
   <b-form @submit="onSubmit" @submit.stop.prevent>
     <b-form-group label="Username:" label-for="username" label-cols-sm="3">
-      <b-form-input id="username"
-                    v-model="form.username"
-                    autocomplete="username"
-                    required
-                    placeholder="Enter username"></b-form-input>
+      <b-form-input id="username" v-model="form.username" autocomplete="username" required placeholder="Enter username"></b-form-input>
     </b-form-group>
 
-    <b-form-group label="Email address:" label-cols-sm="3"
-                  label-for="email"
-                  description="We'll never share your email with anyone else."
-                  v-if="isRegister">
-      <b-form-input id="email"
-                    v-model="form.email"
-                    type="email"
-                    required
-                    placeholder="Enter email"></b-form-input>
+    <b-form-group label="Email address:" label-cols-sm="3" label-for="email" description="We'll never share your email with anyone else."
+      v-if="isRegister">
+      <b-form-input id="email" v-model="form.email" type="email" required placeholder="Enter email"></b-form-input>
     </b-form-group>
 
     <b-form-group label="Password:" label-for="password" label-cols-sm="3">
-      <b-form-input id="password"
-                    v-model="form.password"
-                    type="password"
-                    autocomplete="current-password"
-                    required
-                    placeholder="Enter password"></b-form-input>
+      <b-form-input id="password" v-model="form.password" type="password" autocomplete="current-password" required
+        placeholder="Enter password"></b-form-input>
     </b-form-group>
 
     <b-form-group v-if="isRegister" label-cols-sm="3">
@@ -43,38 +29,38 @@
 </template>
 
 <script lang="ts">
-  export default {
-    data() {
-      return {
-        form: {
-          username: '',
-          email: '',
-          password: '',
-          agreed: false
-        },
-      }
-    },
-    components: {
-      //UserAuthPassword
-    },
-    props: {
-      submitForm: {
-        type: Function,
-        required: true,
+export default {
+  data() {
+    return {
+      form: {
+        username: '',
+        email: '',
+        password: '',
+        agreed: false
       },
-      buttonText: {
-        type: String,
-        required: true,
-      },
-      isRegister: Boolean,
-    },
-    computed: {
-    },
-    methods: {
-      onSubmit(_evt: any) {
-        this.submitForm(this.form)
-      }
-      
     }
+  },
+  components: {
+    //UserAuthPassword
+  },
+  props: {
+    submitForm: {
+      type: Function,
+      required: true,
+    },
+    buttonText: {
+      type: String,
+      required: true,
+    },
+    isRegister: Boolean,
+  },
+  computed: {
+  },
+  methods: {
+    onSubmit(_evt: any) {
+      this.submitForm(this.form)
+    }
+
   }
+}
 </script>

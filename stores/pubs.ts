@@ -24,7 +24,7 @@ export const usePubsStore = defineStore('pubs', {
         this.error = false
         const { pubs } = await api.pubs.fetch({})
         for (const pub of pubs) { // Add working variables here (so they are reactive)
-          pub.owner = Boolean(_.find(pub.myroles, (mr: any ) => { return mr.isowner }))
+          pub.owner = Boolean(_.find(pub.myroles, (mr: any) => { return mr.isowner }))
           pub.notowner = pub.owner ? false : (pub.myroles.length > 0)
           pub.superedit = false
           pub.adduserid = 0

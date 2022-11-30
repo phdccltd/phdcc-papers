@@ -6,7 +6,7 @@
         Hide this
       </b-button>
       <p v-if="custom">
-        <strong>{{custom}}</strong>
+        <strong>{{ custom }}</strong>
       </p>
       <p>
         Here's details of this submission.
@@ -25,19 +25,19 @@
   </div>
 </template>
 <script>
-  import NoticeMessage from './NoticeMessage.vue'
-  import helpBox from '@/mixins/helpBox'
+import NoticeMessage from './NoticeMessage.vue'
+import helpBox from '@/mixins/helpBox'
 
-  export default {
-    components: { NoticeMessage },
-    mixins: [helpBox],
-    data: function () {
-      return {
-        id: 'panel-submit'
-      }
-    },
-    props: {
-      custom: { type: String },
-    },
-  }
+export default {
+  components: { NoticeMessage },
+  mixins: [helpBox],
+  data: function () {
+    return {
+      id: 'panel-submit'
+    }
+  },
+  props: {
+    custom: { type: String },
+  },
+}
 </script>

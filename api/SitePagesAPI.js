@@ -1,12 +1,12 @@
 import BaseAPI from './BaseAPI'
 
 export default class SitePagesAPI extends BaseAPI {
-  async fetch (params) {
+  async fetch(params) {
     // console.log('SitePagesAPI fetch')
     return this.$get('/sitepages', params)
   }
 
-  async deleteSitePage (pageid) {
+  async deleteSitePage(pageid) {
     console.log('deleteSitePage', pageid)
     const data = {
       pageid
@@ -15,7 +15,7 @@ export default class SitePagesAPI extends BaseAPI {
     return ok
   }
 
-  async addEditSitePage (pageid, pagepath, pagetitle, pagecontent) {
+  async addEditSitePage(pageid, pagepath, pagetitle, pagecontent) {
     const data = {
       pageid,
       pagepath,

@@ -4,7 +4,7 @@ import BaseAPI from './BaseAPI'
 
 export default class SubmitAPI extends BaseAPI {
   /// //////////
-  fetchpub (params) {
+  fetchpub(params) {
     // console.log('submitAPI fetchpub')
     if (params && 'pubid' in params) return this.$get('/submits/pub/' + params.pubid)
     return false
@@ -12,7 +12,7 @@ export default class SubmitAPI extends BaseAPI {
   }
 
   /// //////////
-  fetchentry (params) {
+  fetchentry(params) {
     // console.log('submitAPI fetchentry')
     if (params && 'entryid' in params) return this.$get('/submits/entry/' + params.entryid)
     return false
@@ -20,7 +20,7 @@ export default class SubmitAPI extends BaseAPI {
   }
 
   /// //////////
-  fetchformfields (params) {
+  fetchformfields(params) {
     // console.log('submitAPI fetchentry')
     if (params && 'flowstageid' in params) return this.$get('/submits/formfields/' + params.flowstageid)
     return false
@@ -29,20 +29,20 @@ export default class SubmitAPI extends BaseAPI {
 
   /// //////////
   // POST add whole entry: use FormData not responsedata https://xhr.spec.whatwg.org/#interface-formdata
-  async addSubmitEntry (entry, flowid) {
+  async addSubmitEntry(entry, flowid) {
     console.log('submitAPI addSubmitEntry', entry)
     return this.addSubmitOrEntry(entry, '/submits/submit/' + parseInt(flowid))
   }
 
   /// //////////
   // POST add whole entry: use FormData not responsedata https://xhr.spec.whatwg.org/#interface-formdata
-  async addEntry (entry) {
+  async addEntry(entry) {
     console.log('submitAPI addEntry', entry)
     return this.addSubmitOrEntry(entry, '/submits/entry')
   }
 
   /// //////////
-  async addSubmitOrEntry (entry, apiurl) {
+  async addSubmitOrEntry(entry, apiurl) {
     const data = new FormData()
     data.append('pubid', entry.pubid)
     data.append('flowid', entry.flowid)
@@ -83,7 +83,7 @@ export default class SubmitAPI extends BaseAPI {
   // Edit entry
   // Use POST with X-HTTP-Method-Override PUT at /submits/entry/<id>
   // Replace whole entry
-  async editEntry (entry) {
+  async editEntry(entry) {
     console.log('submitAPI editEntry', entry)
 
     // Use FormData as it may contain a file https://xhr.spec.whatwg.org/#interface-formdata
@@ -125,7 +125,7 @@ export default class SubmitAPI extends BaseAPI {
   }
 
   /// //////////
-  async getFile (relpath) {
+  async getFile(relpath) {
     console.log('submitAPI getFile', relpath)
     // https://morioh.com/p/f4d331b62cda
     // https://stackoverflow.com/questions/53772331/vue-html-js-how-to-download-a-file-to-browser-using-the-download-tag
@@ -138,7 +138,7 @@ export default class SubmitAPI extends BaseAPI {
 
   /// //////////
   // DELETE entry
-  async deleteEntry (entryid) {
+  async deleteEntry(entryid) {
     console.log('submitAPI deleteEntry')
     const { ok } = await this.$del('/submits/entry/' + entryid)
     return ok
@@ -147,7 +147,7 @@ export default class SubmitAPI extends BaseAPI {
 
   /// //////////
   // DELETE submit
-  async deleteSubmit (submitid) {
+  async deleteSubmit(submitid) {
     console.log('submitAPI deleteSubmit')
     const { ok } = await this.$del('/submits/' + submitid)
     return ok
@@ -155,7 +155,7 @@ export default class SubmitAPI extends BaseAPI {
 
   /// //////////
   // PATCH submit title and author
-  async changeSubmitTitle (submit, newtitle, newauthor) {
+  async changeSubmitTitle(submit, newtitle, newauthor) {
     console.log('submitAPI changeSubmitTitle', submit.id, newtitle)
     const data = { newtitle, newauthor }
     const { ok } = await this.$patch('/submits/' + submit.id, data)
@@ -164,7 +164,7 @@ export default class SubmitAPI extends BaseAPI {
 
   /// //////////
   // DELETE submit status
-  async deleteSubmitStatus (submitstatusid) {
+  async deleteSubmitStatus(submitstatusid) {
     console.log('submitAPI deleteSubmitStatus', submitstatusid)
     const { ok } = await this.$del('/submits/status/' + submitstatusid)
     return ok
@@ -172,7 +172,7 @@ export default class SubmitAPI extends BaseAPI {
 
   /// //////////
   // POST new submit status
-  async addSubmitStatus (submitid, newstatusid) {
+  async addSubmitStatus(submitid, newstatusid) {
     console.log('submitAPI addSubmitStatus', submitid, newstatusid)
     const data = { newstatusid }
     const { submitstatus } = await this.$postOverride('POST', '/submits/status/' + submitid, data)

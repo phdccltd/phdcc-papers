@@ -45,7 +45,7 @@ export default {
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
 
-    return {  authStore, miscStore, sitePagesStore }
+    return { authStore, miscStore, sitePagesStore }
   },
   data() {
     return {

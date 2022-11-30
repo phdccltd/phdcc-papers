@@ -6,7 +6,7 @@
         Hide this
       </b-button>
       <p v-if="custom">
-        <strong>{{custom}}</strong>
+        <strong>{{ custom }}</strong>
       </p>
       <div v-if="persitehelp" v-html="persitehelp">
       </div>
@@ -30,24 +30,24 @@
   </div>
 </template>
 <script>
-  import NoticeMessage from './NoticeMessage.vue'
-  import helpBox from '@/mixins/helpBox'
+import NoticeMessage from './NoticeMessage.vue'
+import helpBox from '@/mixins/helpBox'
 
-  export default {
-    components: { NoticeMessage },
-    mixins: [helpBox],
-    data: function () {
-      return {
-        id: 'panel'
-      }
-    },
-    props: {
-      custom: { type: String },
-    },
-    computed: {
-      persitehelp() {
-        return false
-      }
+export default {
+  components: { NoticeMessage },
+  mixins: [helpBox],
+  data: function () {
+    return {
+      id: 'panel'
+    }
+  },
+  props: {
+    custom: { type: String },
+  },
+  computed: {
+    persitehelp() {
+      return false
     }
   }
+}
 </script>

@@ -9,8 +9,7 @@
       <Messages :error="error" :message="message" />
       <h2>{{ subtitle }}</h2>
       <b-container v-for="(pub, index) in pubs" :key="index" class="mt-2 pl-0">
-        <b-row no-gutters
-          :class="'p-2 ' + (pub.owner ? 'pub-owner' : (pub.notowner ? 'pub-notowner' : (issuper ? 'pub-super' : 'pub-weird')))">
+        <b-row no-gutters :class="'p-2 ' + (pub.owner ? 'pub-owner' : (pub.notowner ? 'pub-notowner' : (issuper ? 'pub-super' : 'pub-weird')))">
           <b-col sm="3">
             <b-button variant="outline-primary" :to="'/panel/' + pub.id">
               {{ pub.name }}
@@ -60,7 +59,7 @@ export default {
   },
   async mounted() { // Client only
     let title = 'Publications'
-    if( 'publicsettings' in this.authStore && 'pubscalled' in this.authStore.publicsettings) {
+    if ('publicsettings' in this.authStore && 'pubscalled' in this.authStore.publicsettings) {
       title = this.authStore.publicsettings.pubscalled
       this.subtitle = 'Your ' + title.toLowerCase()
     }
@@ -68,7 +67,7 @@ export default {
     await this.pubsStore.clearError()
     await this.pubsStore.fetch()
   },
-  
+
 
   computed: {
     message() {
@@ -77,7 +76,7 @@ export default {
     fatalerror() {
       return this.pubsStore.error
     },
-    issuper(){
+    issuper() {
       return this.authStore.super
     },
     pubs() {

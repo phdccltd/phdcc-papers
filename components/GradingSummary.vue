@@ -1,5 +1,5 @@
 <template>
-    <div>
-        GradingSummary
-    </div>
+  <div>
+    GradingSummary
+  </div>
 </template> 
