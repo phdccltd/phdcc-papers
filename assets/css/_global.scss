@@ -459,3 +459,20 @@ form .col-form-label{
 
     $color-weird;
 }
+
+
+/* Needed to make modals show */
+.modal.show{
+  display: block;
+}
+
+.modal-dialog{
+  z-index: 1051;
+}
+
+.modal.hide-footer {
+  .modal-footer {
+    // For some reason hide-footer prop isn't working.
+    display: none;
+  }
+}

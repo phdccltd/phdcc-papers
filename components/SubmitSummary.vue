@@ -17,7 +17,7 @@
           </nuxt-link>
           {{ submit.user }}
           <b-button v-if="showingadminoptions" variant="link" @click="editSubmit(submit)">
-            <v-icon icon="edit" size="1.5x" class="btn-outline-warning" />
+            <v-icon icon="edit" class="btn-outline-warning" />
           </b-button>
         </h3>
         <div class="publist-current-status clearfix">
@@ -52,7 +52,7 @@
           </span>
           {{ submit.user }}
           <b-button v-if="showingadminoptions" variant="link" @click="editSubmit(submit)">
-            <v-icon icon="edit" size="1.5x" class="btn-outline-warning" />
+            <v-icon icon="edit" class="btn-outline-warning" />
           </b-button>
         </h2>
         <div class="publist-current-status clearfix">
@@ -128,8 +128,8 @@
                     <v-icon icon="times-circle" class="btn-outline-danger" />
                   </b-link>
                   {{reviewer.username}} {{reviewer.lead?'(Lead)':''}}
-                  <v-icon v-for="grading in gradingicons(reviewer)" :key="grading.id" icon="check-circle" :color="grading.colour" v-b-popover.hover.top="grading.name" class="mr-1" />
-                  <v-icon v-for="sentreminder in reviewer.sentreminders" :key="sentreminder.id" icon="envelope" color="pink" v-b-popover.hover.top="sentreminder.dt" class="mr-1" />
+                  <v-icon v-for="grading in gradingicons(reviewer)" :key="grading.id" icon="check-circle" :color="grading.colour" x-v-b-popover.hover.top="grading.name" class="mr-1" /> <!--TODO-->
+                  <v-icon v-for="sentreminder in reviewer.sentreminders" :key="sentreminder.id" icon="envelope" color="pink" x-v-b-popover.hover.top="sentreminder.dt" class="mr-1" /><!--TODO-->
                 </div>
               </b-col>
             </b-row>

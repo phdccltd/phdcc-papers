@@ -11,6 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.mixin({
       methods: {
         waitForRef(name, callback) {
+          console.log("waitForRef",name)
           // When a component is conditional using a v-if, it sometimes takes more than one tick for it to appear.  So
           // we have a bit of a timer.
           if (this.$refs[name]) {

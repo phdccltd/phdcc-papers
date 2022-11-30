@@ -54,22 +54,26 @@
             <strong>Nothing submitted yet</strong>
         </div>
 
-        <SubmissionEditModal v-if="showSubmissionEditModal" :newtitle="newtitle" :newauthor="newauthor" ref="submissioneditmodal" />
+        <!--SubmissionEditModal :newtitle="newtitle" :newauthor="newauthor" ref="submissioneditmodal" /-->
 
-        <!--b-modal id="bv-modal-edit-submit" centered @ok="okEdited">
-            <template v-slot:modal-title>
-                Edit submission title and author
-            </template>
-            <form ref="form" @submit.stop.prevent>
-                <b-form-group label="Title" label-for="new-title" invalid-feedback="Title is required">
-                    <b-form-input id="new-title" required v-model="newtitle"></b-form-input>
-                </b-form-group>
-                <b-form-group label="Author" label-for="newauthor">
-                    <b-form-select v-model="newauthor" :options="newauthoroptions"></b-form-select>
-                </b-form-group>
-            </form>
-        </b-modal-->
-
+        <client-only>
+            <b-modal v-model="showEditSubmitQuick" id="modal-edit-submit" title="Edit submission title and author" size="lg" no-stacking @ok="okEdited"> <!-- ref="submissioneditmodal" -->
+                <template #default>
+                    <form ref="form" @submit.stop.prevent>
+                        <b-form-group label="Title" label-for="new-title" invalid-feedback="Title is required">
+                            <b-form-input id="new-title" required v-model="newtitle"></b-form-input>
+                        </b-form-group>
+                        <b-form-group label="Author" label-for="newauthor">
+                            <b-form-select v-model="newauthor" :options="newauthoroptions"></b-form-select>
+                        </b-form-group>
+                    </form>
+                </template>
+                <!--template #footer>
+                <b-button variant="white" @click="hide"> Cancel </b-button>
+                <b-button variant="primary" @click="save"> OK </b-button>
+                </template-->
+            </b-modal>
+        </client-only>
     </div>
 </template>
   
@@ -80,7 +84,7 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import SubmitSummary from '~/components/SubmitSummary.vue'
 import PaperDate from '~/components/PaperDate.vue'
-import SubmissionEditModal from './SubmissionEditModal.vue'
+//import SubmissionEditModal from './SubmissionEditModal.vue'
 import _ from 'lodash/core'
 import api from '~/api'
 
@@ -118,7 +122,7 @@ export default {
             newtitle: '',
             newauthor: 0,
             newauthoroptions: [],
-            showSubmissionEditModal: false,
+            showEditSubmitQuick: false,
         }
     },
     computed: {
@@ -180,22 +184,27 @@ export default {
             flow.visible = !flow.visible
         },
         async editSubmit(submit) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
-            this.newauthoroptions = []
-            const { pubusers } = await api.auth.getPubUsers(this.pubid)
-            for (const user of pubusers.users) {
-                this.newauthoroptions.push({ value: user.id, text: user.username })
+            try {
+                this.newauthoroptions = []
+                const { pubusers } = await api.auth.getPubUsers(this.pubid)
+                for (const user of pubusers.users) {
+                    this.newauthoroptions.push({ value: user.id, text: user.username })
+                }
+                this.newtitle = submit.name
+                this.newauthor = submit.userId
+                this.submitbeingedited = submit
+                this.showEditSubmitQuick = true
+
+                //this.waitForRef('submissioneditmodal', () => {    // Component
+                //    console.log("WAITED", this.$refs.submissioneditmodal)
+                //    this.$refs.submissioneditmodal.show()
+                //})
+            } catch (e) {
+                console.log("editSubmit:", e.message)
             }
-            //this.newtitle = submit.name
-            //this.newauthor = submit.userId
-            //this.submitbeingedited = submit
-            //this.$bvModal.show('bv-modal-edit-submit')
-            this.showSubmissionEditModal = true
-            this.waitForRef('submissioneditmodal', () => {
-                this.$refs.submissioneditmodal.show()
-            })
         },
-        okEdited(bvModalEvt) {
-            bvModalEvt.preventDefault()
+        okEdited() {
+            console.log("okEdited")
             this.doEditSubmit()
         },
         async doEditSubmit() {
