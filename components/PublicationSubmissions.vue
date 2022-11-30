@@ -189,11 +189,11 @@ export default {
     toggleShowAdminOptions() {
       this.showingadminoptions = !this.showingadminoptions
     },
-    toggleFlowShow(flow) {
+    toggleFlowShow(flow: any) {
       console.log('toggleFlowShow', flow.visible)
       flow.visible = !flow.visible
     },
-    async editSubmit(submit) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
+    async editSubmit(submit: any) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
       try {
         this.newauthoroptions = []
         const { pubusers } = await api.auth.getPubUsers(this.pubid)
@@ -204,11 +204,6 @@ export default {
         this.newauthor = submit.userId
         this.submitbeingedited = submit
         this.showEditSubmitQuick = true
-
-        //this.waitForRef('submissioneditmodal', () => {    // Component
-        //    console.log("WAITED", this.$refs.submissioneditmodal)
-        //    this.$refs.submissioneditmodal.show()
-        //})
       } catch (e) {
         console.log("editSubmit:", e.message)
       }
@@ -216,7 +211,7 @@ export default {
     hideEdited() {
       this.showEditSubmitQuick = false
     },
-    msgBoxOk(title) {
+    msgBoxOk(title: string) {
       this.waitForRef('okmsgbox', async () => {
         console.log("WAITED", this.$refs.okmsgbox)
         this.$refs.okmsgbox.show(title)

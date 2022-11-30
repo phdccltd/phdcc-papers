@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     hide() {
-      console.log("MSGBOX.JS HIDE")
       this.$emit('hide')
       this.showModal = false
     },
