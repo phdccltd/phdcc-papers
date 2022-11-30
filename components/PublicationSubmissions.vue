@@ -57,7 +57,8 @@
         <!--SubmissionEditModal :newtitle="newtitle" :newauthor="newauthor" ref="submissioneditmodal" /-->
 
         <client-only>
-            <b-modal v-model="showEditSubmitQuick" id="modal-edit-submit" title="Edit submission title and author" size="lg" no-stacking @ok="okEdited"> <!-- ref="submissioneditmodal" -->
+            <b-modal v-model="showEditSubmitQuick" id="modal-edit-submit" title="Edit submission title and author" size="lg" centered>
+                <!-- ref="submissioneditmodal" -->
                 <template #default>
                     <form ref="form" @submit.stop.prevent>
                         <b-form-group label="Title" label-for="new-title" invalid-feedback="Title is required">
@@ -68,12 +69,15 @@
                         </b-form-group>
                     </form>
                 </template>
-                <!--template #footer>
-                <b-button variant="white" @click="hide"> Cancel </b-button>
-                <b-button variant="primary" @click="save"> OK </b-button>
-                </template-->
+                <template #footer>
+                    <b-button variant="outline-secondary" @click="hideEdited"> Cancel </b-button>
+                    <b-button variant="primary" @click="okEdited"> OK </b-button>
+                </template>
             </b-modal>
         </client-only>
+        <MessageBoxOK ref="okmsgbox" />
+        <ConfirmModal ref="authorConfirm" title="Are you sure you want to change the author?" message=""
+            @confirm="confirmedAuthorChange" />
     </div>
 </template>
   
@@ -123,8 +127,18 @@ export default {
             newauthor: 0,
             newauthoroptions: [],
             showEditSubmitQuick: false,
+            msgboxtitle: '',
         }
     },
+    /*inject: {
+        msgBoxOk: {
+            default() {
+                return () => {
+                    console.log('no map')
+                }
+            }
+        }
+    },*/
     computed: {
         pubid() {
             const route = useRoute()
@@ -203,11 +217,52 @@ export default {
                 console.log("editSubmit:", e.message)
             }
         },
+        hideEdited() {
+            this.showEditSubmitQuick = false
+        },
+        msgBoxOk(title) {
+            this.waitForRef('okmsgbox', async () => {
+                console.log("WAITED", this.$refs.okmsgbox)
+                this.$refs.okmsgbox.show(title)
+            })
+        },
+        startConfirmAuthor() {
+            this.waitForRef('authorConfirm', async () => {
+                console.log("WAITED", this.$refs.authorConfirm)
+                this.$refs.authorConfirm.show()
+            })
+        },
         okEdited() {
             console.log("okEdited")
-            this.doEditSubmit()
+            try {
+                const newtitle = this.newtitle.trim()
+                if (newtitle.length === 0) return this.msgBoxOk('No new title given!')
+                let newauthor = 0
+                if (this.newauthor !== this.submitbeingedited.userId) {
+                    this.startConfirmAuthor()
+                } else {
+                    this.confirmedAuthorChange()      
+                }
+            } catch (e) {
+                this.msgBoxOk('Error changing submit: ' + e.message)
+            }
         },
-        async doEditSubmit() {
+        async confirmedAuthorChange() {
+            console.log("confirmedAuthorChange")
+            const newtitle = this.newtitle.trim()
+            let newauthor = 0
+            if (this.newauthor !== this.submitbeingedited.userId) {
+                newauthor = this.newauthor
+            }
+            const amended = await api.submit.changeSubmitTitle(this.submitbeingedited, newtitle, newauthor)
+            if (!amended) return this.msgBoxOk('Error changing submit')
+            await this.submitsStore.fetchpub(this.pubid)
+            this.$nextTick(() => {
+                this.showEditSubmitQuick = false
+                this.msgBoxOk('Submit changed')
+            })
+        },
+        /*async doEditSubmit() {
             try {
                 const newtitle = this.newtitle.trim()
                 if (newtitle.length === 0) return await this.$bvModal.msgBoxOk('No new title given!')
@@ -221,13 +276,13 @@ export default {
                 if (!amended) return await this.$bvModal.msgBoxOk('Error changing submit')
                 this.$store.dispatch('submits/fetchpub', this.pubid)
                 this.$nextTick(() => {
-                    this.$bvModal.hide('bv-modal-edit-submit')
+                    this.showEditSubmitQuick = false
                     this.$bvModal.msgBoxOk('Submit changed')
                 })
             } catch (e) {
                 await this.$bvModal.msgBoxOk('Error changing submit: ' + e.message)
             }
-        },
+        },*/
         async deleteSubmit(submit) {
             try {
                 console.log('deleteSubmit', submit.id)

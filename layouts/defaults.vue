@@ -67,7 +67,37 @@ export default {
     const submitsStore = useSubmitsStore()
     return { authStore, miscStore, pubsStore, submitsStore }
   },
+  data: function () {
+    return {
+      //msgboxtitle: '',
+      //msgboxmessage: '',
+    }
+  },
+  /*provide() {
+    return {
+      msgBoxOk(title: string) {
+        console.log("DDDDD", this.newtitle)
+        if (title.length > 0) {
+          this.testing();
+          //this.msgboxtitle = title
+          //this.waitForRef('okmsgbox', () => {
+          //  console.log("WAITED")
+          //  this.$refs.okmsgbox.show()
+          //})
+          //this.$refs.okmsgbox.show()
+        }
+      }
+    }
+  },*/
   computed: {
+    /*msgboxtitle(){
+            const title = this.miscStore.get('msgboxtitle')  
+            console.log("DDDDD", title)
+            if( title.length>0){
+              this.$refs.okmsgbox.show()
+            }
+            return title;
+      },*/
     // Client and Server
     yourtime() {
       // console.log('====== layout computed yourtime')
@@ -106,8 +136,9 @@ export default {
     pubid() {
       const route = useRoute()
       const path = '/' + route.params.id
-      if ('pubid' in route.params)
+      if ('pubid' in route.params) {
         return parseInt(route.params.pubid)
+      }
       else
         return false
     },
@@ -119,7 +150,15 @@ export default {
       this.pubsStore.clearAll();
       this.submitsStore.clearAll();
       navigateTo('/');
-    }
+    },
+    /*testing(){
+      console.log("TTT", this);
+      this.msgboxtitle = "UUUU"
+          this.waitForRef('okmsgbox', () => {
+            console.log("WAITED")
+            this.$refs.okmsgbox.show()
+          })
+    }*/
   }
 }
 </script>
