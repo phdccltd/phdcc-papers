@@ -75,7 +75,7 @@
       </b-modal>
     </client-only>
     <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="authorConfirm" title="Are you sure you want to change the author?" :message="authorConfirmMessage" @confirm="confirmedAuthorChange" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" @confirm="confirmedOK" />
   </div>
 </template>
   
@@ -124,7 +124,9 @@ export default {
       newauthoroptions: [],
       showEditSubmitQuick: false,
       msgboxtitle: '',
-      authorConfirmMessage: '',
+      confirmTitle: '',
+      confirmMessage: '',
+      confirmOK: null,
     }
   },
   /*inject: {
@@ -214,15 +216,16 @@ export default {
     },
     msgBoxOk(title: string) {
       this.waitForRef('okmsgbox', async () => {
-        console.log("WAITED", this.$refs.okmsgbox)
         this.$refs.okmsgbox.show(title)
       })
     },
-    startConfirmAuthor() {
-      this.waitForRef('authorConfirm', async () => {
-        console.log("WAITED", this.$refs.authorConfirm)
-        this.$refs.authorConfirm.show()
+    startConfirm() {
+      this.waitForRef('confirm', async () => {
+        this.$refs.confirm.show()
       })
+    },
+    confirmedOK() {
+      this.confirmOK();
     },
     okEdited() {
       console.log("okEdited")
@@ -233,8 +236,10 @@ export default {
         if (this.newauthor !== this.submitbeingedited.userId) {
           const prev = _.find(this.newauthoroptions, option => { return option.value === this.submitbeingedited.userId })
           const next = _.find(this.newauthoroptions, option => { return option.value === this.newauthor })
-          this.authorConfirmMessage = `Change author from ${prev.text} to ${next.text}?`
-          this.startConfirmAuthor()
+          this.confirmTitle = "Are you sure you want to change the author?"
+          this.confirmMessage = `Change author from ${prev.text} to ${next.text}?`
+          this.confirmOK = this.confirmedAuthorChange
+          this.startConfirm();
         } else {
           this.confirmedAuthorChange()
         }
@@ -257,44 +262,29 @@ export default {
         this.msgBoxOk('Submit changed')
       })
     },
-    /*async doEditSubmit() {
-        try {
-            const newtitle = this.newtitle.trim()
-            if (newtitle.length === 0) return await this.$bvModal.msgBoxOk('No new title given!')
-            let newauthor = 0
-            if (this.newauthor !== this.submitbeingedited.userId) {
-                const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to change the author?')
-                if (!OK) return
-                newauthor = this.newauthor
-            }
-            const amended = await api.submit.changeSubmitTitle(this.submitbeingedited, newtitle, newauthor)
-            if (!amended) return await this.$bvModal.msgBoxOk('Error changing submit')
-            this.$store.dispatch('submits/fetchpub', this.pubid)
-            this.$nextTick(() => {
-                this.showEditSubmitQuick = false
-                this.$bvModal.msgBoxOk('Submit changed')
-            })
-        } catch (e) {
-            await this.$bvModal.msgBoxOk('Error changing submit: ' + e.message)
-        }
-    },*/
-    async deleteSubmit(submit) {
+    /*async deleteSubmit(submit) {
+      console.log('deleteSubmit', submit.id)
+      this.confirmTitle = "Are you sure you want to delete this submission and all its entries?"
+      this.confirmMessage = submit.name
+      this.confirmOK = this.confirmedDeleteSubmit
+      this.startConfirm();
+    },
+    async confirmedDeleteSubmit(submit) {
       try {
-        console.log('deleteSubmit', submit.id)
-        const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this submission and all its entries?', { title: submit.name })
-        if (!OK) return
+        console.log('confirmedDeleteSubmit', submit.id)
         const deleted = await api.submit.deleteSubmit(submit.id)
         //console.log('deleteSubmitted', deleted)
         if (!deleted) {
-          await this.$bvModal.msgBoxOk('Could not delete this submission')
-          return
+          return this.msgBoxOk('Could not delete this submission')
         }
-        await this.$bvModal.msgBoxOk('Submission deleted')
-        this.$store.dispatch('submits/fetchpub', this.pubid)
+        await this.submitsStore.fetchpub(this.pubid)
+        this.$nextTick(() => {
+          this.msgBoxOk('Submission deleted')
+        })
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
+        this.msgBoxOk('Error deleting submission: ' + e.message)
       }
-    },
+    },*/
   },
 }
 </script>
