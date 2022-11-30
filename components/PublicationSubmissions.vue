@@ -75,7 +75,7 @@
       </b-modal>
     </client-only>
     <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="authorConfirm" title="Are you sure you want to change the author?" message="" @confirm="confirmedAuthorChange" />
+    <ConfirmModal ref="authorConfirm" title="Are you sure you want to change the author?" :message="authorConfirmMessage" @confirm="confirmedAuthorChange" />
   </div>
 </template>
   
@@ -124,6 +124,7 @@ export default {
       newauthoroptions: [],
       showEditSubmitQuick: false,
       msgboxtitle: '',
+      authorConfirmMessage: '',
     }
   },
   /*inject: {
@@ -230,6 +231,9 @@ export default {
         if (newtitle.length === 0) return this.msgBoxOk('No new title given!')
         let newauthor = 0
         if (this.newauthor !== this.submitbeingedited.userId) {
+          const prev = _.find(this.newauthoroptions, option => { return option.value === this.submitbeingedited.userId })
+          const next = _.find(this.newauthoroptions, option => { return option.value === this.newauthor })
+          this.authorConfirmMessage = `Change author from ${prev.text} to ${next.text}?`
           this.startConfirmAuthor()
         } else {
           this.confirmedAuthorChange()
