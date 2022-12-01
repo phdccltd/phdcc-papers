@@ -24,10 +24,6 @@ export const useMiscStore = defineStore('misc', {
     clearAll() {
       this.vals = {}
     },
-    /*showMsgBox(title:string){
-      console.log("MMMM",title)
-      this.vals['msgboxtitle'] = title
-    }*/
   },
   getters: {
     get: (state: { vals: { [x: string]: any } }) => (key: string) => {

@@ -53,11 +53,8 @@
       <strong>Nothing submitted yet</strong>
     </div>
 
-    <!--SubmissionEditModal :newtitle="newtitle" :newauthor="newauthor" ref="submissioneditmodal" /-->
-
     <client-only>
       <b-modal v-model="showEditSubmitQuick" id="modal-edit-submit" title="Edit submission title and author" size="lg" centered>
-        <!-- ref="submissioneditmodal" -->
         <template #default>
           <form ref="form" @submit.stop.prevent>
             <b-form-group label="Title" label-for="new-title" invalid-feedback="Title is required">
@@ -123,7 +120,6 @@ export default {
       newauthor: 0,
       newauthoroptions: [],
       showEditSubmitQuick: false,
-      msgboxtitle: '',
       confirmTitle: '',
       confirmMessage: '',
       confirmOK: null,
