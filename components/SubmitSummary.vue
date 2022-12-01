@@ -25,8 +25,8 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success"
-              :to="submitaction.route">{{ submitaction.name }}</b-button>
+            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">{{ submitaction.name
+            }}</b-button>
           </span>
           <div class="float-end">
             <div v-for="actiondone in submit.actionsdone" :key="actiondone.id" class="actiondone">{{ actiondone.name }}</div>
@@ -61,10 +61,11 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-button v-if="showactiongrade(submitaction)" class="float-end ms-1" variant="success"
-              @click="enterGrading(submit, submitaction)">{{ submitaction.gradename }}</b-button>
-            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success"
-              :to="submitaction.route">{{ submitaction.name }}</b-button>
+            <b-button v-if="showactiongrade(submitaction)" class="float-end ms-1" variant="success" @click="enterGrading(submit, submitaction)">{{
+                submitaction.gradename
+            }}</b-button>
+            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">{{ submitaction.name
+            }}</b-button>
           </span>
           <div v-if="pub.isowner && submit.owneradvice" class="actiondone float-end me-2">{{ submit.owneradvice }}</div>
         </div>
@@ -203,14 +204,22 @@
         </b-form-group>
       </form>
     </b-modal>
+    <MessageBoxOK ref="okmsgbox" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" @confirm="confirmedOK" />
   </div>
 </template> 
 <script lang="ts">
+import { useAuthStore } from '~/stores/auth'
+import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
+import { useSubmitsStore } from '~/stores/submits'
+
 import PaperDate from '~/components/PaperDate.vue'
 import Grading from '~/components/Grading.vue'
 import GradingSummary from '~/components/GradingSummary.vue'
 import _ from 'lodash/core'
+import api from '~/api'
+
 export default {
   props: {
     showtype: {
@@ -242,6 +251,14 @@ export default {
       required: true,
     },
   },
+  setup() {
+    const authStore = useAuthStore()
+    const miscStore = useMiscStore()
+    const pubsStore = usePubsStore()
+    const submitsStore = useSubmitsStore()
+
+    return { authStore, miscStore, pubsStore, submitsStore }
+  },
   data: function () {
     return {
       visible: true,
@@ -260,6 +277,10 @@ export default {
       canopttoreview: false,
       canreview: false,
       flowgradeid: 0,
+      msgboxtitle: '',
+      confirmTitle: '',
+      confirmMessage: '',
+      confirmOK: () => { },
     }
   },
   mounted() {
@@ -289,6 +310,19 @@ export default {
     },
   },
   methods: {
+    msgBoxOk(title: string) {
+      this.waitForRef('okmsgbox', async () => {
+        this.$refs.okmsgbox.show(title)
+      })
+    },
+    startConfirm() {
+      this.waitForRef('confirm', async () => {
+        this.$refs.confirm.show()
+      })
+    },
+    confirmedOK() {
+      this.confirmOK();
+    },
     gradingicons(reviewer) {
       const flowgrades = this.flow.flowgrades
       const gradingicons = []
@@ -358,82 +392,85 @@ export default {
       flowgrade.summary = !flowgrade.summary
     },
     async deleteSubmit(submit) {
+      console.log('deleteSubmit', submit.id)
+      this.confirmTitle = "Are you sure you want to delete this submission and all its entries?"
+      this.confirmMessage = submit.name
+      this.confirmOK = this.confirmedDeleteSubmit
+      this.startConfirm();
+    },
+    async confirmedDeleteSubmit() {
       try {
-        console.log('deleteSubmit', submit.id)
-        const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this submission and all its entries?', { title: submit.name })
-        if (!OK) return
-        const deleted = await this.$api.submit.deleteSubmit(submit.id)
+        const deleted = await api.submit.deleteSubmit(submit.id)
         //console.log('deleteSubmitted', deleted)
-        if (!deleted) {
-          await this.$bvModal.msgBoxOk('Could not delete this submission')
-          return
-        }
-        await this.$bvModal.msgBoxOk('Submission deleted')
-        this.$store.dispatch('submits/fetchpub', this.pubid)
+        if (!deleted) return this.msgBoxOk('Could not delete this submission')
+        await this.submitsStore.fetchpub(this.pubid)
+        this.$nextTick(() => {
+          this.msgBoxOk('Submission deleted')
+        })
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error deleting submission: ' + e.message)
+        this.msgBoxOk('Error deleting submission: ' + e.message)
       }
     },
     async deleteSubmitStatus(submitstatus) {
       try {
         //console.log('deleteSubmitStatus', submitstatus.id)
         if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this status?', { title: submitstatus.status })) return
-        const OK = await this.$api.submit.deleteSubmitStatus(submitstatus.id)
-        if (!OK) return await this.$bvModal.msgBoxOk('Error deleting status')
+        const OK = await api.submit.deleteSubmitStatus(submitstatus.id)
+        if (!OK) return this.msgBoxOk('Error deleting status')
         this.$store.dispatch('submits/fetchpub', this.pubid)
         this.$nextTick(() => {
-          this.$bvModal.msgBoxOk('Status deleted')
+          this.msgBoxOk('Status deleted')
         })
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error deleting status: ' + e.message)
+        this.msgBoxOk('Error deleting status: ' + e.message)
       }
     },
     async addSubmitStatus(flow, submit) {
       try {
-        if (!submit.newstatusid) return await this.$bvModal.msgBoxOk('Please choose a new status')
+        if (!submit.newstatusid) return this.msgBoxOk('Please choose a new status')
         const flowstatus = _.find(flow.statuses, _flowstatus => { return _flowstatus.id === submit.newstatusid })
-        if (!flowstatus) return await this.$bvModal.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
+        if (!flowstatus) return this.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
         if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
-        const submitstatus = await this.$api.submit.addSubmitStatus(submit.id, submit.newstatusid)
-        if (!submitstatus) return await this.$bvModal.msgBoxOk('Error adding status')
+        const submitstatus = await api.submit.addSubmitStatus(submit.id, submit.newstatusid)
+        if (!submitstatus) return this.msgBoxOk('Error adding status')
         //submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
         this.$store.dispatch('submits/fetchpub', this.pubid)
         this.$nextTick(() => {
-          this.$bvModal.msgBoxOk('Status added')
+          this.msgBoxOk('Status added')
         })
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
+        this.msgBoxOk('Error adding status: ' + e.message)
       }
     },
     async removeReviewer(submit, reviewer) {
       try {
         if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this reviewer?', { title: reviewer.username })) return
-        const OK = await this.$api.reviewers.removeReviewer(submit.id, reviewer.id)
-        if (!OK) return await this.$bvModal.msgBoxOk('Error removing reviewer')
+        const OK = await api.reviewers.removeReviewer(submit.id, reviewer.id)
+        if (!OK) return this.msgBoxOk('Error removing reviewer')
         this.$store.dispatch('submits/fetchpub', this.pubid)
         this.$nextTick(() => {
-          this.$bvModal.msgBoxOk('Reviewer removed')
+          this.msgBoxOk('Reviewer removed')
         })
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error removing reviewer: ' + e.message)
+        this.msgBoxOk('Error removing reviewer: ' + e.message)
       }
     },
     async addReviewer(submit) {
       try {
-        if (!submit.newreviewerid) return await this.$bvModal.msgBoxOk('Please choose a reviewer')
+        if (!submit.newreviewerid) return this.msgBoxOk('Please choose a reviewer')
         const notlead = await this.$bvModal.msgBoxConfirm('Do you want to add this reviewer as the LEAD? Escape to cancel.', { okTitle: 'Add as reviewer', cancelTitle: 'Add as lead reviewer' })
         if (notlead === null) return
         console.log(submit.newreviewerid, notlead)
 
-        const submitreviewer = await this.$api.reviewers.addReviewer(submit.id, submit.newreviewerid, !notlead)
-        if (!submitreviewer) return await this.$bvModal.msgBoxOk('Error adding reviewer')
+        const submitreviewer = await api.reviewers.addReviewer(submit.id, submit.newreviewerid, !notlead)
+        if (!submitreviewer) return this.msgBoxOk('Error adding reviewer')
         //submit.newreviewerid = null // TODO This doesn't work ie reviewer still shows as selected when it is actually reset to null by following:
         this.$store.dispatch('submits/fetchpub', this.pubid)
         this.$nextTick(() => {
-          this.$bvModal.msgBoxOk('Reviewer added')
+          this.msgBoxOk('Reviewer added')
         })
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error adding status: ' + e.message)
+        this.msgBoxOk('Error adding status: ' + e.message)
       }
     },
     enterGrading(submit, submitaction) {
@@ -442,7 +479,7 @@ export default {
       this.modaltitle = 'Add ' + submitaction.name
       this.decisionoptions = []
       const flowgrade = _.find(this.flow.flowgrades, _flowgrade => { return _flowgrade.id === submitaction.flowgradeid })
-      if (!flowgrade) return this.$bvModal.msgBoxOk('Could not find flowgrade info')
+      if (!flowgrade) return this.msgBoxOk('Could not find flowgrade info')
       this.helptext = flowgrade.helptext
       this.helplinktext = flowgrade.helplinktext
       this.helplink = flowgrade.helplink
@@ -458,8 +495,8 @@ export default {
     async okGrading(bvModalEvt) {
       bvModalEvt.preventDefault()
       try {
-        if (this.decision === 0) return await this.$bvModal.msgBoxOk('No decision made!')
-        const ok = await this.$api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
+        if (this.decision === 0) return this.msgBoxOk('No decision made!')
+        const ok = await api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
         if (ok) {
           // Don't do this as it removes Next/Previous buttons:
           // this.$store.dispatch('submits/fetchpub', this.pubid)
@@ -469,10 +506,10 @@ export default {
             this.setMessage('Review added')
           })
         } else {
-          await this.$bvModal.msgBoxOk('Could not add review', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxOk('Could not add review', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error saving review: ' + e.message)
+        this.msgBoxOk('Error saving review: ' + e.message)
       }
     },
   }

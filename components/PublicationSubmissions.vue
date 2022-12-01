@@ -228,7 +228,6 @@ export default {
       this.confirmOK();
     },
     okEdited() {
-      console.log("okEdited")
       try {
         const newtitle = this.newtitle.trim()
         if (newtitle.length === 0) return this.msgBoxOk('No new title given!')
