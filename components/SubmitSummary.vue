@@ -281,6 +281,7 @@ export default {
       confirmTitle: '',
       confirmMessage: '',
       confirmOK: () => { },
+      confirmsubmit: null,
     }
   },
   mounted() {
@@ -393,15 +394,15 @@ export default {
     },
     async deleteSubmit(submit) {
       console.log('deleteSubmit', submit.id)
-      this.confirmTitle = "Are you sure you want to delete this submission and all its entries?"
-      this.confirmMessage = submit.name
+      this.confirmsubmit = submit
+      this.confirmTitle = submit.name
+      this.confirmMessage = "Are you sure you want to delete this submission and all its entries?"
       this.confirmOK = this.confirmedDeleteSubmit
       this.startConfirm();
     },
     async confirmedDeleteSubmit() {
       try {
-        const deleted = await api.submit.deleteSubmit(submit.id)
-        //console.log('deleteSubmitted', deleted)
+        const deleted = await api.submit.deleteSubmit(this.confirmsubmit.id)
         if (!deleted) return this.msgBoxOk('Could not delete this submission')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {

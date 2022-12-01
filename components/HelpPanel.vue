@@ -12,7 +12,7 @@
       </div>
       <div v-else>
         <p>
-          Here's your submissions for this journal/conferences.
+          Here's your submissions for this journal/conference.
         </p>
         <ul>
           <li>Add new submissions (if enabled)</li>
