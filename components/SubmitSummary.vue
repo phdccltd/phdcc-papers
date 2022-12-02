@@ -286,6 +286,7 @@ export default {
       confirmOK: () => { },
       confirmCancelled: () => { },
       confirmsubmit: null,
+      confirmreviewer: null,
     }
   },
   mounted() {
@@ -453,12 +454,22 @@ export default {
         this.msgBoxOk('Error adding status: ' + e.message)
       }
     },
-    async removeReviewer(submit, reviewer) {
+    removeReviewer(submit, reviewer) {
+      this.confirmTitle = reviewer.username
+      this.confirmMessage = "Are you sure you want to remove this reviewer?"
+      this.confirmCancelText = 'Cancel'
+      this.confirmOKText = 'Confirm'
+      this.confirmsubmit = submit
+      this.confirmreviewer = reviewer
+      this.confirmOK = () => {this.confirmRemoveReviewer()}
+      this.confirmCancelled = () => {}
+      this.startConfirm();
+    },
+    async confirmRemoveReviewer(submit, reviewer) {
       try {
-        if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to remove this reviewer?', { title: reviewer.username })) return
-        const OK = await api.reviewers.removeReviewer(submit.id, reviewer.id)
+        const OK = await api.reviewers.removeReviewer(this.confirmsubmit.id, this.confirmreviewer.id)
         if (!OK) return this.msgBoxOk('Error removing reviewer')
-        this.$store.dispatch('submits/fetchpub', this.pubid)
+        await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
           this.msgBoxOk('Reviewer removed')
         })
@@ -469,7 +480,7 @@ export default {
     async addReviewer(submit) {
       if (!submit.newreviewerid) return this.msgBoxOk('Please choose a reviewer')
       const reviewer = _.find(this.pub.reviewers, _already => { return _already.id === submit.newreviewerid })
-      this.confirmTitle = reviewer ? reviewer.name : "Add reviewer"
+      this.confirmTitle = reviewer ? reviewer.username : "Add reviewer"
       this.confirmMessage = "Do you want to add this reviewer as the LEAD? Cancel using (X) above."
       this.confirmCancelText = 'Add as reviewer'
       this.confirmOKText = 'Add as lead reviewer'
