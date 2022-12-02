@@ -55,7 +55,8 @@
 
     <SubmitEditModal ref="submitEditModal" :newauthoroptions="newauthoroptions" @confirm="okEdited" />
     <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" @confirm="confirmedOK" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
+      @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
   

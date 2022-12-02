@@ -13,7 +13,7 @@
       <Messages :error="error" :message="message" />
       <div class="bg-yellow p-3">
         <strong>{{ flow.name }}:</strong>
-        <b-button variant="outline-success" @click="startAddAccepting()">
+        <b-button variant="outline-success" @click="startAddAccepting()" class="ms-1">
           Add accepting
         </b-button>
       </div>
@@ -68,7 +68,8 @@
       </b-modal>
     </client-only>
     <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" @confirm="confirmedOK" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
+      @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -80,9 +81,11 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
 import api from '~/api'
+import modalBoxes from '@/mixins/modalBoxes'
 
 
 export default {
+  mixins: [modalBoxes],
   middleware: 'authuser',
   setup() {
     const miscStore = useMiscStore()
@@ -102,9 +105,6 @@ export default {
       chosenstage: 0,
       chosenopen: 0,
       chosenstatus: 0,
-      confirmTitle: '',
-      confirmMessage: '',
-      confirmOK: null,
       accepting: null,
     }
   },
@@ -136,7 +136,7 @@ export default {
       return pub
     },
     fatalerror() {
-      //const error1 = this.$store.getters['users/error']
+      //const error1 = this.$store.getters['users/error'] TODO
       //return error1
       return ''
     },
@@ -188,19 +188,6 @@ export default {
     setMessage(msg) {
       this.message = msg
     },
-    msgBoxOk(title: string) {
-      this.waitForRef('okmsgbox', async () => {
-        this.$refs.okmsgbox.show(title)
-      })
-    },
-    startConfirm() {
-      this.waitForRef('confirm', async () => {
-        this.$refs.confirm.show()
-      })
-    },
-    confirmedOK() {
-      this.confirmOK();
-    },
     /* ************************ */
     startAddAccepting() {
       this.modaltitle = 'Add accepting'
@@ -244,12 +231,9 @@ export default {
       }
     },
     /* ************************ */
-    async deleteAccepting(accepting) {
+    async deleteAccepting(accepting: any) {
       this.accepting = accepting
-      this.confirmTitle = accepting.flowstagename
-      this.confirmMessage = 'Are you sure you want to delete this accepting?'
-      this.confirmOK = this.confirmedDeleteAccepting
-      this.startConfirm();
+      this.showConfirm(accepting.flowstagename, "Are you sure you want to delete this accepting?", this.confirmedDeleteAccepting)
     },
 
     async confirmedDeleteAccepting() {
