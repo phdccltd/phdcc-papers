@@ -380,7 +380,7 @@ export default {
       flowgrade.summary = !flowgrade.summary
     },
     async deleteSubmit(submit: any) {
-      console.log('deleteSubmit', submit.id)
+      //console.log('deleteSubmit', submit.id)
       this.confirmsubmit = submit
       this.showConfirm(submit.name, "Are you sure you want to delete this submission and all its entries?", this.confirmedDeleteSubmit)
     },

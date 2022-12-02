@@ -1,6 +1,6 @@
 import BaseAPI from './BaseAPI'
 
-export default class acceptingsAPI extends BaseAPI {
+export default class AcceptingsAPI extends BaseAPI {
   async deleteAccepting (flowid, acceptingid) {
     const data = {
       acceptingid
