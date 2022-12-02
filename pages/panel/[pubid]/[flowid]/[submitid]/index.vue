@@ -39,8 +39,10 @@ import Messages from '~/components/Messages.vue'
 import SubmitSummary from '~/components/SubmitSummary.vue'
 import _ from 'lodash/core'
 import api from '~/api'
+import modalBoxes from '@/mixins/modalBoxes'
 
 export default {
+  mixins: [modalBoxes],
   middleware: 'authuser',
   setup() {
     const authStore = useAuthStore()
@@ -60,10 +62,6 @@ export default {
       newauthor: 0,
       newauthoroptions: [],
       showEditSubmitQuick: false,
-      confirmTitle: '',
-      confirmMessage: '',
-      confirmOK: null,
-      submitbeingedited: false,
     }
   },
   async mounted() { // Client only
@@ -138,19 +136,6 @@ export default {
         this.$refs.submitEditModal.show(submit.name, submit.userId)
       })
     },
-    msgBoxOk(title: string) {
-      this.waitForRef('okmsgbox', async () => {
-        this.$refs.okmsgbox.show(title)
-      })
-    },
-    startConfirm() {
-      this.waitForRef('confirm', async () => {
-        this.$refs.confirm.show()
-      })
-    },
-    confirmedOK() {
-      this.confirmOK();
-    },
     okEdited(newtitle: String, newauthor: Number) {
       try {
         this.newtitle = newtitle.trim()
@@ -159,10 +144,7 @@ export default {
         if (this.newauthor !== this.submitbeingedited.userId) {
           const prev = _.find(this.newauthoroptions, option => { return option.value === this.submitbeingedited.userId })
           const next = _.find(this.newauthoroptions, option => { return option.value === this.newauthor })
-          this.confirmTitle = "Are you sure you want to change the author?"
-          this.confirmMessage = `Change author from ${prev.text} to ${next.text}?`
-          this.confirmOK = this.confirmedAuthorChange
-          this.startConfirm();
+          this.showConfirm('Are you sure you want to change the author?', `Change author from ${prev.text} to ${next.text}?`, this.confirmedAuthorChange)
         } else {
           this.confirmedAuthorChange()
         }

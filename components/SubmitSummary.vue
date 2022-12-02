@@ -1,10 +1,9 @@
 <template>
   <div>
-    <!--
-  showtype  bit mask  0x1 top level   Show 'needed'
-                      0x2 submit      Show 'needed'
-                      0x4 entry       Show 'add grading'
--->
+    <!--  showtype  bit mask  0x1 top level   Show 'needed'
+                              0x2 submit      Show 'needed'
+                              0x4 entry       Show 'add grading'
+    -->
     <div v-if="submit">
       <div v-if="showtype == 1">
         <h3 class="publist-submit-h3">
@@ -220,8 +219,10 @@ import Grading from '~/components/Grading.vue'
 import GradingSummary from '~/components/GradingSummary.vue'
 import _ from 'lodash/core'
 import api from '~/api'
+import modalBoxes from '@/mixins/modalBoxes'
 
 export default {
+  mixins: [modalBoxes],
   props: {
     showtype: {
       type: Number,
@@ -278,15 +279,9 @@ export default {
       canopttoreview: false,
       canreview: false,
       flowgradeid: 0,
-      msgboxtitle: '',
-      confirmTitle: '',
-      confirmMessage: '',
-      confirmCancelText: 'Cancel',
-      confirmOKText: 'Confirm',
-      confirmOK: () => { },
-      confirmCancelled: () => { },
       confirmsubmit: null,
       confirmreviewer: null,
+      confirmsubmitstatus: null,
     }
   },
   mounted() {
@@ -316,22 +311,6 @@ export default {
     },
   },
   methods: {
-    msgBoxOk(title: string) {
-      this.waitForRef('okmsgbox', async () => {
-        this.$refs.okmsgbox.show(title)
-      })
-    },
-    startConfirm() {
-      this.waitForRef('confirm', async () => {
-        this.$refs.confirm.show()
-      })
-    },
-    confirmedOK() {
-      this.confirmOK();
-    },
-    cancelConfirm() {
-      this.confirmCancelled();
-    },
     gradingicons(reviewer) {
       const flowgrades = this.flow.flowgrades
       const gradingicons = []
@@ -394,22 +373,16 @@ export default {
     toggleShowGradings() {
       this.showgradings = !this.showgradings
     },
-    toggleSubGradings(flowgrade) {
+    toggleSubGradings(flowgrade: any) {
       flowgrade.visible = !flowgrade.visible
     },
-    toggleSubGradingSummary(flowgrade) {
+    toggleSubGradingSummary(flowgrade: any) {
       flowgrade.summary = !flowgrade.summary
     },
-    async deleteSubmit(submit) {
+    async deleteSubmit(submit: any) {
       console.log('deleteSubmit', submit.id)
       this.confirmsubmit = submit
-      this.confirmTitle = submit.name
-      this.confirmMessage = "Are you sure you want to delete this submission and all its entries?"
-      this.confirmCancelText = 'Cancel'
-      this.confirmOKText = 'Confirm'
-      this.confirmOK = this.confirmedDeleteSubmit
-      this.confirmCancelled = () => {}
-      this.startConfirm();
+      this.showConfirm(submit.name, "Are you sure you want to delete this submission and all its entries?", this.confirmedDeleteSubmit)
     },
     async confirmedDeleteSubmit() {
       try {
@@ -417,19 +390,21 @@ export default {
         if (!deleted) return this.msgBoxOk('Could not delete this submission')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk('Submission deleted')
+          this.msgBoxOk(this.confirmsubmit.name, 'Submission deleted')
         })
       } catch (e) {
         this.msgBoxOk('Error deleting submission: ' + e.message)
       }
     },
-    async deleteSubmitStatus(submitstatus) {
+    async deleteSubmitStatus(submitstatus: any) {
+      this.confirmsubmitstatus = submitstatus
+      this.showConfirm(submitstatus.status, "Are you sure you want to delete this status?", this.confirmDeleteSubmitStatus)
+    },
+    async confirmDeleteSubmitStatus() {
       try {
-        //console.log('deleteSubmitStatus', submitstatus.id)
-        if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this status?', { title: submitstatus.status })) return
-        const OK = await api.submit.deleteSubmitStatus(submitstatus.id)
+        const OK = await api.submit.deleteSubmitStatus(this.confirmsubmitstatus.id)
         if (!OK) return this.msgBoxOk('Error deleting status')
-        this.$store.dispatch('submits/fetchpub', this.pubid)
+        await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
           this.msgBoxOk('Status deleted')
         })
@@ -454,50 +429,39 @@ export default {
         this.msgBoxOk('Error adding status: ' + e.message)
       }
     },
-    removeReviewer(submit, reviewer) {
-      this.confirmTitle = reviewer.username
-      this.confirmMessage = "Are you sure you want to remove this reviewer?"
-      this.confirmCancelText = 'Cancel'
-      this.confirmOKText = 'Confirm'
+    removeReviewer(submit: any, reviewer: any) {
       this.confirmsubmit = submit
       this.confirmreviewer = reviewer
-      this.confirmOK = () => {this.confirmRemoveReviewer()}
-      this.confirmCancelled = () => {}
-      this.startConfirm();
+      this.showConfirm(reviewer.username, "Are you sure you want to remove this reviewer?", this.confirmRemoveReviewer)
     },
-    async confirmRemoveReviewer(submit, reviewer) {
+    async confirmRemoveReviewer() {
       try {
         const OK = await api.reviewers.removeReviewer(this.confirmsubmit.id, this.confirmreviewer.id)
         if (!OK) return this.msgBoxOk('Error removing reviewer')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk('Reviewer removed')
+          this.msgBoxOk(this.confirmreviewer.username, 'Reviewer removed')
         })
       } catch (e) {
         this.msgBoxOk('Error removing reviewer: ' + e.message)
       }
     },
-    async addReviewer(submit) {
+    async addReviewer(submit: any) {
       if (!submit.newreviewerid) return this.msgBoxOk('Please choose a reviewer')
       const reviewer = _.find(this.pub.reviewers, _already => { return _already.id === submit.newreviewerid })
-      this.confirmTitle = reviewer ? reviewer.username : "Add reviewer"
-      this.confirmMessage = "Do you want to add this reviewer as the LEAD? Cancel using (X) above."
-      this.confirmCancelText = 'Add as reviewer'
-      this.confirmOKText = 'Add as lead reviewer'
       this.confirmsubmit = submit
-      this.confirmOK = () => {this.confirmAddReviewer(true)}
-      this.confirmCancelled = () => {this.confirmAddReviewer(false)}
-      this.startConfirm();
+      this.confirmreviewer = reviewer
+      this.showConfirm(reviewer.name, "Do you want to add this reviewer as the LEAD? Cancel using (X) above.", () => { this.confirmAddReviewer(true) },
+        'Add as lead reviewer', 'Add as reviewer', () => { this.confirmAddReviewer(false) })
     },
-    async confirmAddReviewer(lead:Boolean) {
+    async confirmAddReviewer(lead: Boolean) {
       try {
         const submit = this.confirmsubmit
         const submitreviewer = await api.reviewers.addReviewer(submit.id, submit.newreviewerid, lead)
         if (!submitreviewer) return this.msgBoxOk('Error adding reviewer')
-        //submit.newreviewerid = null // TODO This doesn't work ie reviewer still shows as selected when it is actually reset to null by following:
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk('Reviewer added')
+          this.msgBoxOk(this.confirmreviewer.name, 'Reviewer added')
         })
       } catch (e) {
         this.msgBoxOk('Error adding status: ' + e.message)
