@@ -205,7 +205,8 @@
       </form>
     </b-modal>
     <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" @confirm="confirmedOK" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
+      @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template> 
 <script lang="ts">
@@ -280,7 +281,10 @@ export default {
       msgboxtitle: '',
       confirmTitle: '',
       confirmMessage: '',
+      confirmCancelText: 'Cancel',
+      confirmOKText: 'Confirm',
       confirmOK: () => { },
+      confirmCancelled: () => { },
       confirmsubmit: null,
     }
   },
@@ -323,6 +327,9 @@ export default {
     },
     confirmedOK() {
       this.confirmOK();
+    },
+    cancelConfirm() {
+      this.confirmCancelled();
     },
     gradingicons(reviewer) {
       const flowgrades = this.flow.flowgrades
@@ -397,7 +404,10 @@ export default {
       this.confirmsubmit = submit
       this.confirmTitle = submit.name
       this.confirmMessage = "Are you sure you want to delete this submission and all its entries?"
+      this.confirmCancelText = 'Cancel'
+      this.confirmOKText = 'Confirm'
       this.confirmOK = this.confirmedDeleteSubmit
+      this.confirmCancelled = () => {}
       this.startConfirm();
     },
     async confirmedDeleteSubmit() {
@@ -457,16 +467,24 @@ export default {
       }
     },
     async addReviewer(submit) {
+      if (!submit.newreviewerid) return this.msgBoxOk('Please choose a reviewer')
+      const reviewer = _.find(this.pub.reviewers, _already => { return _already.id === submit.newreviewerid })
+      this.confirmTitle = reviewer ? reviewer.name : "Add reviewer"
+      this.confirmMessage = "Do you want to add this reviewer as the LEAD? Cancel using (X) above."
+      this.confirmCancelText = 'Add as reviewer'
+      this.confirmOKText = 'Add as lead reviewer'
+      this.confirmsubmit = submit
+      this.confirmOK = () => {this.confirmAddReviewer(true)}
+      this.confirmCancelled = () => {this.confirmAddReviewer(false)}
+      this.startConfirm();
+    },
+    async confirmAddReviewer(lead:Boolean) {
       try {
-        if (!submit.newreviewerid) return this.msgBoxOk('Please choose a reviewer')
-        const notlead = await this.$bvModal.msgBoxConfirm('Do you want to add this reviewer as the LEAD? Escape to cancel.', { okTitle: 'Add as reviewer', cancelTitle: 'Add as lead reviewer' })
-        if (notlead === null) return
-        console.log(submit.newreviewerid, notlead)
-
-        const submitreviewer = await api.reviewers.addReviewer(submit.id, submit.newreviewerid, !notlead)
+        const submit = this.confirmsubmit
+        const submitreviewer = await api.reviewers.addReviewer(submit.id, submit.newreviewerid, lead)
         if (!submitreviewer) return this.msgBoxOk('Error adding reviewer')
         //submit.newreviewerid = null // TODO This doesn't work ie reviewer still shows as selected when it is actually reset to null by following:
-        this.$store.dispatch('submits/fetchpub', this.pubid)
+        await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
           this.msgBoxOk('Reviewer added')
         })

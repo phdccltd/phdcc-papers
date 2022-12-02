@@ -4,8 +4,8 @@
       <div v-html="message" />
     </template>
     <template #footer>
-      <b-button variant="white" @click="hide"> Cancel </b-button>
-      <b-button variant="primary" @click="confirm"> Confirm </b-button>
+      <b-button variant="white" @click="cancel"> {{cancelText}} </b-button>
+      <b-button variant="primary" @click="confirm"> {{confirmText}} </b-button>
     </template>
   </b-modal>
 </template>
@@ -25,6 +25,16 @@ export default {
       required: false,
       default: '<p>Are you sure you want to do this?</p>',
     },
+    confirmText: {
+      type: String,
+      required: false,
+      default: 'Confirm',
+    },
+    cancelText: {
+      type: String,
+      required: false,
+      default: 'Cancel',
+    },
   },
   data() {
     return {
@@ -32,6 +42,10 @@ export default {
     }
   },
   methods: {
+    cancel(){
+      this.$emit('cancel')
+      this.hide()
+    },
     confirm() {
       this.$emit('confirm')
       this.hide()

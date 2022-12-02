@@ -18,8 +18,10 @@ import modal from '@/mixins/modal'
 export default {
   mixins: [modal],
   data() {
-    var d: { title: string; message: string | undefined } = { title: "", message: '' };
-    return d;
+    return {
+      title: "",
+      message: ''
+    }
   },
   methods: {
     hide() {
