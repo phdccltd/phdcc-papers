@@ -1,7 +1,7 @@
 <template>
   <div>
     <client-only>
-      <b-modal id="modal-msgbox-ok" v-model="showModal" :title="title" size="lg">
+      <b-modal id="modal-msgbox-ok" v-model="showModal" :title="title" size="lg" centered>
         <template v-if="message" #default>
           {{ message }}
         </template>

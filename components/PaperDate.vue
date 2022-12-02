@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span class="ms-1 me-1">
     {{ date }}
   </span>
 </template>

@@ -53,24 +53,7 @@
       <strong>Nothing submitted yet</strong>
     </div>
 
-    <client-only>
-      <b-modal v-model="showEditSubmitQuick" id="modal-edit-submit" title="Edit submission title and author" size="lg" centered>
-        <template #default>
-          <form ref="form" @submit.stop.prevent>
-            <b-form-group label="Title" label-for="new-title" invalid-feedback="Title is required">
-              <b-form-input id="new-title" required v-model="newtitle"></b-form-input>
-            </b-form-group>
-            <b-form-group label="Author" label-for="newauthor">
-              <b-form-select v-model="newauthor" :options="newauthoroptions"></b-form-select>
-            </b-form-group>
-          </form>
-        </template>
-        <template #footer>
-          <b-button variant="outline-secondary" @click="hideEdited"> Cancel </b-button>
-          <b-button variant="primary" @click="okEdited"> OK </b-button>
-        </template>
-      </b-modal>
-    </client-only>
+    <SubmitEditModal ref="submitEditModal" :newauthoroptions="newauthoroptions" @confirm="okEdited" />
     <MessageBoxOK ref="okmsgbox" />
     <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" @confirm="confirmedOK" />
   </div>
@@ -81,7 +64,6 @@ import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
-import SubmitSummary from '~/components/SubmitSummary.vue'
 import _ from 'lodash/core'
 import api from '~/api'
 
@@ -119,7 +101,6 @@ export default {
       newtitle: '',
       newauthor: 0,
       newauthoroptions: [],
-      showEditSubmitQuick: false,
       confirmTitle: '',
       confirmMessage: '',
       confirmOK: null,
@@ -199,16 +180,13 @@ export default {
         for (const user of pubusers.users) {
           this.newauthoroptions.push({ value: user.id, text: user.username })
         }
-        this.newtitle = submit.name
-        this.newauthor = submit.userId
         this.submitbeingedited = submit
-        this.showEditSubmitQuick = true
+        this.waitForRef('submitEditModal', async () => {
+          this.$refs.submitEditModal.show(submit.name, submit.userId)
+        })
       } catch (e) {
         console.log("editSubmit:", e.message)
       }
-    },
-    hideEdited() {
-      this.showEditSubmitQuick = false
     },
     msgBoxOk(title: string) {
       this.waitForRef('okmsgbox', async () => {
@@ -223,11 +201,11 @@ export default {
     confirmedOK() {
       this.confirmOK();
     },
-    okEdited() {
+    okEdited(newtitle: String, newauthor: Number) {
       try {
-        const newtitle = this.newtitle.trim()
+        this.newtitle = newtitle.trim()
         if (newtitle.length === 0) return this.msgBoxOk('No new title given!')
-        let newauthor = 0
+        this.newauthor = newauthor
         if (this.newauthor !== this.submitbeingedited.userId) {
           const prev = _.find(this.newauthoroptions, option => { return option.value === this.submitbeingedited.userId })
           const next = _.find(this.newauthoroptions, option => { return option.value === this.newauthor })
@@ -243,7 +221,6 @@ export default {
       }
     },
     async confirmedAuthorChange() {
-      console.log("confirmedAuthorChange")
       const newtitle = this.newtitle.trim()
       let newauthor = 0
       if (this.newauthor !== this.submitbeingedited.userId) {
@@ -253,33 +230,10 @@ export default {
       if (!amended) return this.msgBoxOk('Error changing submit')
       await this.submitsStore.fetchpub(this.pubid)
       this.$nextTick(() => {
-        this.showEditSubmitQuick = false
+        this.$refs.submitEditModal.hide()
         this.msgBoxOk('Submit changed')
       })
     },
-    /*async deleteSubmit(submit) {
-      console.log('deleteSubmit', submit.id)
-      this.confirmTitle = "Are you sure you want to delete this submission and all its entries?"
-      this.confirmMessage = submit.name
-      this.confirmOK = this.confirmedDeleteSubmit
-      this.startConfirm();
-    },
-    async confirmedDeleteSubmit(submit) {
-      try {
-        console.log('confirmedDeleteSubmit', submit.id)
-        const deleted = await api.submit.deleteSubmit(submit.id)
-        //console.log('deleteSubmitted', deleted)
-        if (!deleted) {
-          return this.msgBoxOk('Could not delete this submission')
-        }
-        await this.submitsStore.fetchpub(this.pubid)
-        this.$nextTick(() => {
-          this.msgBoxOk('Submission deleted')
-        })
-      } catch (e) {
-        this.msgBoxOk('Error deleting submission: ' + e.message)
-      }
-    },*/
   },
 }
 </script>

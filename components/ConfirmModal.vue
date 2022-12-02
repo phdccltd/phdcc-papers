@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="confirmmodal" v-model="showModal" :title="title">
+  <b-modal id="confirmmodal" v-model="showModal" :title="title" centered>
     <template #default>
       <div v-html="message" />
     </template>
