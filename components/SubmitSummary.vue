@@ -24,8 +24,9 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">{{ submitaction.name
-            }}</b-button>
+            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">
+              {{ submitaction.name }}
+            </b-button>
           </span>
           <div class="float-end">
             <div v-for="actiondone in submit.actionsdone" :key="actiondone.id" class="actiondone">{{ actiondone.name }}</div>
@@ -60,11 +61,12 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-button v-if="showactiongrade(submitaction)" class="float-end ms-1" variant="success" @click="enterGrading(submit, submitaction)">{{
-                submitaction.gradename
-            }}</b-button>
-            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">{{ submitaction.name
-            }}</b-button>
+            <b-button v-if="showactiongrade(submitaction)" class="float-end ms-1" variant="success" @click="enterGrading(submit, submitaction)">
+              {{ submitaction.gradename }}
+            </b-button>
+            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">
+              {{ submitaction.name }}
+            </b-button>
           </span>
           <div v-if="pub.isowner && submit.owneradvice" class="actiondone float-end me-2">{{ submit.owneradvice }}</div>
         </div>
@@ -208,6 +210,7 @@
       @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template> 
+
 <script lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'

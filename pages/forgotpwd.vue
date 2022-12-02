@@ -12,7 +12,7 @@
         <b-col cols="9" offset-md="3">
           <b-button :disabled="requested" type="submit" variant="primary">
             Email login link
-            <v-icon v-if="requested" icon="check-circle" scale="1" class="ml-1" />
+            <v-icon v-if="requested" icon="check-circle" class="ms-1" />
           </b-button>
         </b-col>
       </b-row>
