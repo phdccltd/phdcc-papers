@@ -8,7 +8,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-textarea :id="sid" v-bind:value="value" v-on:input="$emit('input', $event)" max-rows="100" class="font-weight-bold"
+      <b-form-textarea :id="sid" v-bind:model-value="modelValue" v-on:input="$emit('update:modelValue', $event)" max-rows="100" class="font-weight-bold"
         style="overflow-y: auto;" :placeholder="reqd ? 'Required' : ''">
       </b-form-textarea>
       <div class="alert-warning">{{ message }}</div>
@@ -18,7 +18,7 @@
         {{ label }}
       </b-col>
       <b-col sm="8" class="formfieldview">
-        <b-form-textarea :id="sid" plaintext :value="value" max-rows="100" class="font-weight-bold" style="overflow-y: auto;"></b-form-textarea>
+        <b-form-textarea :id="sid" plaintext v-bind:model-value="modelValue" max-rows="100" class="font-weight-bold" style="overflow-y: auto;"></b-form-textarea>
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
         <span v-if="help" :title="help">
@@ -42,7 +42,7 @@ export default {
     sid: { type: String },
     help: { type: String },
     helplink: { type: String },
-    value: { type: String },
+    modelValue: { type: String },
     message: { type: String },
   },
   computed: {

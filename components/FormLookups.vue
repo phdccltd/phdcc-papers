@@ -47,7 +47,7 @@ export default {
     sid: { type: String },
     help: { type: String },
     helplink: { type: String },
-    value: { type: String },
+    modelValue: { type: String },
     publookupId: { type: Number },
     message: { type: String },
   },
@@ -65,18 +65,19 @@ export default {
     },
     arrayvalues: {
       get: function () {
-        if (!this.value) return []
+        if (!this.modelValue) return []
         //console.log('arrayvalues get')
-        return this.value.split(',')
+        return this.modelValue.split(',')
       },
       set: function (v) {
         //console.log('arrayvalues set', v.join(','))
-        this.$emit('input', v.length == 0 ? null : v.join(','))
+        this.$emit('update:modelValue', v.length == 0 ? null : v.join(','))
       },
     },
     plainvalues() {
-      if (!this.value) return ''
-      const avalues = this.value.split(',')
+      //console.log("FormLookup plainvalues")
+      if (!this.modelValue) return ''
+      const avalues = this.modelValue.split(',')
       //console.log(avalues)
       const atext = []
       for (const option of this.options) {
@@ -91,7 +92,7 @@ export default {
     options() {
       const route = useRoute()
       const pubid = parseInt(route.params.pubid)
-      const pub = this.pubsStore.getPub(this.pubid)
+      const pub = this.pubsStore.getPub(pubid)
       if (!pub) return []
 
       const publookup = _.find(pub.publookups, _publookup => { return _publookup.id === this.publookupId })

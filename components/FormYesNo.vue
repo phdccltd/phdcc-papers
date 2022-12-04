@@ -47,7 +47,7 @@ export default {
     sid: { type: String },
     help: { type: String },
     helplink: { type: String },
-    value: { type: Number },
+    modelValue: { type: Number },
     message: { type: String },
   },
   computed: {
@@ -56,14 +56,14 @@ export default {
     },
     selection: {
       get: function () {
-        return this.value
+        return this.modelValue
       },
       set: function (v) {
-        this.$emit('input', v)
+        this.$emit('update:modelValue', v)
       },
     },
     yesno() {
-      const option = _.find(this.options, _option => { return _option.value === this.value })
+      const option = _.find(this.options, _option => { return _option.value === this.modelValue })
       if (option) return option.text
       return 'Unknown'
     }

@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-import BaseAPI from './BaseAPI'
+import { useAuthStore } from '~/stores/auth'
+import { APIError, default as BaseAPI} from './BaseAPI'
+
+const runtimeConfig = useRuntimeConfig()
 
 export default class SubmitAPI extends BaseAPI {
   /// //////////
@@ -57,8 +60,10 @@ export default class SubmitAPI extends BaseAPI {
       }
       data.append('values', JSON.stringify(fv))
     }
-    const ret = await axios.post(process.env.API + apiurl, data, {
+    const authStore = useAuthStore()
+    const ret = await axios.post(runtimeConfig.public.API + apiurl, data, {
       headers: {
+        'Authorization': 'bearer ' + authStore.authorization,
         'Content-Type': 'multipart/form-data'
       }
     })
@@ -101,8 +106,10 @@ export default class SubmitAPI extends BaseAPI {
       }
       data.append('values', JSON.stringify(fv))
     }
-    const ret = await axios.post(process.env.API + '/submits/entry/' + entry.id, data, {
+    const authStore = useAuthStore()
+    const ret = await axios.post(runtimeConfig.public.API + '/submits/entry/' + entry.id, data, {
       headers: {
+        'Authorization': 'bearer ' + authStore.authorization,
         'Content-Type': 'multipart/form-data',
         'X-HTTP-Method-Override': 'PUT'
       }
@@ -129,7 +136,7 @@ export default class SubmitAPI extends BaseAPI {
     console.log('submitAPI getFile', relpath)
     // https://morioh.com/p/f4d331b62cda
     // https://stackoverflow.com/questions/53772331/vue-html-js-how-to-download-a-file-to-browser-using-the-download-tag
-    const ret = await axios.get(process.env.API + '/submits/entry/' + relpath, {
+    const ret = await axios.get(runtimeConfig.public.API + '/submits/entry/' + relpath, {
       responseType: 'blob'
     })
     console.log('submitAPI getFile GOT', ret)

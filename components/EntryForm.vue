@@ -44,7 +44,7 @@
           <b-button v-if="pub.isowner && showingadminoptions" variant="outline-success" class="float-start me-2" @click="toggleEdit">
             {{ editbtntext }}
           </b-button>
-          <b-button v-if="pub.isowner && showingadminoptions" variant="outline-warning" class="float-end" @click="deleteEntry">
+          <b-button v-if="pub.isowner && showingadminoptions" variant="outline-warning" class="float-end" @click="deleteEntry(entry)">
             Delete
           </b-button>
         </h2>
@@ -99,6 +99,9 @@
         </b-form>
       </div>
     </div>
+    <MessageBoxOK ref="okmsgbox" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
+      @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -109,8 +112,10 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
 import api from '~/api'
+import modalBoxes from '@/mixins/modalBoxes'
 
 export default {
+  mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
@@ -141,7 +146,6 @@ export default {
     if (this.formtype === 'addstage' || this.formtype === 'addsubmit') {
       this.editable = true
     }
-    console.log(this.formtype, this.editable)
     this.error = ''
     //TODO this.message = this.$store.getters['misc/get']('message')
     //TODO this.$store.dispatch('misc/set', { key: 'message', value: '' })
@@ -237,8 +241,14 @@ export default {
 
         entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
 
+        //console.log("entry.fields",entry.fields)
+        //console.log("entry.values",entry.values)
         for (const field of entry.fields) {
-          const val = _.find(entry.values, value => { return value.formfieldId === field.id })
+          //console.log("field",field)
+          const val = _.find(entry.values, value => { 
+            //console.log("compare",value.formfieldId, field.id)
+            return value.formfieldId === field.id })
+          //console.log("val",val)
           field.val = val || {}
           field.val.newfile = null
         }
@@ -251,7 +261,8 @@ export default {
     },
     sectionheading() {
       const stagename = this.entry.stage.name
-      return (this.editable ? (this.showeditviewbutton ? 'Edit ' : 'Add ') : '') + stagename
+      const isadd = this.formtype == 'addsubmit'
+      return (this.editable ? (isadd ? 'Add ' : 'Edit ') : '') + stagename
     },
   },
   methods: {
@@ -457,17 +468,18 @@ export default {
     toggleEdit() {
       this.editable = !this.editable
     },
-    async deleteEntry() {
+    deleteEntry(entry) {
+      this.error = ''
+      this.showConfirm(entry.stage.name, 'Are you sure you want to delete this entry?', this.confirmDeleteEntry)
+    },
+    async confirmDeleteEntry() {
       try {
-        this.error = ''
-        const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this entry?')
-        if (!OK) return
         const deleted = await api.submit.deleteEntry(this.entryid)
         if (!deleted) {
           this.error = 'Could not delete this entry'
           return
         }
-        await this.$bvModal.msgBoxOk('Note: no statuses removed', { title: 'Entry deleted' })
+        await this.msgBoxOk('Note: no statuses removed', { title: 'Entry deleted' })
         this.$router.push('/panel/' + this.pubid)
       } catch (e) {
         this.error = e.message

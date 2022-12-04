@@ -47,7 +47,7 @@ export default {
     sid: { type: String },
     help: { type: String },
     helplink: { type: String },
-    value: { type: Number },
+    modelValue: { type: Number },
     publookupId: { type: Number },
     message: { type: String },
   },
@@ -65,21 +65,21 @@ export default {
     },
     arrayvalues: {
       get: function () {
-        //console.log('arrayvalues get',this.value)
-        return this.value
+        //console.log('arrayvalues get',this.modelValue)
+        return this.modelValue
       },
       set: function (v) {
         //console.log('arrayvalues set', v)
-        // Unselecting seems impossible, but heopfully we cope anyway
-        this.$emit('input', v)
+        // Unselecting seems impossible, but hopefully we cope anyway
+        this.$emit('update:modelValue', v)
       },
     },
     plainvalues() {
-      if (!this.value) return ''
-      //console.log('plainvalues',this.value)
+      //console.log("FormLookup plainvalues")
+      if (!this.modelValue) return ''
       const atext = []
       for (const option of this.options) {
-        if (option.id === this.value) {
+        if (option.id === this.modelValue) {
           atext.push(option.text)
         }
       }

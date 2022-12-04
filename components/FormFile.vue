@@ -9,7 +9,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-file :id="sid" v-bind:value="value" v-on:input="$emit('input', $event)" :accept="allowedfiletypes"
+      <b-form-file :id="sid" v-bind:model-value="modelValue" v-on:input="$emit('input', $event)" :accept="allowedfiletypes"
         :placeholder="reqd ? 'Required. ' : ''">
       </b-form-file>
       <div class="alert-warning">{{ message }}</div>
@@ -52,7 +52,7 @@ export default {
     allowedfiletypes: { type: String },
     existingfile: { type: String },
     relpath: { type: String },
-    value: { type: File },
+    modelValue: { type: File },
     message: { type: String },
   },
   computed: {
