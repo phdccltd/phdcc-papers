@@ -108,6 +108,7 @@ import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
+import api from '~/api'
 
 export default {
   setup() {
@@ -224,7 +225,7 @@ export default {
         return entry
       }
       if (this.entryid) {
-        console.log('###GET ENTRY VIA ENTRYID')
+        console.log('###GET ENTRY VIA ENTRYID', this.pubid, this.entryid)
         const flows = this.submitsStore.flows(this.pubid)
         if (!flows) return false
 
@@ -390,7 +391,7 @@ export default {
         if (this.formtype == 'addsubmit') { // ADD SUBMIT AND ENTRY
           entry.submitid = 0
           entry.title = this.submittitle.val
-          const data = await this.$api.submit.addSubmitEntry(entry, this.flowid)
+          const data = await api.submit.addSubmitEntry(entry, this.flowid)
           console.log('RECEIVED', data)
           const entryid = data.rv.id
           this.submitstatus = ''
@@ -403,19 +404,19 @@ export default {
             this.error = 'Save error'
           }
         } else if (this.entryid) {  // EDIT ENTRY
-          const returnedid = await this.$api.submit.editEntry(entry)
+          const returnedid = await api.submit.editEntry(entry)
           this.submitstatus = ''
           if (returnedid) {
             this.editable = false
             this.message = 'Updated OK'
-            this.$store.dispatch('submits/fetchentry', this.entryid) // To get file relpath anew
+            await this.submitsStore.fetchentry(this.entryid) // To get file relpath anew
           } else {
             this.error = 'Save error'
             this.submiterror = 'Save error'
           }
         } else { // ADD ENTRY
           //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
-          const data = await this.$api.submit.addEntry(entry)
+          const data = await api.submit.addEntry(entry)
           const entryid = data.rv.id
           this.submitstatus = ''
           if (entryid) {
@@ -461,7 +462,7 @@ export default {
         this.error = ''
         const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this entry?')
         if (!OK) return
-        const deleted = await this.$api.submit.deleteEntry(this.entryid)
+        const deleted = await api.submit.deleteEntry(this.entryid)
         if (!deleted) {
           this.error = 'Could not delete this entry'
           return

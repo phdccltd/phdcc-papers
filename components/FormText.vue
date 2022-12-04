@@ -21,7 +21,7 @@
         <b-form-textarea :id="sid" plaintext :value="value" max-rows="100" class="font-weight-bold" style="overflow-y: auto;"></b-form-textarea>
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
-        <span v-if="help" v-b-tooltip.hover.left :title="help">
+        <span v-if="help" :title="help">
           <v-icon icon="info-circle" />
         </span>
       </b-col>

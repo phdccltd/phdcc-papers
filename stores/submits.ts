@@ -48,7 +48,7 @@ export const useSubmitsStore = defineStore('submits', {
         for (const field of entry.fields) {
           field.message = ''
         }
-        this.entry[entryid] = entry;  // commit('addEntry', { entryid, entry })
+        this.entries[entryid] = entry;  // commit('addEntry', { entryid, entry })
       } catch (e: any) {
         console.log('store fetchentry', e.message)
         this.error = e.message

@@ -8,7 +8,6 @@
 <script lang="ts">
 import EntryForm from '~/components/EntryForm.vue'
 
-
 export default {
   middleware: 'authuser',
   data() {

@@ -25,7 +25,7 @@
         <div class="alert-warning">{{ downloaderror }}</div>
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
-        <span v-if="help" v-b-tooltip.hover.left :title="help">
+        <span v-if="help" :title="help">
           <v-icon icon="info-circle" />
         </span>
       </b-col>
