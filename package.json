@@ -28,7 +28,7 @@
     "@vitejs/plugin-legacy": "^2.2.0",
     "axios": "^1.2.0",
     "bootstrap": "^5.2.2",
-    "bootstrap-vue-3": "^0.4.11",
+    "bootstrap-vue-3": "^0.4.13",
     "jwt-decode": "^3.1.2",
     "path-browserify": "^1.0.1",
     "vue-recaptcha-v3": "^2.0.1"
