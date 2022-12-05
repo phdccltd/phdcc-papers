@@ -9,9 +9,9 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-file :id="sid" v-bind:model-value="modelValue" v-on:input="$emit('input', $event)" :accept="allowedfiletypes"
+      <BFormFile :id="sid" v-bind:model-value="modelValue" v-on:input="$emit('input', $event)" :accept="allowedfiletypes"
         :placeholder="reqd ? 'Required. ' : ''">
-      </b-form-file>
+      </BFormFile>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
     <b-row v-else no-gutters>
