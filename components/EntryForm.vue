@@ -190,6 +190,7 @@ export default {
       return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
     },
     editbtntext() {
+      const isadd = this.formtype == 'addsubmit'
       return this.editable ? 'View' : 'Edit'
     },
     pub() {
@@ -261,7 +262,8 @@ export default {
     },
     sectionheading() {
       const stagename = this.entry.stage.name
-      const isadd = this.formtype == 'addsubmit'
+      const isadd = this.formtype == 'addsubmit' || 'addstage'
+      console.log("sectionheading",stagename,isadd,this.formtype)
       return (this.editable ? (isadd ? 'Add ' : 'Edit ') : '') + stagename
     },
   },

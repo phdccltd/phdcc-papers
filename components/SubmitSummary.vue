@@ -399,7 +399,7 @@ export default {
         this.msgBoxOk('Error deleting submission: ' + e.message)
       }
     },
-    async deleteSubmitStatus(submitstatus: any) {
+    deleteSubmitStatus(submitstatus: any) {
       this.confirmsubmitstatus = submitstatus
       this.showConfirm(submitstatus.status, "Are you sure you want to delete this status?", this.confirmDeleteSubmitStatus)
     },
@@ -415,16 +415,19 @@ export default {
         this.msgBoxOk('Error deleting status: ' + e.message)
       }
     },
-    async addSubmitStatus(flow, submit) {
+    addSubmitStatus(flow, submit) {
+      if (!submit.newstatusid) return this.msgBoxOk('Please choose a new status')
+      const flowstatus = _.find(flow.statuses, _flowstatus => { return _flowstatus.id === submit.newstatusid })
+      if (!flowstatus) return this.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
+      this.confirmsubmit = submit
+      this.showConfirm(flowstatus.status, "Adding this status will send any relevant emails. OK?", this.confirmAddSubmitStatus)
+    },
+    async confirmAddSubmitStatus(flow, submit) {
       try {
-        if (!submit.newstatusid) return this.msgBoxOk('Please choose a new status')
-        const flowstatus = _.find(flow.statuses, _flowstatus => { return _flowstatus.id === submit.newstatusid })
-        if (!flowstatus) return this.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
-        if (!await this.$bvModal.msgBoxConfirm('Adding this status will send any relevant emails. OK?', { title: flowstatus.status })) return
-        const submitstatus = await api.submit.addSubmitStatus(submit.id, submit.newstatusid)
+        const submitstatus = await api.submit.addSubmitStatus(this.confirmsubmit.id, this.confirmsubmit.newstatusid)
         if (!submitstatus) return this.msgBoxOk('Error adding status')
         //submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
-        this.$store.dispatch('submits/fetchpub', this.pubid)
+        await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
           this.msgBoxOk('Status added')
         })
