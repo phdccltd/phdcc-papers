@@ -33,7 +33,6 @@
   </div>
 </template>
 <script lang="ts">
-import path from 'path'
 import api from '~/api'
 
 export default {
@@ -60,10 +59,15 @@ export default {
       return this.reqd ? this.label + ' *' : this.label
     },
     existingfilename() {
-      return path.basename(this.existingfile)
+      //console.log("existingfilename",this.existingfile)
+      return this.basename(this.existingfile)
     },
   },
   methods: {
+    basename(path: string) {
+      const lastslash = path.lastIndexOf('/')
+      return lastslash === -1 ? path : path.substring(lastslash + 1)
+    },
     async downloadItem() {
       //console.log('downloadItem', this.relpath)
       this.downloaderror = ''
@@ -81,7 +85,7 @@ export default {
       }
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
-      link.download = path.basename(this.existingfile)
+      link.download = this.basename(this.existingfile)
       link.click()
       URL.revokeObjectURL(link.href)
     }

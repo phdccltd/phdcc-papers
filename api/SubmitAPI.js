@@ -136,8 +136,12 @@ export default class SubmitAPI extends BaseAPI {
     console.log('submitAPI getFile', relpath)
     // https://morioh.com/p/f4d331b62cda
     // https://stackoverflow.com/questions/53772331/vue-html-js-how-to-download-a-file-to-browser-using-the-download-tag
+    const authStore = useAuthStore()
     const ret = await axios.get(runtimeConfig.public.API + '/submits/entry/' + relpath, {
-      responseType: 'blob'
+      responseType: 'blob',
+      headers: {
+        'Authorization': 'bearer ' + authStore.authorization,
+      }
     })
     console.log('submitAPI getFile GOT', ret)
     return ret
