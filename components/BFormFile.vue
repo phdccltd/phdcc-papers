@@ -1,7 +1,12 @@
 <template>
-  <div>
+  <div class="custom-file b-form-file">
     <!-- https://github.com/bootstrap-vue/bootstrap-vue/tree/dev/src/components/form-file -->
     <input type="file" :id="computedId" accept=".txt, .pdf, .doc, .docx" :class="computedClasses" />
+    <label :for="computedId" data-browse="Browse" class="custom-file-label">
+      <span class="d-block form-file-text" style="pointer-events: none;">Required. </span>
+    </label>
+
+    // form-file-text
     <!-- v-bind="$attrs" @input="onInput($event)"
       @change="onChange($event)" @blur="onBlur($event)" />
     
@@ -38,6 +43,7 @@ export default defineComponent({
 
     const computedClasses = computed(() => {
       return {
+        'custom-file-input': true,
         'is-valid': true,
       }
       /*const isRange = props.type === 'range'

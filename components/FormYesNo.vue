@@ -56,9 +56,11 @@ export default {
     },
     selection: {
       get: function () {
+        //if( this.modelValue==null) return 0
         return this.modelValue
       },
       set: function (v) {
+        if( !v) v = 0
         this.$emit('update:modelValue', v)
       },
     },
