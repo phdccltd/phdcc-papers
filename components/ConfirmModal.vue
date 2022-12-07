@@ -4,8 +4,8 @@
       <div v-html="message" />
     </template>
     <template #footer>
-      <b-button variant="white" @click="cancel"> {{cancelText}} </b-button>
-      <b-button variant="primary" @click="confirm"> {{confirmText}} </b-button>
+      <b-button v-if="showcancel" variant="white" @click="cancel"> {{ cancelText }} </b-button>
+      <b-button variant="primary" @click="confirm"> {{ confirmText }} </b-button>
     </template>
   </b-modal>
 </template>
@@ -41,8 +41,13 @@ export default {
       showModal: false,
     }
   },
+  computed: {
+    showcancel() {
+      return this.cancelText.length > 0
+    },
+  },
   methods: {
-    cancel(){
+    cancel() {
       this.$emit('cancel')
       this.hide()
     },

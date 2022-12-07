@@ -8,7 +8,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-input :id="sid" :type="type" v-bind:model-value="modelValue" v-on:input="this.$emit('update:modelValue', $event)" :placeholder="reqd ? 'Required' : ''">
+      <b-form-input :id="sid" :type="type" v-bind:model-value="modelValue" v-on:input="input" :placeholder="reqd ? 'Required' : ''">
       </b-form-input>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -49,5 +49,10 @@ export default {
       return this.reqd ? this.label + ' *' : this.label
     },
   },
+  methods:{
+    input(event){ // this.$emit('update:modelValue', $event)
+      this.$emit('update:modelValue', event)
+    }
+  }
 }
 </script>

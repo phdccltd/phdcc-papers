@@ -24,7 +24,7 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">
+            <b-button v-if="showaction(submitaction)" class="float-end ms-1 me-1" variant="success" :to="submitaction.route">
               {{ submitaction.name }}
             </b-button>
           </span>
@@ -61,10 +61,10 @@
           <PaperDate :dt="submit.dtstatus" />
           <span class="status">{{ submit.status }}</span>
           <span v-for="submitaction in submit.actions" :key="submitaction.id">
-            <b-button v-if="showactiongrade(submitaction)" class="float-end ms-1" variant="success" @click="enterGrading(submit, submitaction)">
+            <b-button v-if="showactiongrade(submitaction)" class="float-end ms-1 me-1" variant="success" @click="enterGrading(submit, submitaction)">
               {{ submitaction.gradename }}
             </b-button>
-            <b-button v-if="showaction(submitaction)" class="float-end ms-1" variant="success" :to="submitaction.route">
+            <b-button v-if="showaction(submitaction)" class="float-end ms-1 me-1" variant="success" :to="submitaction.route">
               {{ submitaction.name }}
             </b-button>
           </span>

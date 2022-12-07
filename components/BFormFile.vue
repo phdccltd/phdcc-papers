@@ -1,12 +1,13 @@
 <template>
   <div class="custom-file b-form-file">
     <!-- https://github.com/bootstrap-vue/bootstrap-vue/tree/dev/src/components/form-file -->
-    <input type="file" :id="computedId" accept=".txt, .pdf, .doc, .docx" :class="computedClasses" />
+    <input type="file" :id="computedId" :accept="accept" :class="computedClasses" @input="onInput($event)" @change="onChange($event)"
+      @blur="onBlur($event)" /> <!-- v-on:input="input" v-on:change="change" -->
     <label :for="computedId" data-browse="Browse" class="custom-file-label">
-      <span class="d-block form-file-text" style="pointer-events: none;">Required. </span>
+      <span class="d-block form-file-text" style="pointer-events: none;">{{displayedfilename}}</span>
     </label>
 
-    // form-file-text
+    <!-- <form-file-text dragenter, dragleave, dragover, drop, focusin, focusout, reset -->
     <!-- v-bind="$attrs" @input="onInput($event)"
       @change="onChange($event)" @blur="onBlur($event)" />
     
@@ -25,8 +26,14 @@ export default defineComponent({
     id: { type: String, required: true },
     accept: { type: String, required: true },
     placeholder: { type: String, required: true },
+    //modelValue: { type: File },
   },
-  emits: ['update:modelValue', 'change', 'blur', 'input'],
+  data(){
+    return {
+      displayedfilename: 'Required',
+    }
+  },
+  //emits: ['update:modelValue', 'change', 'blur', 'input'],
   setup(props, { emit }) {
     /*const { input, computedId, computedAriaInvalid, onInput, onChange, onBlur, focus, blur } =
       useFormInput(props, emit)
@@ -36,7 +43,7 @@ export default defineComponent({
       return `__BVID__${Math.random().toString().slice(2, 8)}___BV_${suffix}__`
     }
 
-    function useId(id?: Ref<string | undefined>, suffix?: string) { return computed(() => id?.value || getId(suffix))}
+    function useId(id?: Ref<string | undefined>, suffix?: string) { return computed(() => id?.value || getId(suffix)) }
 
     const computedId = useId(toRef(props, 'id'), 'file')
     const isHighlighted = ref(false)
@@ -91,6 +98,29 @@ export default defineComponent({
     }
   },
   methods: {
+    onInput(evt) {
+      const value = evt.target.files[0]
+      console.log("BFormFile.onINPUT",value)
+      evt.preventDefault()
+      this.displayedfilename = value.name
+      this.$emit('input', value)
+    },
+    onChange(evt) {
+      console.log("BFormFile.onCHANGE")
+      const {value} = evt.target as HTMLInputElement
+      evt.preventDefault()
+    },
+    onBlur($event) {
+      console.log("BFormFile.onBLUR")
+    },
+    change(event) {
+      //console.log("BFormFile.CHANGE",event.target.files[0])
+      //this.$emit('update:modelValue', event.target.files[0])
+    },
+    //input(event){
+    //  console.log("BFormFile.INPUT",event)
+    //  this.$emit('update:modelValue', event)
+    //}
   }
 })
 </script>

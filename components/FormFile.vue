@@ -1,7 +1,6 @@
 <template>
   <div>
     <b-form-group v-if="edit" :label="labelreqd" :label-for="sid" label-cols-sm="3">
-      {{ existingfile }}
       <div class="form-help">
         <a v-if="helplink" :href="helplink" target="_blank">
           {{ help }}
@@ -9,9 +8,9 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <BFormFile :id="sid" v-bind:model-value="modelValue" v-on:input="$emit('input', $event)" :accept="allowedfiletypes"
-        :placeholder="reqd ? 'Required. ' : ''">
+      <BFormFile :id="sid" @input="onInput($event)" :accept="allowedfiletypes" :placeholder="reqd ? 'Required. ' : ''">
       </BFormFile>
+      <!-- v-model="file" v-bind:model-value="modelValue" v-on:input="input($event)"  -->
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
     <b-row v-else no-gutters>
@@ -20,7 +19,7 @@
       </b-col>
       <b-col sm="8" class="formfieldview">
         <a href='#' v-if="existingfile" @click.prevent="downloadItem()">
-          {{ existingfilename }}
+          {{ filename }}
         </a><br />
         <div class="alert-warning">{{ downloaderror }}</div>
       </b-col>
@@ -38,6 +37,7 @@ import api from '~/api'
 export default {
   data() {
     return {
+      newfilename: null,
       downloaderror: ''
     }
   },
@@ -51,22 +51,29 @@ export default {
     allowedfiletypes: { type: String },
     existingfile: { type: String },
     relpath: { type: String },
-    modelValue: { type: File },
+    //modelValue: { type: File }, // field.val.newfile
     message: { type: String },
   },
   computed: {
     labelreqd() {
       return this.reqd ? this.label + ' *' : this.label
     },
-    existingfilename() {
-      //console.log("existingfilename",this.existingfile)
-      return this.basename(this.existingfile)
+    filename() {
+      return this.newfilename ? this.newfilename : this.existingfile
     },
+    /*existingfilename() {
+      console.log("existingfilename", this.existingfile)
+      if (typeof this.existingfile == 'string') {
+        return this.basename(this.existingfile)
+      }
+    },*/
   },
   methods: {
-    basename(path: string) {
-      const lastslash = path.lastIndexOf('/')
-      return lastslash === -1 ? path : path.substring(lastslash + 1)
+    basename(thepath?: string) {
+      console.log("BASENAME", thepath)
+      if (thepath == null) return ''
+      const lastslash = thepath.lastIndexOf('/')
+      return lastslash === -1 ? thepath : thepath.substring(lastslash + 1)
     },
     async downloadItem() {
       //console.log('downloadItem', this.relpath)
@@ -88,6 +95,19 @@ export default {
       link.download = this.basename(this.existingfile)
       link.click()
       URL.revokeObjectURL(link.href)
+    },
+    onInput(evt) {
+      console.log("FormFile.input", typeof evt, evt)
+      //console.log("FormFile.input",evt.name)
+      //evt.preventDefault()
+      //if (typeof evt === 'string') {
+      //  this.$emit('input', evt)
+      //}
+      if ('name' in evt) {
+        console.log("FormFile.input EMIT", evt.name)
+        this.newfilename = evt.name
+        this.$emit('input', evt)
+      }
     }
   }
 }

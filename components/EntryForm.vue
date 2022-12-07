@@ -58,9 +58,9 @@
               :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
               v-model="field.val.string" />
             <FormFile v-if="field.type.substring(0, 4) == 'file'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              :allowedfiletypes="field.allowedfiletypes" :existingfile="field.val.file" :relpath="entry.id + '/' + field.val.id"
-              v-model="field.val.newfile" />
+              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message"
+              v-on:input="changedFile($event, field)" :allowedfiletypes="field.allowedfiletypes" :existingfile="field.val.file"
+              :relpath="entry.id + '/' + field.val.id" />
             <FormLookup v-if="field.type == 'lookup'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
               :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
               :publookupId="field.publookupId" v-model="field.val.integer" />
@@ -227,6 +227,7 @@ export default {
         entry.stage = _.find(flow.stages, stage => { return stage.id === this.stageid })
 
         //console.log(entry)
+        //console.log("entry.fields", entry.fields)
         return entry
       }
       if (this.entryid) {
@@ -245,15 +246,14 @@ export default {
         //console.log("entry.fields",entry.fields)
         //console.log("entry.values",entry.values)
         for (const field of entry.fields) {
-          //console.log("field",field)
-          const val = _.find(entry.values, value => { 
+          const val = _.find(entry.values, value => {
             //console.log("compare",value.formfieldId, field.id)
-            return value.formfieldId === field.id })
-          //console.log("val",val)
+            return value.formfieldId === field.id
+          })
           field.val = val || {}
           field.val.newfile = null
+          //console.log("field.val", field.val)
         }
-        //console.log(entry)
         return entry
       }
     },
@@ -263,7 +263,7 @@ export default {
     sectionheading() {
       const stagename = this.entry.stage.name
       const isadd = this.formtype == 'addsubmit' || 'addstage'
-      console.log("sectionheading",stagename,isadd,this.formtype)
+      console.log("sectionheading", stagename, isadd, this.formtype)
       return (this.editable ? (isadd ? 'Add ' : 'Edit ') : '') + stagename
     },
   },
@@ -308,8 +308,10 @@ export default {
             existingfile: field.val.file,
             file: field.val.newfile,
           }
+          console.log("Field", fv)
           if (field.val.newfile) { // View filename
-            field.val.file = field.val.newfile.name
+            console.log("NEWFILE", field.val.newfile) // console.log("NEWFILE",field.val.newfile.name)
+            field.val.file = field.val.newfile.name // field.val.file = field.val.newfile.name
           }
           //console.log(field.id, field.type, field.required, field.requiredif, field.val)
           let got = true
@@ -410,9 +412,9 @@ export default {
           this.submitstatus = ''
           if (entryid) {
             this.editable = false
-            this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
+            this.miscStore.set({ key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
             // OK: redirect so new entry displayed properly
-            this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + data.rv.submitid + '/' + entryid)
+            navigateTo('/panel/' + this.pubid + '/' + this.flowid + '/' + data.rv.submitid + '/' + entryid)
           } else {
             this.error = 'Save error'
           }
@@ -428,15 +430,15 @@ export default {
             this.submiterror = 'Save error'
           }
         } else { // ADD ENTRY
-          //const id = await this.$store.dispatch('submits/addEntry', entry) // Get via store so store updated. No need: add then get new entry
+          console.log("ADD ENTRY")
           const data = await api.submit.addEntry(entry)
           const entryid = data.rv.id
           this.submitstatus = ''
           if (entryid) {
             this.editable = false
-            this.$store.dispatch('misc/set', { key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
+            this.miscStore.set({ key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
             // OK: redirect so new entry displayed properly
-            this.$router.push('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
+            navigateTo('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
           } else {
             this.error = 'Save error'
             this.submiterror = 'Save error'
@@ -456,7 +458,17 @@ export default {
         value: this.showSubmitToggle
       })
     },
+    changedFile(evt, field) {
+      console.log("EntryForm.Changed", evt, field)
+      if ('name' in evt) {
+        console.log("EntryForm.Changed SAVED", evt)
+        field.message = ''
+        field.val.newfile = evt
+        this.validationsummary = ''
+      }
+    },
     changed(field) {
+      console.log("EntryForm.Changed", field)
       field.message = ''
       this.validationsummary = ''
     },
@@ -481,13 +493,15 @@ export default {
           this.error = 'Could not delete this entry'
           return
         }
-        await this.msgBoxOk('Note: no statuses removed', { title: 'Entry deleted' })
-        this.$router.push('/panel/' + this.pubid)
+        this.showConfirm('Entry deleted', 'Note: no statuses removed', this.doneDeleteEntry, 'OK', '')
       } catch (e) {
         this.error = e.message
       }
+    },
+    doneDeleteEntry() {
+      navigateTo('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid)
     }
-  }
+  },
 }
 </script>
 <style>
