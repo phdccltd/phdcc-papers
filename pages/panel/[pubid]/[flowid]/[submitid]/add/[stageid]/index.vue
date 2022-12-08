@@ -8,8 +8,6 @@
 <script>
 import EntryForm from '~/components/EntryForm'
 
-page.title = ''
-
 export default {
   middleware: 'authuser',
   components: { EntryForm },

@@ -177,10 +177,11 @@
       </div>
     </div>
 
-    <b-modal id="bv-modal-grading" centered no-close-on-backdrop @ok="okGrading">
-      <template v-slot:modal-title>
-        {{ modaltitle }}
-      </template>
+    <b-modal v-model="showGradingModal" id="bv-modal-grading" centered no-close-on-backdrop>
+      <template #header>
+          {{ modaltitle }}
+        </template>
+      <template #default>
       <form ref="form" @submit.stop.prevent>
         <b-form-row>
           <b-col sm="3">
@@ -204,6 +205,11 @@
           </b-form-checkbox>
         </b-form-group>
       </form>
+    </template>
+      <template #footer>
+        <b-button variant="outline-secondary" @click="hideGrading"> Cancel </b-button>
+        <b-button variant="primary" @click="okGrading"> OK </b-button>
+      </template>
     </b-modal>
     <MessageBoxOK ref="okmsgbox" />
     <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
@@ -285,6 +291,8 @@ export default {
       confirmsubmit: null,
       confirmreviewer: null,
       confirmsubmitstatus: null,
+      showGradingModal: false,
+      modaltitle: 'GGG',
     }
   },
   mounted() {
@@ -490,10 +498,13 @@ export default {
       //this.decision = 0 // Save entry in case of exit
       //this.comment = ''
       //this.canreview = false
-      this.$bvModal.show('bv-modal-grading')
+      //this.$bvModal.show('bv-modal-grading')
+      this.showGradingModal = true
     },
-    async okGrading(bvModalEvt) {
-      bvModalEvt.preventDefault()
+    hideGrading(){
+      this.showGradingModal = false
+    },
+    async okGrading() {
       try {
         if (this.decision === 0) return this.msgBoxOk('No decision made!')
         const ok = await api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
@@ -501,7 +512,7 @@ export default {
           // Don't do this as it removes Next/Previous buttons:
           // this.$store.dispatch('submits/fetchpub', this.pubid)
           this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-grading')
+            this.showGradingModal = false
             this.submitaction.dograde = 0 // Hide this button clunkily, as we are not refreshing
             this.setMessage('Review added')
           })
