@@ -9,7 +9,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <BFormFile :id="sid" @input="onInput($event)" :accept="allowedfiletypes" :placeholder="reqd ? 'Required. ' : ''">
+      <BFormFile :id="sid" @input="onInput($event)" :accept="allowedfiletypes" :placeholder="placeholder">
       </BFormFile>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -59,12 +59,16 @@ export default {
       return this.reqd ? this.label + ' *' : this.label
     },
     filename() {
-      return this.newfilename ? this.newfilename : this.existingfile
+      return this.basename(this.newfilename ? this.newfilename : this.existingfile)
+    },
+    placeholder(){
+      const ph = this.filename
+      if( ph.length>0) return ph
+      return this.reqd ? 'Required' : ''
     },
   },
   methods: {
     basename(thepath?: string) {
-      console.log("BASENAME", thepath)
       if (thepath == null) return ''
       const lastslash = thepath.lastIndexOf('/')
       return lastslash === -1 ? thepath : thepath.substring(lastslash + 1)

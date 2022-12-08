@@ -257,9 +257,6 @@ export default {
         return entry
       }
     },
-    //showSubmitToggle() {
-    //  return !this.$store.getters['misc/get']('entry-submit-toggle')
-    //},
     sectionheading() {
       const stagename = this.entry.stage.name
       const isadd = this.formtype == 'addsubmit' || 'addstage'
@@ -450,12 +447,6 @@ export default {
         this.submitstatus = ''
       }
     },
-    //toggleSubmit() {
-    //  this.$store.dispatch('misc/set', {
-    //    key: 'entry-submit-toggle',
-    //    value: this.showSubmitToggle
-    //  })
-    //},
     changedFile(file: File, field: any) {
       //console.log("EntryForm.Changed", file, field)
       if ('name' in file) {

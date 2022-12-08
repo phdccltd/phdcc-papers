@@ -89,7 +89,7 @@ export default class SubmitAPI extends BaseAPI {
   // Use POST with X-HTTP-Method-Override PUT at /submits/entry/<id>
   // Replace whole entry
   async editEntry(entry) {
-    console.log('submitAPI editEntry', entry)
+    console.log('submitAPI editEntry', entry.id)
 
     // Use FormData as it may contain a file https://xhr.spec.whatwg.org/#interface-formdata
     const data = new FormData()
@@ -127,7 +127,7 @@ export default class SubmitAPI extends BaseAPI {
         ret.data.status
       )
     }
-    console.log('editEntry returned', ret.data)
+    //console.log('editEntry returned', ret.data)
     return ret.data.id
   }
 
@@ -143,7 +143,7 @@ export default class SubmitAPI extends BaseAPI {
         'Authorization': 'bearer ' + authStore.authorization,
       }
     })
-    console.log('submitAPI getFile GOT', ret)
+    //console.log('submitAPI getFile GOT', ret)
     return ret
   }
 

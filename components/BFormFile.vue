@@ -20,7 +20,6 @@ export default defineComponent({
   },
   data() {
     return {
-      displayedfilename: 'Required',
     }
   },
   setup(props, { emit }) {
@@ -43,6 +42,11 @@ export default defineComponent({
     return {
       computedClasses,
       computedId,
+    }
+  },
+  computed: {
+    displayedfilename() {
+      return this.placeholder
     }
   },
   methods: {
