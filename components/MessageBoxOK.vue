@@ -1,15 +1,13 @@
 <template>
   <div>
-    <client-only>
-      <b-modal id="modal-msgbox-ok" v-model="showModal" :title="title" size="lg" centered>
-        <template v-if="message" #default>
-          {{ message }}
-        </template>
-        <template #footer>
-          <b-button variant="primary" @click="ok"> OK </b-button>
-        </template>
-      </b-modal>
-    </client-only>
+    <b-modal id="modal-msgbox-ok" v-model="showModal" :title="title" size="lg" centered>
+      <template v-if="message" #default>
+        {{ message }}
+      </template>
+      <template #footer>
+        <b-button variant="primary" @click="ok"> OK </b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 <script lang="ts">
