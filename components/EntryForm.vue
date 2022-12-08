@@ -257,13 +257,13 @@ export default {
         return entry
       }
     },
-    showSubmitToggle() {
-      return !this.$store.getters['misc/get']('entry-submit-toggle')
-    },
+    //showSubmitToggle() {
+    //  return !this.$store.getters['misc/get']('entry-submit-toggle')
+    //},
     sectionheading() {
       const stagename = this.entry.stage.name
       const isadd = this.formtype == 'addsubmit' || 'addstage'
-      console.log("sectionheading", stagename, isadd, this.formtype)
+      //console.log("sectionheading", stagename, isadd, this.formtype)
       return (this.editable ? (isadd ? 'Add ' : 'Edit ') : '') + stagename
     },
   },
@@ -279,7 +279,7 @@ export default {
         this.message = ''
         this.error = ''
         this.validationsummary = ''
-        console.log('onSubmit')
+        //console.log('onSubmit')
         //this.submitForm(this.form)
         const entry = {
           pubid: this.pubid,
@@ -308,9 +308,7 @@ export default {
             existingfile: field.val.file,
             file: field.val.newfile,
           }
-          console.log("Field", fv)
           if (field.val.newfile) { // View filename
-            console.log("NEWFILE", field.val.newfile) // console.log("NEWFILE",field.val.newfile.name)
             field.val.file = field.val.newfile.name // field.val.file = field.val.newfile.name
           }
           //console.log(field.id, field.type, field.required, field.requiredif, field.val)
@@ -395,7 +393,7 @@ export default {
           }
           entry.values.push(fv)
         }
-        console.log('onSubmit', entry)
+        //console.log('onSubmit', entry)
         if (anyerror) {
           this.validationsummary = 'Please fix any issues to continue'
           return
@@ -407,7 +405,7 @@ export default {
           entry.submitid = 0
           entry.title = this.submittitle.val
           const data = await api.submit.addSubmitEntry(entry, this.flowid)
-          console.log('RECEIVED', data)
+          //console.log('RECEIVED', data)
           const entryid = data.rv.id
           this.submitstatus = ''
           if (entryid) {
@@ -430,7 +428,7 @@ export default {
             this.submiterror = 'Save error'
           }
         } else { // ADD ENTRY
-          console.log("ADD ENTRY")
+          //console.log("ADD ENTRY")
           const data = await api.submit.addEntry(entry)
           const entryid = data.rv.id
           this.submitstatus = ''
@@ -452,23 +450,21 @@ export default {
         this.submitstatus = ''
       }
     },
-    toggleSubmit() {
-      this.$store.dispatch('misc/set', {
-        key: 'entry-submit-toggle',
-        value: this.showSubmitToggle
-      })
-    },
-    changedFile(evt, field) {
-      console.log("EntryForm.Changed", evt, field)
-      if ('name' in evt) {
-        console.log("EntryForm.Changed SAVED", evt)
+    //toggleSubmit() {
+    //  this.$store.dispatch('misc/set', {
+    //    key: 'entry-submit-toggle',
+    //    value: this.showSubmitToggle
+    //  })
+    //},
+    changedFile(file: File, field: any) {
+      //console.log("EntryForm.Changed", file, field)
+      if ('name' in file) {
         field.message = ''
-        field.val.newfile = evt
+        field.val.newfile = file
         this.validationsummary = ''
       }
     },
     changed(field) {
-      console.log("EntryForm.Changed", field)
       field.message = ''
       this.validationsummary = ''
     },
@@ -476,9 +472,9 @@ export default {
       //console.log('---fieldclass', field)
       return field.message.length > 0 ? 'border border-warning' : ''
     },
-    toggleSubmitShow(submit) {  // Inverse log in here so submit isn't expanded initially
-      submit.visible = !submit.visible
-    },
+    //toggleSubmitShow(submit) {  // Inverse log in here so submit isn't expanded initially
+    //  submit.visible = !submit.visible
+    //},
     toggleEdit() {
       this.editable = !this.editable
     },

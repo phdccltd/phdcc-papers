@@ -92,6 +92,7 @@ export const useSubmitsStore = defineStore('submits', {
       return flows
     },
     entry: (state) => (entryid: number) => {
+      //console.log("submit.get.entry",entryid)
       const entry = _.find(state.entries, _entry => { return _entry.id === entryid })
       return entry
     },

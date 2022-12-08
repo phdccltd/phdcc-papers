@@ -1,14 +1,12 @@
 <template>
   <div>
-    <!-- ADD ENTRY TO SUBMIT -->
-    <EntryForm formtype="addstage" />
+    <!-- ADD NEW SUBMIT -->
+    <EntryForm formtype="addsubmit" />
   </div>
 </template>
 
-<script>
-import EntryForm from '~/components/EntryForm'
-
-page.title = ''
+<script lang="ts">
+import EntryForm from '~/components/EntryForm.vue'
 
 export default {
   middleware: 'authuser',

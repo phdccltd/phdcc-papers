@@ -96,17 +96,10 @@ export default {
       link.click()
       URL.revokeObjectURL(link.href)
     },
-    onInput(evt) {
-      console.log("FormFile.input", typeof evt, evt)
-      //console.log("FormFile.input",evt.name)
-      //evt.preventDefault()
-      //if (typeof evt === 'string') {
-      //  this.$emit('input', evt)
-      //}
-      if ('name' in evt) {
-        console.log("FormFile.input EMIT", evt.name)
-        this.newfilename = evt.name
-        this.$emit('input', evt)
+    onInput(file: File) {
+      if ('name' in file) {
+        this.newfilename = file.name
+        this.$emit('input', file)
       }
     }
   }
