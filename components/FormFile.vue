@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Uses our own BFormFile as this not in bootstrap-vue-3 yet -->
     <b-form-group v-if="edit" :label="labelreqd" :label-for="sid" label-cols-sm="3">
       <div class="form-help">
         <a v-if="helplink" :href="helplink" target="_blank">
@@ -10,7 +11,6 @@
       </div>
       <BFormFile :id="sid" @input="onInput($event)" :accept="allowedfiletypes" :placeholder="reqd ? 'Required. ' : ''">
       </BFormFile>
-      <!-- v-model="file" v-bind:model-value="modelValue" v-on:input="input($event)"  -->
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
     <b-row v-else no-gutters>
@@ -61,12 +61,6 @@ export default {
     filename() {
       return this.newfilename ? this.newfilename : this.existingfile
     },
-    /*existingfilename() {
-      console.log("existingfilename", this.existingfile)
-      if (typeof this.existingfile == 'string') {
-        return this.basename(this.existingfile)
-      }
-    },*/
   },
   methods: {
     basename(thepath?: string) {

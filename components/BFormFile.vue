@@ -1,8 +1,8 @@
 <template>
   <div class="custom-file b-form-file">
+    <!-- Basic own version of BFormFile as this not in bootstrap-vue-3 yet -->
     <!-- https://github.com/bootstrap-vue/bootstrap-vue/tree/dev/src/components/form-file -->
     <input type="file" :id="computedId" :accept="accept" :class="computedClasses" @input.stop="onInput($event)" />
-    <!-- v-on:input="input" v-on:change="change" @change="onChange($event)" @blur="onBlur($event)" -->
     <label :for="computedId" data-browse="Browse" class="custom-file-label">
       <span class="d-block form-file-text" style="pointer-events: none;">{{ displayedfilename }}</span>
     </label>
@@ -17,7 +17,6 @@ export default defineComponent({
     id: { type: String, required: true },
     accept: { type: String, required: true },
     placeholder: { type: String, required: true },
-    //modelValue: { type: File },
   },
   data() {
     return {
@@ -48,10 +47,9 @@ export default defineComponent({
   },
   methods: {
     onInput(evt: any) { // Must use @input.stop above to stop propogation
-      const value = evt.target.files[0]
-      //console.log("BFormFile.onINPUT", value)
-      this.displayedfilename = value.name
-      this.$emit('input', value)
+      const file = evt.target.files[0]
+      this.displayedfilename = file.name
+      this.$emit('input', file)
     },
   }
 })
