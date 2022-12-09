@@ -29,15 +29,19 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // The private keys which are only available server-side
+    SPORT: 1234,
 
     // Keys within public are also exposed client-side + overridden by .env
     public: {
-      API: '/api',
-      RECAPTCHA_SITE_KEY: '',
-      RECAPTCHA_BYPASS: '',
-      SITE: '',
+      API: process.env.API || '/api',
+      RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY || '',
+      RECAPTCHA_BYPASS: process.env.RECAPTCHA_BYPASS || '',
+      SITE: process.env.SITE || '',
       VERSION: version,
       BUILD_DATE: new Date().toISOString(),
+      STARTUP_EMAIL: process.env.STARTUP_EMAIL || '',
+      STARTUP_SUBJECT: process.env.STARTUP_SUBJECT || '',
+      STARTUP_FROM: process.env.STARTUP_FROM || ''
     },
   },
   vite: {
