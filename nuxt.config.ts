@@ -29,8 +29,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // The private keys which are only available server-side
-    SPORT: 1234,
-
+    
     // Keys within public are also exposed client-side + overridden by .env
     public: {
       API: process.env.API || '/api',

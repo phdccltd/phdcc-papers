@@ -12,7 +12,7 @@
     "static": "npx nuxi generate",
     "lint": "eslint --ext .js,.jsx,.ts,.vue .",
     "lintfix": "eslint --fix --ext .js,.jsx,.ts,.vue .",
-    "runner": "cross-env PORT=9002 node .output/server/index.mjs"
+    "runner": "cross-env PORT=n node .output/server/index.mjs"
   },
   "comments": {
     "1": "pinia-plugin-persist package code in utils\\pinia-plugin-persist.ts",
