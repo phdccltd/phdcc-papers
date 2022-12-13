@@ -21,7 +21,7 @@
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
         <span v-if="help" :title="help">
-          <v-icon icon="info-circle" scale="1" />
+          <v-icon icon="info-circle" />
         </span>
       </b-col>
     </b-row>

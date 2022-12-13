@@ -55,9 +55,9 @@ export const useAuthStore = defineStore({
     }
   },
   getters: {
-    getToken: (state: { authorization: string | null }) => {
+    /*getToken: (state: { authorization: string | null }) => {
       return state.authorization
-    }
+    }*/
   },
 }
 )
