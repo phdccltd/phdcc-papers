@@ -139,8 +139,8 @@ export default class BaseAPI {
               statusstr
           )*/
         }
-
-        const message = [
+        // DO NOT THROW ERROR: JUST RETURN RESPONSE
+        /*const message = [
           'API Error',
           method,
           path,
@@ -163,7 +163,7 @@ export default class BaseAPI {
             },
           },
           message
-        )
+        )*/
       }
     }
 

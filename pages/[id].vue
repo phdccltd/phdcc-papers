@@ -18,7 +18,7 @@ export default {
     return { miscStore, sitePagesStore }
   },
   async mounted() { // Client only
-    this.sitePagesStore.fetch() // Do not await as knackers useVueRecaptcha. WHY? TODO
+    await this.sitePagesStore.fetch()
   },
 
   computed: {

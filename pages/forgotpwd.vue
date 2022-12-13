@@ -34,9 +34,8 @@ export default {
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
     const runtimeConfig = useRuntimeConfig()
-    const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    return { authStore, miscStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, sitePagesStore }
   },
 
   data() {
@@ -47,19 +46,21 @@ export default {
       form: {
         email: '',
       },
+      executeRecaptcha: null,
     }
   },
   async mounted() {
-    this.sitePagesStore.fetch()
-    this.miscStore.set({ key: 'page-title', value: 'Forgot password' })
-    if (this.authStore.loggedin) {
-      navigateTo('/panel');
-    }
     const runtimeConfig = useRuntimeConfig()
     if (runtimeConfig.public.RECAPTCHA_BYPASS) {
       this.message = 'Recaptcha bypass'
     } else {
-      this.grecaptcha = await useVueRecaptcha();
+      this.executeRecaptcha = await useVueRecaptcha(); // needs to be done before other await calls
+    }
+
+    await this.sitePagesStore.fetch()
+    this.miscStore.set({ key: 'page-title', value: 'Forgot password' })
+    if (this.authStore.loggedin) {
+      navigateTo('/panel');
     }
   },
 
@@ -74,11 +75,20 @@ export default {
       console.log('this.form', this.form)
       this.error = ''
       this.message = ''
-      if (this.grecaptcha == '') {
+      const runtimeConfig = useRuntimeConfig()
+      let grecaptcha = ''
+      if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+        grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
+      } else {
+        if( this.executeRecaptcha){
+          grecaptcha = await this.executeRecaptcha('login');
+        }
+      }
+      if (grecaptcha == '') {
         this.error = 'Captcha not set'
         return
       }
-      this.form.grecaptcharesponse = this.grecaptcha
+      this.form.grecaptcharesponse = grecaptcha
       try {
         const forgotten = await api.auth.forgotpwd(this.form)
         //console.log("forgotten", forgotten)

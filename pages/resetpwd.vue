@@ -20,9 +20,8 @@ export default {
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
     const runtimeConfig = useRuntimeConfig()
-    const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    return { authStore, miscStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, sitePagesStore }
   },
 
   data() {
@@ -32,7 +31,15 @@ export default {
     }
   },
   async mounted() {
-    this.sitePagesStore.fetch() // Do not await as knackers useVueRecaptcha. WHY? TODO
+    const runtimeConfig = useRuntimeConfig()
+    let executeRecaptcha = null
+    if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+      this.message = 'Recaptcha bypass'
+    } else {
+      executeRecaptcha = await useVueRecaptcha(); // needs to be done before other await calls
+    }
+
+    await this.sitePagesStore.fetch()
     if (this.authStore.loggedin) {
       navigateTo('/panel');
     }
@@ -50,18 +57,19 @@ export default {
       return
     }
 
-    const runtimeConfig = useRuntimeConfig()
-    if (runtimeConfig.public.RECAPTCHA_BYPASS) {
-      this.message = 'Recaptcha bypass'
-    } else {
-      this.grecaptcha = await useVueRecaptcha();
-    }
-
     const resetpwdinfo = {
       reset: token,
     }
     try {
-      resetpwdinfo.grecaptcharesponse = this.grecaptcha
+      let grecaptcha = ''
+      if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+        grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
+      } else {
+        if( executeRecaptcha){
+          grecaptcha = await executeRecaptcha('login');
+        }
+      }
+      resetpwdinfo.grecaptcharesponse = grecaptcha
       const res = await api.auth.login(resetpwdinfo)
       if (res.ret === 0) {
         this.authStore.setToken(res.token)

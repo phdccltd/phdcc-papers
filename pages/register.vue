@@ -22,28 +22,29 @@ export default {
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
     const runtimeConfig = useRuntimeConfig()
-    const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
 
-    return { authStore, miscStore, sitePagesStore, grecaptcha }
+    return { authStore, miscStore, sitePagesStore }
   },
   data() {
     return {
       error: '',
       message: '',
+      executeRecaptcha: null,
     }
   },
   async mounted() {
-    this.sitePagesStore.fetch() // Do not await as knackers useVueRecaptcha. WHY? TODO
-    if (this.authStore.loggedin) {
-      navigateTo('/panel');
-    }
-    this.miscStore.set({ key: 'page-title', value: 'Register' })
     const runtimeConfig = useRuntimeConfig()
     if (runtimeConfig.public.RECAPTCHA_BYPASS) {
       this.message = 'Recaptcha bypass'
     } else {
-      this.grecaptcha = await useVueRecaptcha();
+      this.executeRecaptcha = await useVueRecaptcha(); // needs to be done before other await calls
     }
+
+    await this.sitePagesStore.fetch()
+    if (this.authStore.loggedin) {
+      navigateTo('/panel');
+    }
+    this.miscStore.set({ key: 'page-title', value: 'Register' })
   },
 
   computed: {
@@ -56,11 +57,20 @@ export default {
     async registerUser(registrationInfo: any) {
       this.error = ''
       this.message = ''
-      if (this.grecaptcha == '') {
+      const runtimeConfig = useRuntimeConfig()
+      let grecaptcha = ''
+      if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+        grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
+      } else {
+        if (this.executeRecaptcha) {
+          grecaptcha = await this.executeRecaptcha('login');
+        }
+      }
+      if (grecaptcha == '') {
         this.error = 'Captcha not set'
         return
       }
-      registrationInfo.grecaptcharesponse = this.grecaptcha
+      registrationInfo.grecaptcharesponse = grecaptcha
       try {
         let res = await api.auth.register(registrationInfo)
         if (res.ret !== 0) {

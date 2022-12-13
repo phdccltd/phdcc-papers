@@ -16,5 +16,5 @@ export const useVueRecaptcha = async () => {
   });
   const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
   await recaptchaLoaded();
-  return await executeRecaptcha('login');
+  return executeRecaptcha // So it can be called just before check made
 };
