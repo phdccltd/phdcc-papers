@@ -152,8 +152,8 @@
       </template>
     </b-modal>
     <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText" :okVariant="okVariant"
-      @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
+      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -212,7 +212,6 @@ export default {
     },
     allusersoptions() {
       const allusers = this.usersStore.getall()
-      //const allusers = this.$store.getters['users/getall']
       const allusersoptions = []
       for (const user of allusers) {
         allusersoptions.push({ value: user.id, text: user.username + ' - ' + user.email })
@@ -222,7 +221,6 @@ export default {
     allrolesoptions() {
       return (pubid) => {
         const pubs = this.pubsStore.pubs
-        //const pubs = this.$store.getters['pubs/get']
         const allrolesoptions = []
         for (const pub of Object.values(pubs)) {
           if (pub.id === pubid) {
@@ -256,8 +254,8 @@ export default {
       try {
         this.pubname = this.pubname.trim()
         this.pubdescr = this.pubdescr.trim()
-        if (this.pubname.length === 0) return await this.msgBoxOk('Please give a publication name')
-        if (this.pubdescr.length === 0) return await this.msgBoxOk('Please give a publication description')
+        if (this.pubname.length === 0) return this.msgBoxOk('Please give a publication name')
+        if (this.pubdescr.length === 0) return this.msgBoxOk('Please give a publication description')
 
         const ok = await api.pubs.addPub(this.pubname, this.pubdescr)
 
@@ -268,10 +266,10 @@ export default {
             this.msgBoxOk('Publication added')
           })
         } else {
-          await this.msgBoxOk('Add went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxOk('Add went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.msgBoxOk('Error adding publication: ' + e.message)
+        this.msgBoxOk('Error adding publication: ' + e.message)
       }
     },
     togglePubEdit(pub) {
@@ -313,10 +311,10 @@ export default {
             this.msgBoxOk('Publication deleted')
           })
         } else {
-          await this.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.msgBoxOk('Error deleting publication: ' + e.message)
+        this.msgBoxOk('Error deleting publication: ' + e.message)
       }
     },
     async addPubRoleOwner(pub) {
@@ -325,24 +323,24 @@ export default {
         if (ok) {
           await this.pubsStore.fetch()
         } else {
-          await this.msgBoxOk('Add owner role went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxOk('Add owner role went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.msgBoxOk('Error adding owner role: ' + e.message)
+        this.msgBoxOk('Error adding owner role: ' + e.message)
       }
     },
     async addPubRole(pub) {
       try {
-        if (pub.adduserid === 0) return await this.msgBoxOk('Please select a user to add')
-        if (pub.addroleid === 0) return await this.msgBoxOk('Please select a role to add')
+        if (pub.adduserid === 0) return this.msgBoxOk('Please select a user to add')
+        if (pub.addroleid === 0) return this.msgBoxOk('Please select a role to add')
         const ok = await api.pubs.addPubRole(pub.id, pub.adduserid, pub.addroleid)
         if (ok) {
           await this.pubsStore.fetch()
         } else {
-          await this.msgBoxOk('Add owner went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxOk('Add owner went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.msgBoxOk('Error adding owner: ' + e.message)
+        this.msgBoxOk('Error adding owner: ' + e.message)
       }
     },
     duplicatePub(pub) {
@@ -350,13 +348,12 @@ export default {
       this.pubdupusers = true
       this.pubduppubid = pub.id
       this.showdupwait = false
-      this.$bvModal.show('bv-modal-dup-pub')
+      this.showDuplicateModal = true
     },
-    async okDupPub(bvModalEvt) {
-      bvModalEvt.preventDefault()
+    async okDupPub() {
       try {
         this.pubname = this.pubname.trim()
-        if (this.pubname.length === 0) return await this.msgBoxOk('Please give a publication name')
+        if (this.pubname.length === 0) return this.msgBoxOk('Please give a publication name')
 
         this.showdupwait = true
         const ok = await api.pubs.duplicatePub(this.pubduppubid, this.pubname, this.pubdupusers)
@@ -364,16 +361,16 @@ export default {
         if (ok) {
           await this.pubsStore.fetch()
           this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-dup-pub')
+            this.showDuplicateModal = false
             this.msgBoxOk('Publication duplicated')
           })
         } else {
           this.showdupwait = false
-          await this.msgBoxOk('Duplicate went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxOk('Duplicate went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
         this.showdupwait = false
-        await this.msgBoxOk('Error duplicating publication: ' + e.message)
+        this.msgBoxOk('Error duplicating publication: ' + e.message)
       }
     }
   },
