@@ -47,7 +47,7 @@
 }
 
 .btn-primary:focus {
-  box-shadow: 0 0 0 0.2rem rgba(72,180,97,.5);
+  box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, .5);
 }
 
 .btn-primary:disabled {
@@ -68,13 +68,13 @@
 .btn-secondary:active {
   // !important is required to override the bootstrap styles
   color: $color-black !important;
-  background-color: $color-white  !important;
+  background-color: $color-white !important;
   border-color: $color-blue--2 !important;
 }
 
 .btn-secondary:focus {
   // !important is required to override the bootstrap styles
-  box-shadow: 0 0 0 0.2rem rgba(38,143,255,.5) !important;
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, .5) !important;
 }
 
 .btn-secondary:disabled {
@@ -133,7 +133,10 @@
   color: $colour-success !important;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   color: $colour-header !important;
 }
 
@@ -180,11 +183,12 @@ button {
   cursor: pointer;
 }
 
-.btn-group-xs > .btn, .btn-xs {
-  padding  : .25rem .4rem;
-  font-size  : .875rem;
-  line-height  : .5;
-  border-radius : .2rem;
+.btn-group-xs>.btn,
+.btn-xs {
+  padding: .25rem .4rem;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
 }
 
 .card-header-tabs li a {
@@ -209,24 +213,29 @@ button {
 }
 
 .decornone {
+
   &:hover,
   &:focus {
     text-decoration: none;
   }
 }
 
-.fade-enter-active, .fade-leave-active {
-    transition: opacity 1s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s;
 }
-.fade-enter, .fade-leave-to {
-    opacity: 0;
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .fadein-enter-active {
-    transition: opacity 1s;
+  transition: opacity 1s;
 }
+
 .fadein-enter {
-    opacity: 0;
+  opacity: 0;
 }
 
 .navbar .dropdown-toggle:after {
@@ -257,7 +266,8 @@ nav .dropdown-toggle {
   color: $color-black;
 }
 
-.white, .white > a {
+.white,
+.white>a {
   color: $color-white !important;
 }
 
@@ -281,12 +291,18 @@ nav .dropdown-toggle {
 }
 
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
 
@@ -310,12 +326,15 @@ legend {
 
 .forcescroll {
   overflow-y: scroll !important;
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important;  /* Internet Explorer 10+ */
+  scrollbar-width: none !important;
+  /* Firefox */
+  -ms-overflow-style: none !important;
+  /* Internet Explorer 10+ */
   min-height: 200vh !important;
 }
 
-.forcescroll::-webkit-scrollbar { /* WebKit */
+.forcescroll::-webkit-scrollbar {
+  /* WebKit */
   width: 0;
   height: 0;
 }
@@ -338,15 +357,18 @@ legend {
   0% {
     opacity: 0.25;
   }
+
   50% {
     opacity: 1.0;
   }
+
   100% {
     opacity: 0.25;
   }
 }
 
 form {
+
   label,
   .col-form-label {
     font-weight: bold;
@@ -359,7 +381,7 @@ form {
     color: $color-red;
   }
 
-.form-group.is-invalid .invalid-feedback {
+  .form-group.is-invalid .invalid-feedback {
     display: block;
   }
 }
@@ -367,22 +389,22 @@ form {
 
 /* PHDCC */
 
-.bg-yellow{
+.bg-yellow {
   background-color: lightyellow;
 }
 
-h3{
+h3 {
   font-size: 1.5rem;
 }
 
-pre{
+pre {
   margin-bottom: 0;
 }
 
 
 
 form label,
-form .col-form-label{
+form .col-form-label {
   margin-top: 0;
 }
 
@@ -391,7 +413,7 @@ form .col-form-label{
   padding-left: 5px;
 }
 
-.formfieldview{
+.formfieldview {
   background-color: #F8F8F8;
   font-weight: bold;
 }
@@ -400,10 +422,12 @@ form .col-form-label{
   padding: 0;
   margin: 0;
 }
+
 .flow>h2 {
   padding: 0.5rem 0;
   margin: 0;
 }
+
 .submit {
   border-width: medium;
   padding: 0.5rem;
@@ -412,15 +436,19 @@ form .col-form-label{
 .submitnotmine {
   background-color: #F8F8F8;
 }
+
 .submitactionable {
   background-color: #FEE;
 }
+
 .publist-submit-h3 {
   margin-bottom: 0;
 }
+
 .publist-current-status {
   margin-left: 54px;
 }
+
 @media only screen and (max-width: 600px) {
   .publist-current-status {
     margin-left: 0;
@@ -431,7 +459,7 @@ form .col-form-label{
   background-color: #33ff33 !important;
 }
 
-.actiondone{
+.actiondone {
   font-weight: bold;
 }
 
@@ -448,25 +476,28 @@ form .col-form-label{
 .pub-owner {
   background-color: $color-author;
 }
+
 .pub-notowner {
   background-color: white;
 }
+
 .pub-super {
   background-color: $color-super;
 }
+
 .pub-weird {
-  background-color: 
+  background-color:
 
     $color-weird;
 }
 
 
 /* Needed to make modals show */
-.modal.show{
+.modal.show {
   display: block;
 }
 
-.modal-dialog{
+.modal-dialog {
   z-index: 1051;
 }
 
@@ -477,11 +508,11 @@ form .col-form-label{
   }
 }
 
-#confirmmodal{
+#confirmmodal {
   z-index: 1100;
 }
 
-.font-weight-bold{
+.font-weight-bold {
   font-weight: bold;
 }
 
@@ -528,8 +559,8 @@ form .col-form-label{
   border-radius: 0.25rem;
 }
 
-.custom-file-input ~ .custom-file-label[data-browse]::after {
-    content: attr(data-browse);
+.custom-file-input~.custom-file-label[data-browse]::after {
+  content: attr(data-browse);
 }
 
 .custom-file-label::after {
@@ -554,4 +585,22 @@ form .col-form-label{
   color: #856404;
   background-color: #fff3cd;
   border-color: #ffeeba;
+}
+
+a .btn-outline-danger {
+  color: #dc3545;
+}
+
+a .btn-outline-warning {
+  color: #ffc107;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
+}
+a:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }

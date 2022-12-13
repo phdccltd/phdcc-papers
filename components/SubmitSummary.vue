@@ -76,7 +76,7 @@
             <b-row>
               <b-col sm="6">
                 <h3 class="publist-submit-h3">
-                  <b-link @click="toggleShowSubmissions()">Submissions</b-link>
+                  <b-link @click.prevent="toggleShowSubmissions()">Submissions</b-link>
                 </h3>
               </b-col>
               <b-col sm="6" v-if="showsubmissions">
@@ -95,7 +95,7 @@
             <b-row>
               <b-col sm="6">
                 <h3 class="publist-submit-h3">
-                  <b-link @click="toggleShowStatuses()">Statuses</b-link>
+                  <b-link @click.prevent="toggleShowStatuses()">Statuses</b-link>
                 </h3>
                 <form v-if="showstatuses" ref="form" @submit.stop.prevent>
                   <b-form-select v-model="submit.newstatusid" :options="newstatusoptions" size="sm" style="width:auto;"></b-form-select>
@@ -104,7 +104,7 @@
               </b-col>
               <b-col sm="6" v-if="showstatuses">
                 <div v-for="submitstatus in submit.statuses" :key="submitstatus.id">
-                  <b-link @click="deleteSubmitStatus(submitstatus)">
+                  <b-link @click.prevent="deleteSubmitStatus(submitstatus)">
                     <v-icon icon="times-circle" class="btn-outline-danger" />
                   </b-link>
                   <PaperDate :dt="submitstatus.dt" />
@@ -121,7 +121,7 @@
             <b-row>
               <b-col sm="6">
                 <h3 class="publist-submit-h3">
-                  <b-link @click="toggleShowReviewers()">Reviewers</b-link>
+                  <b-link @click.prevent="toggleShowReviewers()">Reviewers</b-link>
                 </h3>
                 <form ref="form" @submit.stop.prevent v-if="showreviewers && pub.isowner">
                   <b-form-select v-model="submit.newreviewerid" :options="newrevieweroptions" size="sm" style="width:auto;"></b-form-select>
@@ -130,7 +130,7 @@
               </b-col>
               <b-col sm="6" v-if="showreviewers">
                 <div v-for="reviewer in submit.reviewers" :key="reviewer.id">
-                  <b-link v-if="pub.isowner" @click="removeReviewer(submit, reviewer)">
+                  <b-link v-if="pub.isowner" @click.prevent="removeReviewer(submit, reviewer)">
                     <v-icon icon="times-circle" class="btn-outline-danger" />
                   </b-link>
                   {{ reviewer.username }} {{ reviewer.lead ? '(Lead)' : '' }}
@@ -144,12 +144,12 @@
           </div>
           <div class="border rounded border-black mt-1 p-1">
             <h3 class="publist-submit-h3 mb-1">
-              <b-link @click="toggleShowGradings()">Reviews</b-link>
+              <b-link @click.prevent="toggleShowGradings()">Reviews</b-link>
             </h3>
             <b-list-group v-if="showgradings" class="gradings">
               <b-list-group-item v-for="flowgrade in filteredflowgrades()" :key="flowgrade.id" class="grading p-2">
                 <h4>
-                  <b-link @click="toggleSubGradings(flowgrade)">{{ flowgrade.name }}</b-link>
+                  <b-link @click.prevent="toggleSubGradings(flowgrade)">{{ flowgrade.name }}</b-link>
                   - {{ filteredgradings(submit.gradings, flowgrade).length }}
                 </h4>
                 <b-list-group v-if="flowgrade.visible">
@@ -159,7 +159,7 @@
                 </b-list-group>
                 <div v-if="pub.isowner">
                   <h4>
-                    <b-link @click="toggleSubGradingSummary(flowgrade)">{{ flowgrade.name }} summary</b-link>
+                    <b-link @click.prevent="toggleSubGradingSummary(flowgrade)">{{ flowgrade.name }} summary</b-link>
                   </h4>
                   <b-list-group v-if="flowgrade.summary">
                     <b-list-group-item class="p-2">

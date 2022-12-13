@@ -2,7 +2,7 @@
   <div :class="grading.lead ? 'leadgrading' : ''">
     <b-row no-gutters v-if="datevisible">
       <b-col sm="3">
-        <b-link v-if="pub.isowner" @click="deleteGrading()">
+        <b-link v-if="pub.isowner" @click.prevent="deleteGrading()">
           <v-icon icon="times-circle" class="btn-outline-danger" />
         </b-link>
         {{ date }}

@@ -19,7 +19,7 @@
       </div>
       <b-list-group class="acceptings">
         <b-list-group-item v-for="(accepting, index) in acceptings" :key="index" class="accepting">
-          <b-link @click="deleteAccepting(accepting)">
+          <b-link @clic.prevent="deleteAccepting(accepting)">
             <v-icon icon="times-circle" class="btn-outline-danger" />
           </b-link>
           {{ accepting.flowstagename }} <strong>{{ accepting.opentext }}</strong> {{ accepting.flowstatusname }}
