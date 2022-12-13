@@ -13,7 +13,7 @@ export default defineNitroPlugin((nitroApp) => {
       const now = new Date()
       //const args = ['-s', runtimeConfig.public.STARTUP_SUBJECT + ' ' + runtimeConfig.public.VERSION, '-a', 'From:' + runtimeConfig.public.STARTUP_FROM, runtimeConfig.public.STARTUP_EMAIL]
       //execFileSync('mail', args, { input: 'Server: ' + now.toISOString() + ' to API ' + runtimeConfig.public.API })
-      const Message = "Subject: " + runtimeConfig.public.STARTUP_SUBJECT + 
+      const Message = "Subject: " + runtimeConfig.public.STARTUP_SUBJECT + ' ' + runtimeConfig.public.VERSION +
         "\r\nFrom: " + runtimeConfig.public.STARTUP_FROM +
         "\r\nTo: " + runtimeConfig.public.STARTUP_EMAIL +
         '\r\n\r\nServer: ' + now.toISOString() + ' to API ' + runtimeConfig.public.API
