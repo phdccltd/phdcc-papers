@@ -20,8 +20,11 @@ import { useSubmitsStore } from '~/stores/submits'
 import Messages from '~/components/Messages.vue'
 import PublicationSubmissions from '~/components/PublicationSubmissions.vue'
 
+definePageMeta({
+  middleware: ["authuser"]
+})
+
 export default {
-  middleware: 'authuser',
   setup() {
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()

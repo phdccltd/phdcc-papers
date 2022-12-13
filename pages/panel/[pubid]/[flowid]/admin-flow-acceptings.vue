@@ -81,10 +81,12 @@ import _ from 'lodash/core'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
+definePageMeta({
+  middleware: ["authuser"]
+})
 
 export default {
   mixins: [modalBoxes],
-  middleware: 'authuser',
   setup() {
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()

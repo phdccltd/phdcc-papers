@@ -8,8 +8,11 @@
 <script>
 import EntryForm from '~/components/EntryForm'
 
+definePageMeta({
+  middleware: ["authuser"]
+})
+
 export default {
-  middleware: 'authuser',
   components: { EntryForm },
   data() {
     return {
