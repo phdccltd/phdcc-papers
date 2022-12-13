@@ -44,7 +44,6 @@ export const useUsersStore = defineStore({
         // console.log('store fetchallusers users.actions', pubid)
         const { allusers } = await api.auth.getUsers()
         this.allusers = allusers
-        //commit('setAllUsers', allusers)
       } catch (e) {
         console.log('users fetchallusers', e.message)
         this.error = e.message
@@ -53,11 +52,8 @@ export const useUsersStore = defineStore({
 
     async fetchpubusers(pubid) {
       try {
-        console.log('store fetchpubusers users.actions', pubid)
         const { pubusers } = await api.auth.getPubUsers(pubid)
-        console.log('store fetchpubusers users.actions got', pubusers)
         this.pubpubusers[pubid] = pubusers
-        //commit('addPubUsers', { pubid, pubusers })
       } catch (e) {
         console.log('users fetchpubusers', e.message)
         this.error = e.message
@@ -82,13 +78,10 @@ export const useUsersStore = defineStore({
       // console.log('getter users.getall')
       return state.allusers
     },
-    pubusers: (state) => () => {
-      // console.log('getter users.pubusers.pubid')
-      return (pubid) => {
-        // console.log('getter users.pubusers.pubid', pubid)
-        const pubusers = _.find(state.pubpubusers, (_pubusers, thispubid) => { return parseInt(thispubid) === pubid })
-        return pubusers
-      }
+    pubusers: (state) => (pubid) => {
+      // console.log('getter users.pubusers.pubid', pubid)
+      const pubusers = _.find(state.pubpubusers, (_pubusers, thispubid) => { return parseInt(thispubid) === pubid })
+      return pubusers
     },
   },
 }

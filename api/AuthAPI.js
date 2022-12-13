@@ -40,8 +40,10 @@ export default class AuthAPI extends BaseAPI {
 
   async removePubUser(pubid, userid) {
     console.log('removePubUser', pubid, userid)
-    const { ok } = await this.$del('/users/pub/' + pubid + '/' + userid)
-    return ok
+    const data = await this.$del('/users/pub/' + pubid + '/' + userid)
+    console.log('removedPubUser', data)
+    if (data.ret != 0) throw new Error(data.status)
+    return data.ok
   }
 
   async deleteUserRole(pubid, userid, roleid) {
