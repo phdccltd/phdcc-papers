@@ -24,7 +24,7 @@
         <b-container class="p-0">
           <div v-for="(pub, index) in pubs" :key="index">
             <b-row style="border-top:1px solid rgba(0, 0, 0, 0.125);" no-gutters
-              :class="'p-2 ' + (pub.owner ? 'pub-owner' : (pub.notowner ? 'pub-notowner' : ($auth.user.super ? 'pub-super' : 'pub-weird')))">
+              :class="'p-2 ' + (pub.owner ? 'pub-owner' : (pub.notowner ? 'pub-notowner' : (issuper ? 'pub-super' : 'pub-weird')))">
               <b-col sm="1">
                 <b-button variant="link" @click="togglePubEdit(pub)">
                   <v-icon v-if="pub.superedit" icon="minus-square" size="2x" class="btn-outline-warning" />
@@ -106,39 +106,54 @@
     </b-list-group>
 
 
-    <b-modal id="bv-modal-add-pub" size="lg" centered @ok="okAddPub" title="Add publication">
-      <form ref="form" @submit.stop.prevent>
-        <b-form-group label="Name" label-for="pubname" label-cols-sm="2">
-          <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
-        </b-form-group>
-        <b-form-group label="Description" label-for="pubdescr" label-cols-sm="2">
-          <b-form-textarea id="pubdescr" v-model="pubdescr" rows="3" max-rows="10" style="overflow-y: auto;" placeholder="Required" required>
-          </b-form-textarea>
-        </b-form-group>
-      </form>
+    <b-modal v-model="showAddModal" id="bv-modal-add-pub" title="Add publication" centered>
+      <template #default>
+        <form ref="form" @submit.stop.prevent>
+          <b-form-group label="Name" label-for="pubname" label-cols-sm="2">
+            <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
+          </b-form-group>
+          <b-form-group label="Description" label-for="pubdescr" label-cols-sm="2">
+            <b-form-textarea id="pubdescr" v-model="pubdescr" rows="3" max-rows="10" style="overflow-y: auto;" placeholder="Required" required>
+            </b-form-textarea>
+          </b-form-group>
+        </form>
+      </template>
+      <template #footer>
+        <b-button variant="outline-secondary" @click="cancelModal"> Cancel </b-button>
+        <b-button variant="primary" @click="okAddPub"> OK </b-button>
+      </template>
     </b-modal>
 
-    <b-modal id="bv-modal-dup-pub" size="lg" centered @ok="okDupPub" title="Duplicate publication">
-      <form ref="form" @submit.stop.prevent>
-        <ul>
-          <li>
-            This function will duplicate a publication, ie copy the set up but not copy the submissions.
-          </li>
-          <li>
-            You can choose whether or not to give the current publication users access to the new publication - and copy their roles across.
-          </li>
-        </ul>
-        <b-form-group label="Name" label-for="pubname" label-cols-sm="2">
-          <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
-        </b-form-group>
-        <b-form-group label="Users" label-for="pubdupusers" label-cols-sm="2">
-          <b-form-checkbox id="pubdupusers" v-model="pubdupusers" class="mt-2">
-            Give users access and copy roles
-          </b-form-checkbox>
-        </b-form-group>
-      </form>
-      <div class="text-center bg-warning m-2" v-if="showdupwait">Please wait...</div>
+    <b-modal v-model="showDuplicateModal" id="bv-modal-dup-pub" title="Duplicate publication" centered>
+      <template #default>
+        <form ref="form" @submit.stop.prevent>
+          <ul>
+            <li>
+              This function will duplicate a publication, ie copy the set up but not copy the submissions.
+            </li>
+            <li>
+              You can choose whether or not to give the current publication users access to the new publication - and copy their roles across.
+            </li>
+          </ul>
+          <b-form-group label="Name" label-for="pubname" label-cols-sm="2">
+            <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
+          </b-form-group>
+          <b-form-group label="Users" label-for="pubdupusers" label-cols-sm="2">
+            <b-form-checkbox id="pubdupusers" v-model="pubdupusers" class="mt-2">
+              Give users access and copy roles
+            </b-form-checkbox>
+          </b-form-group>
+        </form>
+        <div class="text-center bg-warning m-2" v-if="showdupwait">Please wait...</div>
+      </template>
+      <template #footer>
+        <b-button variant="outline-secondary" @click="cancelModal"> Cancel </b-button>
+        <b-button variant="primary" @click="okDupPub"> OK </b-button>
+      </template>
     </b-modal>
+    <MessageBoxOK ref="okmsgbox" />
+    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText" :okVariant="okVariant"
+      @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -148,12 +163,15 @@ import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
+import api from '~/api'
+import modalBoxes from '@/mixins/modalBoxes'
 
 definePageMeta({
   middleware: 'authsuper',
 })
 
 export default {
+  mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
@@ -171,7 +189,10 @@ export default {
       pubdescr: '',
       pubdupusers: true,
       pubduppubid: 0,
-      showdupwait: false
+      showdupwait: false,
+      confirmpub: null,
+      showAddModal: false,
+      showDuplicateModal: false,
     }
   },
 
@@ -213,7 +234,13 @@ export default {
         }
         return allrolesoptions
       }
-    }
+    },
+    issuper() {
+      return this.authStore.super
+    },
+    isowner() {
+      return this.authStore.super
+    },
   },
 
   methods: {
@@ -221,96 +248,101 @@ export default {
     addpub() {
       this.pubname = ''
       this.pubdescr = ''
-      this.$bvModal.show('bv-modal-add-pub')
+      this.showAddModal = true
     },
     /* ************************ */
-    async okAddPub(bvModalEvt) {
+    async okAddPub() {
       //console.log('okAddPub', this.pubname, this.pubdescr)
-      bvModalEvt.preventDefault()
       try {
         this.pubname = this.pubname.trim()
         this.pubdescr = this.pubdescr.trim()
-        if (this.pubname.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication name')
-        if (this.pubdescr.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication description')
+        if (this.pubname.length === 0) return await this.msgBoxOk('Please give a publication name')
+        if (this.pubdescr.length === 0) return await this.msgBoxOk('Please give a publication description')
 
-        const ok = await this.$api.pub.addPub(this.pubname, this.pubdescr)
+        const ok = await api.pubs.addPub(this.pubname, this.pubdescr)
 
         if (ok) {
-          this.$store.dispatch('pubs/fetch')
+          await this.pubsStore.fetch()
           this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-add-pub')
-            this.$bvModal.msgBoxOk('Publication added')
+            this.showAddModal = false
+            this.msgBoxOk('Publication added')
           })
         } else {
-          await this.$bvModal.msgBoxOk('Add went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          await this.msgBoxOk('Add went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error adding publication: ' + e.message)
+        await this.msgBoxOk('Error adding publication: ' + e.message)
       }
     },
     togglePubEdit(pub) {
       pub.superedit = !pub.superedit
     },
-    async togglePubEnable(pub) {
+    cancelModal() {
+      this.showAddModal = false
+      this.showDuplicateModal = false
+    },
+    togglePubEnable(pub) {
       console.log('togglePubEnable')
-      const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?')
-      if (OK) {
-        try {
-          const ok = await this.$api.pub.toggleEnablePub(pub.id, !pub.enabled)
-          if (ok) {
-            pub.enabled = !pub.enabled
-            this.$store.dispatch('pubs/fetch')
-          } else {
-            await this.$bvModal.msgBoxOk('Toggling enable went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
-          }
-        } catch (e) {
-          await this.$bvModal.msgBoxOk('Error toggling enable on publication: ' + e.message)
+      this.confirmpub = pub
+      this.showConfirm(pub.name, 'Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?', this.confirmTogglePubEnable)
+    },
+    async confirmTogglePubEnable() {
+      try {
+        const ok = await api.pubs.toggleEnablePub(this.confirmpub.id, !this.confirmpub.enabled)
+        if (ok) {
+          this.confirmpub.enabled = !this.confirmpub.enabled
+          await this.pubsStore.fetch()
+        } else {
+          this.msgBoxOk('Toggling enable went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
+      } catch (e) {
+        this.msgBoxOk('Error toggling enable on publication: ' + e.message)
       }
     },
-    async deletePub(pub) {
+    deletePub(pub) {
       console.log('deletePub')
-      const OK = await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this publication?', { title: 'CHECK THAT ALL TRACES REMOVED', okVariant: 'danger', okTitle: 'YES', cancelTitle: 'NO', })
-      if (OK) {
-        try {
-          const ok = await this.$api.pub.deletePub(pub.id)
-          if (ok) {
-            this.$store.dispatch('pubs/fetch')
-            this.$nextTick(() => {
-              this.$bvModal.msgBoxOk('Publication deleted')
-            })
-          } else {
-            await this.$bvModal.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
-          }
-        } catch (e) {
-          await this.$bvModal.msgBoxOk('Error deleting publication: ' + e.message)
+      this.confirmpub = pub
+      this.showConfirm(pub.name, 'Are you sure you want to delete this publication?', this.confirmDeletePub, 'YES', 'NO', null, 'danger') // TODO CHECK THAT ALL TRACES REMOVED okVariant: 'danger'
+    },
+    async confirmDeletePub() {
+      try {
+        const ok = await api.pubs.deletePub(this.confirmpub.id)
+        if (ok) {
+          await this.pubsStore.fetch()
+          this.$nextTick(() => {
+            this.msgBoxOk('Publication deleted')
+          })
+        } else {
+          await this.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
+      } catch (e) {
+        await this.msgBoxOk('Error deleting publication: ' + e.message)
       }
     },
     async addPubRoleOwner(pub) {
       try {
-        const ok = await this.$api.pub.addPubRoleOwner(pub.id)
+        const ok = await api.pubs.addPubRoleOwner(pub.id)
         if (ok) {
-          this.$store.dispatch('pubs/fetch')
+          await this.pubsStore.fetch()
         } else {
-          await this.$bvModal.msgBoxOk('Add owner role went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          await this.msgBoxOk('Add owner role went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error adding owner role: ' + e.message)
+        await this.msgBoxOk('Error adding owner role: ' + e.message)
       }
     },
     async addPubRole(pub) {
       try {
-        if (pub.adduserid === 0) return await this.$bvModal.msgBoxOk('Please select a user to add')
-        if (pub.addroleid === 0) return await this.$bvModal.msgBoxOk('Please select a role to add')
-        const ok = await this.$api.pub.addPubRole(pub.id, pub.adduserid, pub.addroleid)
+        if (pub.adduserid === 0) return await this.msgBoxOk('Please select a user to add')
+        if (pub.addroleid === 0) return await this.msgBoxOk('Please select a role to add')
+        const ok = await api.pubs.addPubRole(pub.id, pub.adduserid, pub.addroleid)
         if (ok) {
-          this.$store.dispatch('pubs/fetch')
+          await this.pubsStore.fetch()
         } else {
-          await this.$bvModal.msgBoxOk('Add owner went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          await this.msgBoxOk('Add owner went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.$bvModal.msgBoxOk('Error adding owner: ' + e.message)
+        await this.msgBoxOk('Error adding owner: ' + e.message)
       }
     },
     duplicatePub(pub) {
@@ -324,33 +356,27 @@ export default {
       bvModalEvt.preventDefault()
       try {
         this.pubname = this.pubname.trim()
-        if (this.pubname.length === 0) return await this.$bvModal.msgBoxOk('Please give a publication name')
+        if (this.pubname.length === 0) return await this.msgBoxOk('Please give a publication name')
 
         this.showdupwait = true
-        const ok = await this.$api.pub.duplicatePub(this.pubduppubid, this.pubname, this.pubdupusers)
+        const ok = await api.pubs.duplicatePub(this.pubduppubid, this.pubname, this.pubdupusers)
 
         if (ok) {
-          this.$store.dispatch('pubs/fetch')
+          await this.pubsStore.fetch()
           this.$nextTick(() => {
             this.$bvModal.hide('bv-modal-dup-pub')
-            this.$bvModal.msgBoxOk('Publication duplicated')
+            this.msgBoxOk('Publication duplicated')
           })
         } else {
           this.showdupwait = false
-          await this.$bvModal.msgBoxOk('Duplicate went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          await this.msgBoxOk('Duplicate went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
         this.showdupwait = false
-        await this.$bvModal.msgBoxOk('Error duplicating publication: ' + e.message)
+        await this.msgBoxOk('Error duplicating publication: ' + e.message)
       }
     }
   },
-
-  head() {
-    return {
-      title: pagetitle
-    }
-  }
 }
 </script>
 

@@ -5,7 +5,7 @@
     </template>
     <template #footer>
       <b-button v-if="showcancel" variant="white" @click="cancel"> {{ cancelText }} </b-button>
-      <b-button variant="primary" @click="confirm"> {{ confirmText }} </b-button>
+      <b-button :variant="okVariant" @click="confirm"> {{ confirmText }} </b-button>
     </template>
   </b-modal>
 </template>
@@ -35,6 +35,11 @@ export default {
       required: false,
       default: 'Cancel',
     },
+    okVariant:{
+      type: String,
+      required: false,
+      default: 'primary',
+    }
   },
   data() {
     return {

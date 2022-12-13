@@ -179,33 +179,33 @@
 
     <b-modal v-model="showGradingModal" id="bv-modal-grading" centered no-close-on-backdrop>
       <template #header>
-          {{ modaltitle }}
-        </template>
+        {{ modaltitle }}
+      </template>
       <template #default>
-      <form ref="form" @submit.stop.prevent>
-        <b-form-row>
-          <b-col sm="3">
-            <b-button v-if="helplinktext && helplink" variant="outline-success" :href="helplink" target="_blank">{{ helplinktext }}</b-button>
-          </b-col>
-          <b-col sm="9">
-            {{ helptext }}
-          </b-col>
-        </b-form-row>
-        <b-form-group label="Decision" label-for="decision" label-cols-sm="3">
-          <b-form-select v-model="decision" :options="decisionoptions" value-field="id" text-field="name" :select-size="4">
-          </b-form-select>
-        </b-form-group>
-        <b-form-group v-if="cancomment" label="Comment" label-for="comment" label-cols-sm="3">
-          <b-form-textarea id="comment" v-model="comment" rows="10" max-rows="100" style="overflow-y: auto;">
-          </b-form-textarea>
-        </b-form-group>
-        <b-form-group v-if="canopttoreview" label-cols-sm="3">
-          <b-form-checkbox v-model="canreview" name="checkbox-1" value="true" unchecked-value="false">
-            I can review
-          </b-form-checkbox>
-        </b-form-group>
-      </form>
-    </template>
+        <form ref="form" @submit.stop.prevent>
+          <b-form-row>
+            <b-col sm="3">
+              <b-button v-if="helplinktext && helplink" variant="outline-success" :href="helplink" target="_blank">{{ helplinktext }}</b-button>
+            </b-col>
+            <b-col sm="9">
+              {{ helptext }}
+            </b-col>
+          </b-form-row>
+          <b-form-group label="Decision" label-for="decision" label-cols-sm="3">
+            <b-form-select v-model="decision" :options="decisionoptions" value-field="id" text-field="name" :select-size="4">
+            </b-form-select>
+          </b-form-group>
+          <b-form-group v-if="cancomment" label="Comment" label-for="comment" label-cols-sm="3">
+            <b-form-textarea id="comment" v-model="comment" rows="10" max-rows="100" style="overflow-y: auto;">
+            </b-form-textarea>
+          </b-form-group>
+          <b-form-group v-if="canopttoreview" label-cols-sm="3">
+            <b-form-checkbox v-model="canreview" name="checkbox-1" value="true" unchecked-value="false">
+              I can review
+            </b-form-checkbox>
+          </b-form-group>
+        </form>
+      </template>
       <template #footer>
         <b-button variant="outline-secondary" @click="hideGrading"> Cancel </b-button>
         <b-button variant="primary" @click="okGrading"> OK </b-button>
@@ -501,7 +501,7 @@ export default {
       //this.$bvModal.show('bv-modal-grading')
       this.showGradingModal = true
     },
-    hideGrading(){
+    hideGrading() {
       this.showGradingModal = false
     },
     async okGrading() {
