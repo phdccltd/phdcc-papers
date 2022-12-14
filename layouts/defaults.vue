@@ -58,6 +58,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
+import { useUsersStore } from '~/stores/users'
 
 export default {
   setup() {
@@ -65,7 +66,8 @@ export default {
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
     const submitsStore = useSubmitsStore()
-    return { authStore, miscStore, pubsStore, submitsStore }
+    const usersStore = useUsersStore()
+    return { authStore, miscStore, pubsStore, submitsStore, usersStore }
   },
   data: function () {
     return {
@@ -144,21 +146,14 @@ export default {
     },
   },
   methods: {
-    logout() {
-      this.authStore.logout()
+    async logout() {
+      await this.authStore.logout()
       this.miscStore.clearAll();
       this.pubsStore.clearAll();
       this.submitsStore.clearAll();
+      this.usersStore.clearAll();
       navigateTo('/');
     },
-    /*testing(){
-      console.log("TTT", this);
-      this.msgboxtitle = "UUUU"
-          this.waitForRef('okmsgbox', () => {
-            console.log("WAITED")
-            this.$refs.okmsgbox.show()
-          })
-    }*/
   }
 }
 </script>

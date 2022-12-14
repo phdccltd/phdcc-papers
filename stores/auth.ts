@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import api from '~/api'
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -42,7 +43,8 @@ export const useAuthStore = defineStore({
         this.logout();
       }
     },
-    logout() {
+    async logout() {
+      await api.auth.logout()
       this.authorization = null;
       this.loggedin = false;
       this.id = 0;
@@ -55,9 +57,6 @@ export const useAuthStore = defineStore({
     }
   },
   getters: {
-    /*getToken: (state: { authorization: string | null }) => {
-      return state.authorization
-    }*/
   },
 }
 )

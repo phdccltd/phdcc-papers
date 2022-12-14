@@ -178,6 +178,10 @@ export default class BaseAPI {
     return this.$request('POST', path, { data }, logError)
   }
 
+  $delete(path, data, logError = true) {
+    return this.$request('DELETE', path, { data }, logError)
+  }
+
   $postOverride(overrideMethod, path, data, logError = true) {
     return this.$request(
       'POST',

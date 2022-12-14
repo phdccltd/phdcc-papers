@@ -4,6 +4,9 @@ export default class AuthAPI extends BaseAPI {
   async login(loginInfo) {
     return this.$post('/user/login', loginInfo) // email, password, grecaptcharesponse
   }
+  async logout() {
+    return this.$delete('/user/logout')
+  }
   async getuser(params) {
     // console.log("getuser", params)
     return this.$get('/user', params) // headers: Authorization

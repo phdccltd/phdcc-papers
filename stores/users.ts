@@ -21,24 +21,11 @@ export const useUsersStore = defineStore({
     error: false
   }),
   actions: {
-    /*setAllUsers(allusers) {
-      console.log('setUsers', allusers)
-      this.allusers = allusers
-    },
-    addPubUsers(puholder) {
-      console.log('addPubFlow', pubflow)
-      this.pubpubusers[puholder.pubid] = puholder.pubusers
-      //Vue.set(_state.pubpubusers, puholder.pubid, puholder.pubusers)
-    },
-    setError(error) {
-      console.log('users.setError', error)
-      this.error = error
-    },*/
     clearAll() {
-      console.log('clearAll user')
       this.pubpubusers = {}
       this.error = false
     },
+    
     async fetchallusers() {
       try {
         // console.log('store fetchallusers users.actions', pubid)
@@ -61,19 +48,10 @@ export const useUsersStore = defineStore({
     },
 
     clearError() {
-      // console.log('clearError users.action')
       this.error = false
     },
-
-    clear() {
-      // console.log('clear users.action')
-      this.clearAll()
-    }
   },
   getters: {
-    //getToken: (state: { authorization: string | null }) => {
-    //  return state.authorization
-    //},
     getall: (state) => () => {
       // console.log('getter users.getall')
       return state.allusers

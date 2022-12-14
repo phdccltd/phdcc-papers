@@ -280,17 +280,17 @@ export default {
     /* ************************ */
     async masquerade(pubuser) {
       try {
-        const ok = await api.user.masquerade(pubuser.id)
+        const ok = await api.auth.masquerade(pubuser.id)
         if (ok) {
           this.authStore.id = pubuser.id
-          this.$auth.user.name = pubuser.name
-          this.$auth.user.super = false
-          this.$auth.user.masquerading = true
-          this.$router.push('/panel')
-          this.$store.dispatch('misc/clear')
-          this.$store.dispatch('pubs/clear')
-          this.$store.dispatch('submits/clear')
-          this.$store.dispatch('users/clear')
+          this.authStore.name = pubuser.name
+          this.authStore.super = false
+          this.authStore.masquerading = true
+          this.miscStore.clearAll()
+          this.pubsStore.clearAll()
+          this.submitsStore.clearAll()
+          this.usersStore.clearAll()
+          navigateTo('/panel');
         } else {
           this.msgBoxOk('Could not masquerade', { title: 'FAIL', headerBgVariant: 'warning' })
         }
