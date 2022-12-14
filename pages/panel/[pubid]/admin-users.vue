@@ -251,24 +251,28 @@ export default {
       if (this.availablenewroles.length === 0) {
         return this.msgBoxOk('No more roles available!', { title: 'Add role' })
       }
-      this.$bvModal.show('bv-modal-add-role')
+      this.showAddRoleModal = true
     },
     /* ************************ */
-    async addUserRole(bvModalEvt) {
-      //console.log('addUserRole', this.addroleuserid, this.chosennewrole)
-      bvModalEvt.preventDefault()
-      try {
-        if (this.chosennewrole == 0) return this.msgBoxOk('No new role chosen!')
+    addUserRole() {
+      if (this.chosennewrole == 0) return this.msgBoxOk('No new role chosen!')
         const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
         if (!roletoadd) return
         if (roletoadd.isowner) {
-          if (!await this.$bvModal.msgBoxConfirm('This is an OWNER role. Do you want to continue?', { title: this.addroleusername, headerBgVariant: 'warning' })) return
+          this.showConfirm(this.addroleusername, 'This is an OWNER role. Do you want to continue?', this.confirmAddUserRole, null, null, null, 'danger')
+        } else{
+          this.confirmAddUserRole()
         }
-        const ok = await api.user.addUserRole(this.pubid, this.addroleuserid, this.chosennewrole)
+    },
+    /* ************************ */
+    async confirmAddUserRole() {
+      //console.log('addUserRole', this.addroleuserid, this.chosennewrole)
+      try {
+        const ok = await api.auth.addUserRole(this.pubid, this.addroleuserid, this.chosennewrole)
         if (ok) {
           await this.usersStore.fetchpubusers(this.pubid)
           this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-add-role')
+            this.showAddRoleModal = false
           })
         } else {
           this.msgBoxOk('User role could not be added', { title: 'FAIL', headerBgVariant: 'warning' })
