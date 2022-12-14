@@ -22,7 +22,8 @@
             <b-button variant="outline-success" @click="toggleShowSubstitutions()">
               Show substitution strings
             </b-button>
-            <b-form-textarea v-if="showsubstitutions" plaintext :value="substitutions" max-rows="100" style="overflow-y: auto;"></b-form-textarea>
+            <b-form-textarea v-if="showsubstitutions" plaintext v-bind:model-value="substitutions" :rows="rowcount(substitutions)" max-rows="100"
+              style="overflow-y: auto;"></b-form-textarea>
           </b-col>
         </b-row>
       </b-container>
@@ -53,30 +54,34 @@
                 Body
               </b-col>
               <b-col sm="10" class="formfieldview">
-                <b-form-textarea plaintext :value="mailtemplate.body" max-rows="100" style="overflow-y: auto;"></b-form-textarea>
+                <b-form-textarea plaintext v-bind:model-value="mailtemplate.body" :rows="rowcount(mailtemplate.body)" max-rows="100"
+                  style="overflow-y: auto;"></b-form-textarea>
               </b-col>
             </b-row>
           </b-container>
         </b-list-group-item>
       </b-list-group>
     </div>
-    <b-modal id="bv-modal-mail-template" size="xl" centered @ok="okMailTemplate">
-      <template v-slot:modal-title>
-        {{ modaltitle }}
+    <b-modal v-model="showMailModal" id="bv-modal-mail-template" :title="modaltitle" centered>
+      <template #default>
+        <form ref="form" @submit.stop.prevent>
+          <b-form-group label="Name" label-for="templatename" label-cols-sm="2">
+            <b-form-input id="templatename" v-model="templatename" placeholder="Required" required></b-form-input>
+          </b-form-group>
+          <b-form-group label="Subject" label-for="templatesubject" label-cols-sm="2">
+            <b-form-input id="templatesubject" v-model="templatesubject" placeholder="Required" required></b-form-input>
+          </b-form-group>
+          <b-form-group label="Body" label-for="templatebody" label-cols-sm="2">
+            <b-form-textarea id="templatebody" v-model="templatebody" rows="10" max-rows="100" style="overflow-y: auto;" placeholder="Required"
+              required>
+            </b-form-textarea>
+          </b-form-group>
+        </form>
       </template>
-      <form ref="form" @submit.stop.prevent>
-        <b-form-group label="Name" label-for="templatename" label-cols-sm="2">
-          <b-form-input id="templatename" v-model="templatename" placeholder="Required" required></b-form-input>
-        </b-form-group>
-        <b-form-group label="Subject" label-for="templatesubject" label-cols-sm="2">
-          <b-form-input id="templatesubject" v-model="templatesubject" placeholder="Required" required></b-form-input>
-        </b-form-group>
-        <b-form-group label="Body" label-for="templatebody" label-cols-sm="2">
-          <b-form-textarea id="templatebody" v-model="templatebody" rows="10" max-rows="100" style="overflow-y: auto;" placeholder="Required"
-            required>
-          </b-form-textarea>
-        </b-form-group>
-      </form>
+      <template #footer>
+        <b-button variant="outline-secondary" @click="cancelModal"> Cancel </b-button>
+        <b-button variant="primary" @click="okMailTemplate"> OK </b-button>
+      </template>
     </b-modal>
 
     <MessageBoxOK ref="okmsgbox" />
@@ -124,6 +129,7 @@ export default {
       templatesubject: '',
       templatebody: '',
       showsubstitutions: false,
+      showMailModal: false,
     }
   },
   async mounted() { // Client only
@@ -178,6 +184,7 @@ export default {
           }
         }
       }
+      console.log("substitutions", substitutions)
       return substitutions
     },
     issuper() {
@@ -185,6 +192,12 @@ export default {
     },
   },
   methods: {
+    rowcount(str) {
+      return 2 + str.split(/\r\n|\r|\n/).length
+    },
+    cancelModal() {
+      this.showMailModal = false
+    },
     /* ************************ */
     setError(msg) {
       this.error = msg
@@ -207,9 +220,9 @@ export default {
         if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this template?', { title: mailtemplate.name })) return
         const ok = await this.$api.mail.deleteMailTemplate(this.pubid, mailtemplate.id)
         if (ok) {
-          this.$store.dispatch('mailtemplates/fetch', this.pubid)
+          await this.mailTemplatesStore.fetch(this.pubid)
           this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-mail-template')
+            this.showMailModal = false
             this.msgBoxOk('Mail template removed')
           })
         } else {
@@ -226,7 +239,7 @@ export default {
       this.templatename = ''
       this.templatesubject = ''
       this.templatebody = ''
-      this.$bvModal.show('bv-modal-mail-template')
+      this.showMailModal = true
     },
     /* ************************ */
     startEditMailTemplate(mailtemplate) {
@@ -235,12 +248,11 @@ export default {
       this.templatename = mailtemplate.name
       this.templatesubject = mailtemplate.subject
       this.templatebody = mailtemplate.body
-      this.$bvModal.show('bv-modal-mail-template')
+      this.showMailModal = true
     },
     /* ************************ */
-    async okMailTemplate(bvModalEvt) {
+    async okMailTemplate() {
       //console.log('addMailTemplate', this.templateid, this.templatename, this.templatesubject, this.templatebody)
-      bvModalEvt.preventDefault()
       try {
         this.templatename = this.templatename.trim()
         this.templatesubject = this.templatesubject.trim()
@@ -249,12 +261,12 @@ export default {
         if (this.templatesubject.length === 0) return this.msgBoxOk('Please give a subject')
         if (this.templatebody.length === 0) return this.msgBoxOk('Please give a body')
 
-        const ok = await this.$api.mail.addEditMailTemplate(this.pubid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
+        const ok = await api.mail.addEditMailTemplate(this.pubid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
 
         if (ok) {
-          this.$store.dispatch('mailtemplates/fetch', this.pubid)
+          await this.mailTemplatesStore.fetch(this.pubid)
           this.$nextTick(() => {
-            this.$bvModal.hide('bv-modal-mail-template')
+            this.showMailModal = false
             this.msgBoxOk('Mail template added/edited')
           })
         } else {
