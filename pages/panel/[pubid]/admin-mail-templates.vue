@@ -30,7 +30,7 @@
       <b-list-group class="mailtemplates">
         <b-list-group-item v-for="(mailtemplate, index) in mailtemplates" :key="index" class="pubuser">
           <h3 class="publist-submit-h3">
-            <b-link @click="deleteMailTemplate(mailtemplate)" class="me-2">
+            <b-link @click.prevent="deleteMailTemplate(mailtemplate)" class="me-2">
               <v-icon icon="times-circle" class="btn-outline-danger" />
             </b-link>
             <b-link @click="toggleTemplateShow(mailtemplate)">
@@ -62,6 +62,7 @@
         </b-list-group-item>
       </b-list-group>
     </div>
+
     <b-modal v-model="showMailModal" id="bv-modal-mail-template" :title="modaltitle" centered>
       <template #default>
         <form ref="form" @submit.stop.prevent>
@@ -130,6 +131,7 @@ export default {
       templatebody: '',
       showsubstitutions: false,
       showMailModal: false,
+      confirmtemplate: null,
     }
   },
   async mounted() { // Client only
@@ -215,10 +217,14 @@ export default {
       mailtemplate.visible = !mailtemplate.visible
     },
     /* ************************ */
-    async deleteMailTemplate(mailtemplate) {
+    deleteMailTemplate(mailtemplate) {
+      this.confirmtemplate = mailtemplate
+      this.showConfirm(mailtemplate.name, 'Are you sure you want to delete this template?', this.confirmDeleteMailTemplate, null, null, null, 'danger')
+    },
+    /* ************************ */
+    async confirmDeleteMailTemplate() {
       try {
-        if (!await this.$bvModal.msgBoxConfirm('Are you sure you want to delete this template?', { title: mailtemplate.name })) return
-        const ok = await this.$api.mail.deleteMailTemplate(this.pubid, mailtemplate.id)
+        const ok = await api.mail.deleteMailTemplate(this.pubid, this.confirmtemplate.id)
         if (ok) {
           await this.mailTemplatesStore.fetch(this.pubid)
           this.$nextTick(() => {
