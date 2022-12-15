@@ -113,7 +113,7 @@ export default {
 
     return { authStore, mailTemplatesStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
   },
-  data({ app, params, store }) {
+  data() {
     return {
       error: '',
       message: '',
@@ -214,7 +214,6 @@ export default {
     issuper() {
       return this.authStore.super
     },
-
   },
   methods: {
     /* ************************ */
