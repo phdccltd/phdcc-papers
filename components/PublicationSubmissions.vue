@@ -6,7 +6,7 @@
       <strong>ADMIN</strong>
       <b-button variant="outline-danger" class="float-end" :to="'/panel/' + pubid + '/admin-setup'">Setup</b-button>
       <b-badge v-if="!pub.enabled" pill variant="danger" class="float-end m-2">DISABLED FOR USERS</b-badge>
-      <b-button variant="outline-warning" @click="toggleShowAdminOptions()">Show/Hide admin options</b-button>
+      <b-button variant="outline-warning" @click="toggleShowAdminOptions()" class="ms-2">Show/Hide admin options</b-button>
       <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-users'" class="ms-2">Users</b-button>
       <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-bulk'" class="ms-2">Bulk</b-button>
       <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail-templates'" class="ms-2">Mail

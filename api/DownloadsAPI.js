@@ -6,7 +6,7 @@ import BaseAPI from './BaseAPI'
 const runtimeConfig = useRuntimeConfig()
 
 export default class DownloadsAPI extends BaseAPI {
-  async downloadAnonymousStageSubmissions (pubid, selectedstage) {
+  async downloadAnonymousStageSubmissions(pubid, selectedstage) {
     const authStore = useAuthStore()
     const params = {
       flowstageid: selectedstage
@@ -21,7 +21,7 @@ export default class DownloadsAPI extends BaseAPI {
     return ret
   }
 
-  async downloadSummary (pubid, selectedstage) {
+  async downloadSummary(pubid, selectedstage) {
     const authStore = useAuthStore()
     const params = {
       flowstageid: selectedstage
@@ -36,7 +36,7 @@ export default class DownloadsAPI extends BaseAPI {
     return ret
   }
 
-  async downloadAll (pubid, selectedstage) {
+  async downloadAll(pubid, selectedstage) {
     const authStore = useAuthStore()
     const params = {
       flowstageid: selectedstage
@@ -51,7 +51,7 @@ export default class DownloadsAPI extends BaseAPI {
     return ret
   }
 
-  async downloadReviewerPerformance (pubid, selectedgrade) {
+  async downloadReviewerPerformance(pubid, selectedgrade) {
     const authStore = useAuthStore()
     const params = {
       flowgradeids: selectedgrade.join(',')
