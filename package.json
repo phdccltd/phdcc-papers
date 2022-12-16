@@ -4,7 +4,8 @@
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt generate",
+    "build2": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
