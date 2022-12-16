@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, Ref } from 'vue'
+import { computed, Ref } from 'vue'
 
 export default defineComponent({
   props: {
@@ -22,7 +22,7 @@ export default defineComponent({
     return {
     }
   },
-  setup(props, { emit }) {
+  setup(props) {
     function getId(suffix = '') {
       console.log("getId")
       return `__BVID__${Math.random().toString().slice(2, 8)}___BV_${suffix}__`

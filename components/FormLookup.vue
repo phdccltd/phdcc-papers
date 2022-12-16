@@ -65,17 +65,13 @@ export default {
     },
     arrayvalues: {
       get: function () {
-        //console.log('arrayvalues get',this.modelValue)
         return this.modelValue
       },
       set: function (v) {
-        //console.log('arrayvalues set', v)
-        // Unselecting seems impossible, but hopefully we cope anyway
         this.$emit('update:modelValue', v)
       },
     },
     plainvalues() {
-      //console.log("FormLookup plainvalues")
       if (!this.modelValue) return ''
       const atext = []
       for (const option of this.options) {
@@ -88,10 +84,9 @@ export default {
     options() {
       const route = useRoute()
       const pubid = parseInt(route.params.pubid)
-      const pub = this.pubsStore.getPub(this.pubid)
+      const pub = this.pubsStore.getPub(pubid)
       if (!pub) return []
       const publookup = _.find(pub.publookups, _publookup => { return _publookup.id === this.publookupId })
-      //console.log('publookup', publookup)
       if (publookup && publookup.values) {
         publookup.values.forEach(v => {
           v.value = v.id

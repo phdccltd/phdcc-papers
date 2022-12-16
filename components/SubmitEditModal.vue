@@ -37,7 +37,7 @@ export default {
     }
   },
   methods: {
-    show(title: String, author: Number) {
+    show(title: string, author: number) {
       this.newtitle = title
       this.newauthor = author
       this.showModal = true

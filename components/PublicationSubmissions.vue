@@ -105,15 +105,6 @@ export default {
       newauthoroptions: [],
     }
   },
-  /*inject: {
-      msgBoxOk: {
-          default() {
-              return () => {
-                  console.log('no map')
-              }
-          }
-      }
-  },*/
   computed: {
     pubid() {
       const route = useRoute()

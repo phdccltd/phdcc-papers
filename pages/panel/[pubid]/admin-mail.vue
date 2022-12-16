@@ -281,7 +281,7 @@ export default {
         const ok = await api.mail.sendMail(this.pubid, this.selecteduser, this.selectedrole, this.mailsubject, this.mailtext)
         if (ok) {
           this.sendstatus = 'Sent OK'
-          await this.msgBoxOk('Mail sent OK')
+          this.msgBoxOk('Mail sent OK')
         } else {
           this.senderror = 'Error sending mail'
           this.sendstatus = ''

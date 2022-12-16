@@ -46,8 +46,6 @@
       <a href="https://www.phdcc.com/feedback.html" target="_blank" rel="noopener">
         Get in touch if you want to try out Papers for your conference or journal.
       </a>
-      <br />
-      {{ yourtime }}
     </div>
   </div>
 </template>
@@ -71,38 +69,11 @@ export default {
   },
   data: function () {
     return {
-      //msgboxtitle: '',
-      //msgboxmessage: '',
     }
   },
-  /*provide() {
-    return {
-      msgBoxOk(title: string) {
-        console.log("DDDDD", this.newtitle)
-        if (title.length > 0) {
-          this.testing();
-          //this.msgboxtitle = title
-          //this.waitForRef('okmsgbox', () => {
-          //  console.log("WAITED")
-          //  this.$refs.okmsgbox.show()
-          //})
-          //this.$refs.okmsgbox.show()
-        }
-      }
-    }
-  },*/
   computed: {
-    /*msgboxtitle(){
-            const title = this.miscStore.get('msgboxtitle')  
-            console.log("DDDDD", title)
-            if( title.length>0){
-              this.$refs.okmsgbox.show()
-            }
-            return title;
-      },*/
     // Client and Server
     yourtime() {
-      // console.log('====== layout computed yourtime')
       const now = new Date()
       return now.toLocaleString()
     },

@@ -41,7 +41,6 @@ export default {
     }
   },
   components: {
-    //UserAuthPassword
   },
   props: {
     submitForm: {
@@ -60,7 +59,6 @@ export default {
     onSubmit(_evt: any) {
       this.submitForm(this.form)
     }
-
-  }
+  },
 }
 </script>

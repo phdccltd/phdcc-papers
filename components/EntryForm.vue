@@ -225,9 +225,6 @@ export default {
         const flow = this.flow
         if (!flow) return false
         entry.stage = _.find(flow.stages, stage => { return stage.id === this.stageid })
-
-        //console.log(entry)
-        //console.log("entry.fields", entry.fields)
         return entry
       }
       if (this.entryid) {
@@ -243,16 +240,12 @@ export default {
 
         entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
 
-        //console.log("entry.fields",entry.fields)
-        //console.log("entry.values",entry.values)
         for (const field of entry.fields) {
           const val = _.find(entry.values, value => {
-            //console.log("compare",value.formfieldId, field.id)
             return value.formfieldId === field.id
           })
           field.val = val || {}
           field.val.newfile = null
-          //console.log("field.val", field.val)
         }
         return entry
       }
@@ -260,7 +253,6 @@ export default {
     sectionheading() {
       const stagename = this.entry.stage.name
       const isadd = this.formtype == 'addsubmit' || 'addstage'
-      //console.log("sectionheading", stagename, isadd, this.formtype)
       return (this.editable ? (isadd ? 'Add ' : 'Edit ') : '') + stagename
     },
   },
@@ -276,8 +268,6 @@ export default {
         this.message = ''
         this.error = ''
         this.validationsummary = ''
-        //console.log('onSubmit')
-        //this.submitForm(this.form)
         const entry = {
           pubid: this.pubid,
           flowid: this.flowid,
@@ -311,7 +301,6 @@ export default {
           //console.log(field.id, field.type, field.required, field.requiredif, field.val)
           let got = true
           let lengthalreadywarned = false
-          //console.log(field.type, field.label, fv.string)
           switch (field.type) {
             case 'text':
               got = fv.text !== null && fv.text.length > 0
@@ -390,7 +379,6 @@ export default {
           }
           entry.values.push(fv)
         }
-        //console.log('onSubmit', entry)
         if (anyerror) {
           this.validationsummary = 'Please fix any issues to continue'
           return
@@ -402,7 +390,6 @@ export default {
           entry.submitid = 0
           entry.title = this.submittitle.val
           const data = await api.submit.addSubmitEntry(entry, this.flowid)
-          //console.log('RECEIVED', data)
           const entryid = data.rv.id
           this.submitstatus = ''
           if (entryid) {
@@ -425,7 +412,6 @@ export default {
             this.submiterror = 'Save error'
           }
         } else { // ADD ENTRY
-          //console.log("ADD ENTRY")
           const data = await api.submit.addEntry(entry)
           const entryid = data.rv.id
           this.submitstatus = ''
@@ -448,7 +434,6 @@ export default {
       }
     },
     changedFile(file: File, field: any) {
-      //console.log("EntryForm.Changed", file, field)
       if ('name' in file) {
         field.message = ''
         field.val.newfile = file
@@ -460,12 +445,8 @@ export default {
       this.validationsummary = ''
     },
     fieldclass(field) {
-      //console.log('---fieldclass', field)
       return field.message.length > 0 ? 'border border-warning' : ''
     },
-    //toggleSubmitShow(submit) {  // Inverse log in here so submit isn't expanded initially
-    //  submit.visible = !submit.visible
-    //},
     toggleEdit() {
       this.editable = !this.editable
     },

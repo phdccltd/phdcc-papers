@@ -92,7 +92,7 @@ export default {
     options() {
       const route = useRoute()
       const pubid = parseInt(route.params.pubid)
-      const pub = this.pubsStore.getPub(this.pubid)
+      const pub = this.pubsStore.getPub(pubid)
       if (!pub) return []
 
       let entry = false

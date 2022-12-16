@@ -248,7 +248,7 @@ export default {
           this.msgBoxOk('Accepting could not be deleted', { title: 'FAIL', headerBgVariant: 'warning' })
         }
       } catch (e) {
-        await this.msgBoxOk('Error deleting accepting: ' + e.message)
+        this.msgBoxOk('Error deleting accepting: ' + e.message)
       }
     },
   },
