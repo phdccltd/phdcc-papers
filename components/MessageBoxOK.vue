@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="modal-msgbox-ok" v-model="showModal" :title="title" size="lg" centered>
+    <b-modal id="modal-msgbox-ok" v-model="showModal" :title="title" :header-bg-variant="headerBgVariant" centered>
       <template v-if="message" #default>
         {{ message }}
       </template>
@@ -11,6 +11,7 @@
   </div>
 </template>
 <script lang="ts">
+// https://cdmoro.github.io/bootstrap-vue-3/components/Modal.html
 import modal from '@/mixins/modal'
 
 export default {
@@ -18,7 +19,8 @@ export default {
   data() {
     return {
       title: "",
-      message: ''
+      message: '',
+      headerBgVariant: null,
     }
   },
   methods: {
@@ -26,9 +28,10 @@ export default {
       this.$emit('hide')
       this.showModal = false
     },
-    show(title: string, message?: string) {
+    show(title: string, message?: string, headerBgVariant?: string) {
       this.title = title
       this.message = message
+      this.headerBgVariant = headerBgVariant
       this.showModal = true
     },
   },

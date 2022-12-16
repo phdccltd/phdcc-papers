@@ -191,7 +191,7 @@ export default {
           this.confirmedAuthorChange()
         }
       } catch (e) {
-        this.msgBoxOk('Error changing submit: ' + e.message)
+        this.msgBoxError('Error changing submit: ' + e.message)
       }
     },
     async confirmedAuthorChange() {

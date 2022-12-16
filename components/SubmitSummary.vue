@@ -400,7 +400,7 @@ export default {
           this.msgBoxOk(this.confirmsubmit.name, 'Submission deleted')
         })
       } catch (e) {
-        this.msgBoxOk('Error deleting submission: ' + e.message)
+        this.msgBoxError('Error deleting submission: ' + e.message)
       }
     },
     deleteSubmitStatus(submitstatus: any) {
@@ -416,7 +416,7 @@ export default {
           this.msgBoxOk('Status deleted')
         })
       } catch (e) {
-        this.msgBoxOk('Error deleting status: ' + e.message)
+        this.msgBoxError('Error deleting status: ' + e.message)
       }
     },
     addSubmitStatus(flow, submit) {
@@ -436,7 +436,7 @@ export default {
           this.msgBoxOk('Status added')
         })
       } catch (e) {
-        this.msgBoxOk('Error adding status: ' + e.message)
+        this.msgBoxError('Error adding status: ' + e.message)
       }
     },
     removeReviewer(submit: any, reviewer: any) {
@@ -453,7 +453,7 @@ export default {
           this.msgBoxOk(this.confirmreviewer.username, 'Reviewer removed')
         })
       } catch (e) {
-        this.msgBoxOk('Error removing reviewer: ' + e.message)
+        this.msgBoxError('Error removing reviewer: ' + e.message)
       }
     },
     async addReviewer(submit: any) {
@@ -474,7 +474,7 @@ export default {
           this.msgBoxOk(this.confirmreviewer.name, 'Reviewer added')
         })
       } catch (e) {
-        this.msgBoxOk('Error adding status: ' + e.message)
+        this.msgBoxError('Error adding status: ' + e.message)
       }
     },
     enterGrading(submit, submitaction) {
@@ -509,10 +509,10 @@ export default {
             this.setMessage('Review added')
           })
         } else {
-          this.msgBoxOk('Could not add review', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Could not add review')
         }
       } catch (e) {
-        this.msgBoxOk('Error saving review: ' + e.message)
+        this.msgBoxError('Error saving review: ' + e.message)
       }
     },
   }

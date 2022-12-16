@@ -215,10 +215,10 @@ export default {
             this.msgBoxOk('Accepting added/edited')
           })
         } else {
-          this.msgBoxOk('Accepting could not be added/edited', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Accepting could not be added/edited')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding/editing accepting: ' + e.message)
+        this.msgBoxError('Error adding/editing accepting: ' + e.message)
       }
     },
     async deleteAccepting(accepting: any) {
@@ -235,10 +235,10 @@ export default {
             this.msgBoxOk('Accepting deleted')
           })
         } else {
-          this.msgBoxOk('Accepting could not be deleted', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Accepting could not be deleted')
         }
       } catch (e) {
-        this.msgBoxOk('Error deleting accepting: ' + e.message)
+        this.msgBoxError('Error deleting accepting: ' + e.message)
       }
     },
   },

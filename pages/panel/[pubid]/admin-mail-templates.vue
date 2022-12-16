@@ -225,10 +225,10 @@ export default {
             this.msgBoxOk('Mail template removed')
           })
         } else {
-          this.msgBoxOk('Remove went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Remove went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding template: ' + e.message)
+        this.msgBoxError('Error adding template: ' + e.message)
       }
     },
     startAddMailTemplate() {
@@ -266,10 +266,10 @@ export default {
             this.msgBoxOk('Mail template added/edited')
           })
         } else {
-          this.msgBoxOk('Add/Edit went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Add/Edit went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding template: ' + e.message)
+        this.msgBoxError('Error adding template: ' + e.message)
       }
     }
   },

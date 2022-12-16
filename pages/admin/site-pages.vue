@@ -174,10 +174,10 @@ export default {
             this.msgBoxOk('Site page removed')
           })
         } else {
-          this.msgBoxOk('Remove went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxOk('FAIL', 'Remove went wrong', 'warning')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding site page: ' + e.message)
+        this.msgBoxError('Error adding site page: ' + e.message)
       }
     },
     startAddSitePage() {
@@ -215,10 +215,10 @@ export default {
             this.msgBoxOk('Site page added/edited')
           })
         } else {
-          this.msgBoxOk('Add/Edit went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Add/Edit went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding site page: ' + e.message)
+        this.msgBoxError('Error adding site page: ' + e.message)
       }
     }
   },

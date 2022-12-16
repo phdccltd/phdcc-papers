@@ -197,10 +197,10 @@ export default {
         if (ok) {
           await this.usersStore.fetchpubusers(this.pubid)
         } else {
-          this.msgBoxOk('User could not be removed', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('User could not be removed')
         }
       } catch (e) {
-        this.msgBoxOk('Error removing user: ' + e.message)
+        this.msgBoxError('Error removing user: ' + e.message)
       }
     },
     async deleteUserRole(pubuser, role) {
@@ -220,12 +220,12 @@ export default {
         //console.log('deleteUserRole', pubuser.id, role.id)
         const ok = await api.auth.deleteUserRole(this.pubid, this.confirmpubuser.id, this.confirmrole.id)
         if (!ok) {
-          this.msgBoxOk('User role could not be deleted', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('User role could not be deleted')
         } else {
           await this.usersStore.fetchpubusers(this.pubid)
         }
       } catch (e) {
-        this.msgBoxOk('Error removing user role: ' + e.message)
+        this.msgBoxError('Error removing user role: ' + e.message)
       }
     },
     async startAddUserRole(pubusers, pubuser) {
@@ -241,7 +241,7 @@ export default {
         }
       }
       if (this.availablenewroles.length === 0) {
-        return this.msgBoxOk('No more roles available!', { title: 'Add role' })
+        return this.msgBoxOk('Add role', 'No more roles available!')
       }
       this.showAddRoleModal = true
     },
@@ -265,10 +265,10 @@ export default {
             this.showAddRoleModal = false
           })
         } else {
-          this.msgBoxOk('User role could not be added', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('User role could not be added')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding role: ' + e.message)
+        this.msgBoxError('Error adding role: ' + e.message)
       }
     },
     async masquerade(pubuser) {
@@ -285,10 +285,10 @@ export default {
           this.usersStore.clearAll()
           navigateTo('/panel')
         } else {
-          this.msgBoxOk('Could not masquerade', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Could not masquerade')
         }
       } catch (e) {
-        this.msgBoxOk('Error masquerading: ' + e.message)
+        this.msgBoxError('Error masquerading: ' + e.message)
       }
     }
   },

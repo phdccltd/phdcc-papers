@@ -140,7 +140,7 @@ export default {
         const ret = await api.downloads.downloadAnonymousStageSubmissions(this.pubid, this.selectedstage)
         this.handleDownloadReturn(ret)
       } catch (e) {
-        this.msgBoxOk('Error downloading: ' + e.message)
+        this.msgBoxError('Error downloading: ' + e.message)
       }
     },
     async downloadSummary() {
@@ -151,7 +151,7 @@ export default {
         const ret = await api.downloads.downloadSummary(this.pubid, this.selectedstage)
         this.handleDownloadReturn(ret)
       } catch (e) {
-        this.msgBoxOk('Error downloading: ' + e.message)
+        this.msgBoxError('Error downloading: ' + e.message)
       }
     },
     async downloadAll() {

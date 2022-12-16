@@ -264,10 +264,10 @@ export default {
             this.msgBoxOk('Publication added')
           })
         } else {
-          this.msgBoxOk('Add went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Add went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding publication: ' + e.message)
+        this.msgBoxError('Error adding publication: ' + e.message)
       }
     },
     togglePubEdit(pub) {
@@ -289,10 +289,10 @@ export default {
           this.confirmpub.enabled = !this.confirmpub.enabled
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxOk('Toggling enable went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Toggling enable went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error toggling enable on publication: ' + e.message)
+        this.msgBoxError('Error toggling enable on publication: ' + e.message)
       }
     },
     deletePub(pub) {
@@ -309,10 +309,10 @@ export default {
             this.msgBoxOk('Publication deleted')
           })
         } else {
-          this.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Delete went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error deleting publication: ' + e.message)
+        this.msgBoxError('Error deleting publication: ' + e.message)
       }
     },
     async addPubRoleOwner(pub) {
@@ -321,10 +321,10 @@ export default {
         if (ok) {
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxOk('Add owner role went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Add owner role went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding owner role: ' + e.message)
+        this.msgBoxError('Error adding owner role: ' + e.message)
       }
     },
     async addPubRole(pub) {
@@ -335,10 +335,10 @@ export default {
         if (ok) {
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxOk('Add owner went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Add owner went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error adding owner: ' + e.message)
+        this.msgBoxError('Error adding owner: ' + e.message)
       }
     },
     duplicatePub(pub) {
@@ -364,11 +364,11 @@ export default {
           })
         } else {
           this.showdupwait = false
-          this.msgBoxOk('Duplicate went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Duplicate went wrong')
         }
       } catch (e) {
         this.showdupwait = false
-        this.msgBoxOk('Error duplicating publication: ' + e.message)
+        this.msgBoxError('Error duplicating publication: ' + e.message)
       }
     }
   },

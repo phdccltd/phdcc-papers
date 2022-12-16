@@ -15,9 +15,19 @@ export default {
   destroyed() {
   },
   methods: {
-    msgBoxOk(title: string, message?: string) {
+    msgBoxOk(title: string, message?: string, headerBgVariant?: string) {
       this.waitForRef('okmsgbox', async () => {
-        this.$refs.okmsgbox.show(title, message)
+        this.$refs.okmsgbox.show(title, message, headerBgVariant)
+      })
+    },
+    msgBoxFail(message?: string) {
+      this.waitForRef('okmsgbox', async () => {
+        this.$refs.okmsgbox.show('Oops', message, 'warning')
+      })
+    },
+    msgBoxError(message?: string) {
+      this.waitForRef('okmsgbox', async () => {
+        this.$refs.okmsgbox.show('Darn', message, 'danger')
       })
     },
     showConfirm(title: string, message: string, confirmOK: any, confirmOKText?: string, confirmCancelText?: string, confirmCancelled?: any, confirmokvariant?: string) {

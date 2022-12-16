@@ -168,7 +168,7 @@ export default {
         this.confirmed = ''
         await this.submitsStore.fetchpub(this.pubid)
       } catch (e) {
-        this.msgBoxOk('Error moving to status: ' + e.message)
+        this.msgBoxError('Error moving to status: ' + e.message)
       }
     },
   },

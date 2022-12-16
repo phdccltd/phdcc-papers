@@ -116,10 +116,10 @@ export default {
           // pub.enabled = !pub.enabled
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxOk('Toggling enable went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+          this.msgBoxFail('Toggling enable went wrong')
         }
       } catch (e) {
-        this.msgBoxOk('Error toggling enable on publication: ' + e.message)
+        this.msgBoxError('Error toggling enable on publication: ' + e.message)
       }
     },
 
@@ -138,10 +138,10 @@ export default {
               navigateTo('/panel')
             })
           } else {
-            this.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })
+            this.msgBoxFail('Delete went wrong')
           }
         } catch (e) {
-          this.msgBoxOk('Error deleting publication: ' + e.message)
+          this.msgBoxError('Error deleting publication: ' + e.message)
         }
     }
   },

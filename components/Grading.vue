@@ -119,7 +119,7 @@ export default {
           this.msgBoxOk('Review removed')
         })
       } catch (e) {
-        this.msgBoxOk('Error removing review: ' + e.message)
+        this.msgBoxError('Error removing review: ' + e.message)
       }
     },
   },
