@@ -33,7 +33,7 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env:
           NUXT_PUBLIC_API: https://papersdev.phdcc.co.uk/api
-          NUXT_PUBLIC_SITE: https://papers.phdcc.co.uk
+          NUXT_PUBLIC_SITE: https://papers3.phdcc.co.uk
           NUXT_PUBLIC_RECAPTCHA_SITE_KEY: 6Ldk26gZAAAAANZFrcQtvkH0wLfBPT_B7IkV4RLE
 
   close_pull_request_job:
