@@ -8,9 +8,8 @@ export const useAuthStore = defineStore({
     strategies: [
       {
         storage: localStorage,
-
         // Just persist everything
-        //paths: ['authorization'],
+        //paths: [],
       },
     ],
   },
@@ -31,29 +30,29 @@ export const useAuthStore = defineStore({
     },
     setUser(user: any) {
       if (user != null && user.id !== 0) {
-        this.loggedin = true;
-        this.id = user.id;
+        this.loggedin = true
+        this.id = user.id
         this.name = user.name
         this.email = user.email
         this.publicsettings = user.publicsettings
-        this.super = user.super;
-        this.username = user.username;
-        this.masquerading = false;
+        this.super = user.super
+        this.username = user.username
+        this.masquerading = false
       } else {
-        this.logout();
+        this.logout()
       }
     },
     async logout() {
       await api.auth.logout()
-      this.authorization = null;
-      this.loggedin = false;
-      this.id = 0;
+      this.authorization = null
+      this.loggedin = false
+      this.id = 0
       this.name = ''
       this.email = ''
-      this.publicsettings = {};
-      this.super = false;
-      this.username = '';
-      this.masquerading = false;
+      this.publicsettings = {}
+      this.super = false
+      this.username = ''
+      this.masquerading = false
     }
   },
   getters: {

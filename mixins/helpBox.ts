@@ -1,4 +1,4 @@
-import { useMiscStore } from "~/stores/misc";
+import { useMiscStore } from "~/stores/misc"
 
 export default {
   data: function () {
@@ -11,14 +11,14 @@ export default {
       return 'help-' + this.id
     },
     showHelp(): boolean {
-      const miscStore = useMiscStore();
-      const showingHelp = miscStore.get(this.helpKey) ?? false;
-      return !showingHelp;
+      const miscStore = useMiscStore()
+      const showingHelp = miscStore.get(this.helpKey) ?? false
+      return !showingHelp
     }
   },
   methods: {
     toggleHelp(): void {
-      const miscStore = useMiscStore();
+      const miscStore = useMiscStore()
       miscStore.set({
         key: this.helpKey,
         value: this.showHelp

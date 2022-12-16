@@ -7,10 +7,8 @@
 </template>
 
 <script lang="ts">
-import { buildHead } from '~/composables/useBuildHead'
-import Messages from '~/components/Messages.vue';
-import { useMiscStore } from "~/stores/misc";
-import { useSitePagesStore } from "~/stores/sitepages";
+import { useMiscStore } from "~/stores/misc"
+import { useSitePagesStore } from "~/stores/sitepages"
 
 export default {
   data() {
@@ -41,7 +39,7 @@ export default {
       if (sitepage) {
         this.miscStore.set({ key: 'page-title', value: sitepage.title })
       }
-      return sitepage ? sitepage.content : '';
+      return sitepage ? sitepage.content : ''
     },
   },
 }

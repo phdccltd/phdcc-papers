@@ -147,8 +147,6 @@ export default {
       this.editable = true
     }
     this.error = ''
-    //TODO this.message = this.$store.getters['misc/get']('message')
-    //TODO this.$store.dispatch('misc/set', { key: 'message', value: '' })
     await this.pubsStore.clearError()
     await this.submitsStore.clearError()
     await this.pubsStore.fetch()
@@ -185,8 +183,8 @@ export default {
       return parseInt(route.params.stageid)
     },
     fatalerror() {
-      const error1 = this.pubsStore.error;
-      const error2 = this.submitsStore.error;
+      const error1 = this.pubsStore.error
+      const error2 = this.submitsStore.error
       return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
     },
     editbtntext() {

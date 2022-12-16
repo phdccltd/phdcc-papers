@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- MOSTLY DONE -->
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
@@ -35,8 +34,7 @@
 <script lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
-import { useSitePagesStore } from "~/stores/sitepages";
-import Messages from '~/components/Messages.vue'
+import { useSitePagesStore } from "~/stores/sitepages"
 import api from '~/api'
 
 export default {
@@ -61,7 +59,7 @@ export default {
   async mounted() {
     await this.sitePagesStore.fetch()
     if (!this.authStore.loggedin) {
-      navigateTo('/login');
+      navigateTo('/login')
     }
     this.miscStore.set({ key: 'page-title', value: 'Account' })
   },
@@ -69,7 +67,7 @@ export default {
   computed: {
     content() {
       const sitepage = this.sitePagesStore.get('/account')
-      return sitepage ? sitepage.content : '';
+      return sitepage ? sitepage.content : ''
     },
     username() {
       return this.authStore.username
@@ -96,7 +94,7 @@ export default {
           this.error = response.status
         } else {
           const user = await api.auth.getuser()
-          this.authStore.setUser(user.user);
+          this.authStore.setUser(user.user)
           this.message = 'Changes saved'
         }
       }

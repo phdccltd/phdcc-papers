@@ -216,29 +216,24 @@ export default {
     },
   },
   methods: {
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
-    /* ************************ */
     rolechanged() {
       this.clearmessages()
       if (this.selectedrole != 0) {
         this.selecteduser = 0
       }
     },
-    /* ************************ */
     userchanged() {
       this.clearmessages()
       if (this.selecteduser != 0) {
         this.selectedrole = 0
       }
     },
-    /* ************************ */
     templatechanged() {
       this.clearmessages()
       for (const mailtemplate of this.mailtemplates) {
@@ -255,7 +250,6 @@ export default {
       this.senderror = ''
       this.validationsummary = ''
     },
-    /* ************************ */
     async onSubmit() {
       try {
         this.clearmessages()

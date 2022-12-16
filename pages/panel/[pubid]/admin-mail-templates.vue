@@ -120,7 +120,6 @@ export default {
     return { authStore, mailTemplatesStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
   },
   data() {
-    //console.log('_id data')
     return {
       error: '',
       message: '',
@@ -200,28 +199,22 @@ export default {
     cancelModal() {
       this.showMailModal = false
     },
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
-    /* ************************ */
     toggleShowSubstitutions() {
       this.showsubstitutions = !this.showsubstitutions
     },
-    /* ************************ */
     toggleTemplateShow(mailtemplate) {
       mailtemplate.visible = !mailtemplate.visible
     },
-    /* ************************ */
     deleteMailTemplate(mailtemplate) {
       this.confirmtemplate = mailtemplate
       this.showConfirm(mailtemplate.name, 'Are you sure you want to delete this template?', this.confirmDeleteMailTemplate, null, null, null, 'danger')
     },
-    /* ************************ */
     async confirmDeleteMailTemplate() {
       try {
         const ok = await api.mail.deleteMailTemplate(this.pubid, this.confirmtemplate.id)
@@ -238,7 +231,6 @@ export default {
         this.msgBoxOk('Error adding template: ' + e.message)
       }
     },
-    /* ************************ */
     startAddMailTemplate() {
       this.modaltitle = 'Add mail template'
       this.templateid = 0
@@ -247,7 +239,6 @@ export default {
       this.templatebody = ''
       this.showMailModal = true
     },
-    /* ************************ */
     startEditMailTemplate(mailtemplate) {
       this.modaltitle = 'Edit mail template'
       this.templateid = mailtemplate.id
@@ -256,7 +247,6 @@ export default {
       this.templatebody = mailtemplate.body
       this.showMailModal = true
     },
-    /* ************************ */
     async okMailTemplate() {
       //console.log('addMailTemplate', this.templateid, this.templatename, this.templatesubject, this.templatebody)
       try {

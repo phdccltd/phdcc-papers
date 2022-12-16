@@ -100,7 +100,6 @@ export default {
       return pub
     },
     fatalerror() {
-      //const error1 = this.$store.getters['users/error']
       return false
     },
     pubid() {
@@ -122,15 +121,12 @@ export default {
     },
   },
   methods: {
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
-    /* ************************ */
     async moveToNewStatus() {
       try {
         this.message = ''

@@ -167,22 +167,18 @@ export default {
     cancelModal() {
       this.showAddRoleModal = false
     },
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
-    /* ************************ */
     hasRole(pubuser) {
       const selectedrole = parseInt(this.selectedrole)
       if (selectedrole === 0) return true
       const hasrole = _.find(pubuser.roles, role => { return role.id === selectedrole })
       return hasrole
     },
-    /* ************************ */
     deletePubUser(pubuser) {
       this.confirmpubuser = pubuser
       if (pubuser.id === this.authStore.id) {
@@ -207,7 +203,6 @@ export default {
         this.msgBoxOk('Error removing user: ' + e.message)
       }
     },
-    /* ************************ */
     async deleteUserRole(pubuser, role) {
       this.confirmpubuser = pubuser
       this.confirmrole = role
@@ -217,11 +212,9 @@ export default {
         this.confirmDeleteUserRole()
       }
     },
-    /* ************************ */
     async confirmDeleteUserRole() {
       this.showConfirm(this.confirmpubuser.name + ': ' + this.confirmrole.name, 'Are you sure you want to delete this role?', this.reallyDeleteUserRole)
     },
-    /* ************************ */
     async reallyDeleteUserRole() {
       try {
         //console.log('deleteUserRole', pubuser.id, role.id)
@@ -235,7 +228,6 @@ export default {
         this.msgBoxOk('Error removing user role: ' + e.message)
       }
     },
-    /* ************************ */
     async startAddUserRole(pubusers, pubuser) {
       this.addroleuserid = pubuser.id
       this.addroleusername = pubuser.name
@@ -253,7 +245,6 @@ export default {
       }
       this.showAddRoleModal = true
     },
-    /* ************************ */
     addUserRole() {
       if (this.chosennewrole == 0) return this.msgBoxOk('No new role chosen!')
         const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
@@ -264,7 +255,6 @@ export default {
           this.confirmAddUserRole()
         }
     },
-    /* ************************ */
     async confirmAddUserRole() {
       //console.log('addUserRole', this.addroleuserid, this.chosennewrole)
       try {
@@ -281,7 +271,6 @@ export default {
         this.msgBoxOk('Error adding role: ' + e.message)
       }
     },
-    /* ************************ */
     async masquerade(pubuser) {
       try {
         const ok = await api.auth.masquerade(pubuser.id)
@@ -294,7 +283,7 @@ export default {
           this.pubsStore.clearAll()
           this.submitsStore.clearAll()
           this.usersStore.clearAll()
-          navigateTo('/panel');
+          navigateTo('/panel')
         } else {
           this.msgBoxOk('Could not masquerade', { title: 'FAIL', headerBgVariant: 'warning' })
         }

@@ -13,12 +13,9 @@
 </template>
   
 <script lang="ts">
-import HelpPanel from '~/components/HelpPanel.vue'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
-import Messages from '~/components/Messages.vue'
-import PublicationSubmissions from '~/components/PublicationSubmissions.vue'
 
 definePageMeta({
   middleware: ["authuser"]
@@ -28,12 +25,11 @@ export default {
   setup() {
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore();
+    const submitsStore = useSubmitsStore()
 
     return { miscStore, pubsStore, submitsStore }
   },
-  data({ app, params, store }) {
-    //console.log('_id data')
+  data() {
     return {
       error: '',
       message: '',
@@ -50,18 +46,16 @@ export default {
   },
   computed: {
     pubid(): number {
-      //console.log('PUB pubid')
       const route = useRoute()
       return parseInt(route.params.pubid)
     },
     pub() {
       const pub = this.pubsStore.getPub(this.pubid)
-      //console.log("pub:",pub)
       return pub ? pub : {}
     },
     fatalerror() {
-      const error1 = this.pubsStore.error;
-      const error2 = this.submitsStore.error;
+      const error1 = this.pubsStore.error
+      const error2 = this.submitsStore.error
       return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
     },
   },

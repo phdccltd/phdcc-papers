@@ -6,10 +6,8 @@ export const usePubsStore = defineStore('pubs', {
   persist: {
     enabled: true,
     strategies: [
-      // These are sticky preferences.
       {
         storage: localStorage,
-        //paths: ['list'],
       },
     ],
   },
@@ -20,7 +18,6 @@ export const usePubsStore = defineStore('pubs', {
   actions: {
     async fetch() {
       try {
-        // console.log('store fetch pubs.actions')
         this.error = false
         const { pubs } = await api.pubs.fetch({})
         for (const pub of pubs) { // Add working variables here (so they are reactive)
@@ -34,7 +31,6 @@ export const usePubsStore = defineStore('pubs', {
             pub.hasanyrole = pub.superpubroles.length > 0
           }
         }
-        // console.log('fetch setpubs', pubs)
         this.pubs = pubs
       } catch (e: any) {
         console.log('store fetchpub error', e.message)
@@ -51,7 +47,6 @@ export const usePubsStore = defineStore('pubs', {
   },
   getters: {
     getPub: (state: { pubs: any }) => (pubid: any) => {
-      // console.log('getter pubs.getPub', pubid, typeof pubid)
       return _.find(state.pubs, (pub: { id: any }) => { return pub.id === pubid })
     }
   },

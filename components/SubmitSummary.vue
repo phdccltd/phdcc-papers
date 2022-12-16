@@ -223,9 +223,6 @@ import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 
-import PaperDate from '~/components/PaperDate.vue'
-import Grading from '~/components/Grading.vue'
-import GradingSummary from '~/components/GradingSummary.vue'
 import _ from 'lodash/core'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
@@ -494,10 +491,6 @@ export default {
       this.cancomment = flowgrade.cancomment
       this.canopttoreview = flowgrade.canopttoreview
       this.flowgradeid = submitaction.flowgradeid
-      //this.decision = 0 // Save entry in case of exit
-      //this.comment = ''
-      //this.canreview = false
-      //this.$bvModal.show('bv-modal-grading')
       this.showGradingModal = true
     },
     hideGrading() {
@@ -509,7 +502,7 @@ export default {
         const ok = await api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
         if (ok) {
           // Don't do this as it removes Next/Previous buttons:
-          // this.$store.dispatch('submits/fetchpub', this.pubid)
+          // await this.submitsStore.fetchpub(this.pubid)
           this.$nextTick(() => {
             this.showGradingModal = false
             this.submitaction.dograde = 0 // Hide this button clunkily, as we are not refreshing

@@ -23,9 +23,8 @@
 <script lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
-import { useSitePagesStore } from "~/stores/sitepages";
+import { useSitePagesStore } from "~/stores/sitepages"
 // http://sahatyalkabov.com/how-to-implement-password-reset-in-nodejs/
-import Messages from '~/components/Messages.vue'
 import api from '~/api'
 
 export default {
@@ -33,7 +32,6 @@ export default {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
-    const runtimeConfig = useRuntimeConfig()
 
     return { authStore, miscStore, sitePagesStore }
   },
@@ -54,24 +52,24 @@ export default {
     if (runtimeConfig.public.RECAPTCHA_BYPASS) {
       this.message = 'Recaptcha bypass'
     } else {
-      this.executeRecaptcha = await useVueRecaptcha(); // needs to be done before other await calls
+      this.executeRecaptcha = await useVueRecaptcha() // needs to be done before other await calls
     }
 
     await this.sitePagesStore.fetch()
     this.miscStore.set({ key: 'page-title', value: 'Forgot password' })
     if (this.authStore.loggedin) {
-      navigateTo('/panel');
+      navigateTo('/panel')
     }
   },
 
   computed: {
     content() {
       const sitepage = this.sitePagesStore.get('/forgotpwd')
-      return sitepage ? sitepage.content : '';
+      return sitepage ? sitepage.content : ''
     },
   },
   methods: {
-    async onSubmit(evt: any) {
+    async onSubmit() {
       console.log('this.form', this.form)
       this.error = ''
       this.message = ''
@@ -81,7 +79,7 @@ export default {
         grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
       } else {
         if( this.executeRecaptcha){
-          grecaptcha = await this.executeRecaptcha('login');
+          grecaptcha = await this.executeRecaptcha('login')
         }
       }
       if (grecaptcha == '') {
@@ -91,7 +89,6 @@ export default {
       this.form.grecaptcharesponse = grecaptcha
       try {
         const forgotten = await api.auth.forgotpwd(this.form)
-        //console.log("forgotten", forgotten)
         if (forgotten.err) {
           this.error = forgotten.err
           return

@@ -28,6 +28,7 @@ export default {
   },
   methods: {
     show() {
+      console.log("SHOW MODAL")
       this.showModal = true
     },
     hide() {
@@ -35,7 +36,7 @@ export default {
       this.showModal = false
     },
     ok() {
-      this.hide();
+      this.hide()
     },
     back(next) {
       if (this.showModal) {

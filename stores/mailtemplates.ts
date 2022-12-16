@@ -6,7 +6,6 @@ export const useMailTemplatesStore = defineStore('mailtemplates', {
   persist: {
     enabled: true,
     strategies: [
-      // These are sticky preferences.
       {
         storage: localStorage,
       },

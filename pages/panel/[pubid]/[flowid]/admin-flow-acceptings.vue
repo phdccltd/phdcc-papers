@@ -72,8 +72,6 @@
 </template>
 
 <script lang="ts">
-import HelpAdminFlowAcceptings from '~/components/HelpAdminFlowAcceptings.vue'
-import Messages from '~/components/Messages.vue'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
@@ -90,7 +88,7 @@ export default {
   setup() {
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore();
+    const submitsStore = useSubmitsStore()
 
     return { miscStore, pubsStore, submitsStore }
   },
@@ -136,8 +134,6 @@ export default {
       return pub
     },
     fatalerror() {
-      //const error1 = this.$store.getters['users/error'] TODO
-      //return error1
       return ''
     },
     flow() {
@@ -180,15 +176,12 @@ export default {
     },
   },
   methods: {
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
-    /* ************************ */
     startAddAccepting() {
       this.modaltitle = 'Add accepting'
       this.acceptingid = 0
@@ -197,7 +190,6 @@ export default {
       this.chosenstatus = 0
       this.showModal = true
     },
-    /* ************************ */
     startEditAccepting(accepting) {
       this.modaltitle = 'Edit accepting'
       this.acceptingid = accepting.id
@@ -209,7 +201,6 @@ export default {
     hideModal() {
       this.showModal = false
     },
-    /* ************************ */
     async okAccepting() {
       try {
         //console.log('okAccepting', this.chosenstage, this.chosenopen, this.chosenstatus)
@@ -230,7 +221,6 @@ export default {
         this.msgBoxOk('Error adding/editing accepting: ' + e.message)
       }
     },
-    /* ************************ */
     async deleteAccepting(accepting: any) {
       this.accepting = accepting
       this.showConfirm(accepting.flowstagename, "Are you sure you want to delete this accepting?", this.confirmedDeleteAccepting)

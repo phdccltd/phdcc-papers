@@ -35,9 +35,6 @@ import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 
-import HelpPanelSubmit from '~/components/HelpPanelSubmit.vue'
-import Messages from '~/components/Messages.vue'
-import SubmitSummary from '~/components/SubmitSummary.vue'
 import _ from 'lodash/core'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
@@ -93,8 +90,8 @@ export default {
       return parseInt(route.params.submitid)
     },
     fatalerror() {
-      const error1 = this.pubsStore.error;
-      const error2 = this.submitsStore.error;
+      const error1 = this.pubsStore.error
+      const error2 = this.submitsStore.error
       return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
     },
     pub() {

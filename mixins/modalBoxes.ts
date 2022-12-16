@@ -36,7 +36,7 @@ export default {
       this.confirmOK()
     },
     cancelConfirm() {
-      this.confirmCancelled();
+      this.confirmCancelled()
     }
   },
 }

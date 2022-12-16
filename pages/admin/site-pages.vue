@@ -149,27 +149,22 @@ export default {
     }
   },
   methods: {
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
     cancelModal() {
       this.showSitePageModal = false
     },
-    /* ************************ */
     toggleSitePageShow(sitepage) {
       sitepage.visible = !sitepage.visible
     },
-    /* ************************ */
     deleteSitePage(sitepage) {
       this.confirmsitepage = sitepage
       this.showConfirm(sitepage.path + ' - ' + sitepage.title, 'Are you sure you want to delete this site page?', this.confirmDeleteSitePage)
     },
-    /* ************************ */
     async confirmDeleteSitePage() {
       try {
         const ok = await api.sitepages.deleteSitePage(this.confirmsitepage.id)
@@ -185,7 +180,6 @@ export default {
         this.msgBoxOk('Error adding site page: ' + e.message)
       }
     },
-    /* ************************ */
     startAddSitePage() {
       this.modaltitle = 'Add site page'
       this.pageid = 0
@@ -194,7 +188,6 @@ export default {
       this.pagecontent = ''
       this.showSitePageModal = true
     },
-    /* ************************ */
     startEditSitePage(sitepage) {
       this.modaltitle = 'Edit site page'
       this.pageid = sitepage.id
@@ -203,7 +196,6 @@ export default {
       this.pagecontent = sitepage.content
       this.showSitePageModal = true
     },
-    /* ************************ */
     async okSitePage() {
       //console.log('okSitePage', this.pageid, this.pagepath, this.pagetitle, this.pagecontent)
       try {

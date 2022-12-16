@@ -10,10 +10,7 @@
 <script lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
-import { useSitePagesStore } from "~/stores/sitepages";
-import Messages from '~/components/Messages.vue'
-import UserAuthForm from '~/components/UserAuthForm.vue'
-//import jwt_decode from 'jwt-decode'
+import { useSitePagesStore } from "~/stores/sitepages"
 import api from '~/api'
 
 export default {
@@ -21,7 +18,6 @@ export default {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
-    const runtimeConfig = useRuntimeConfig()
 
     return { authStore, miscStore, sitePagesStore }
   },
@@ -37,12 +33,12 @@ export default {
     if (runtimeConfig.public.RECAPTCHA_BYPASS) {
       this.message = 'Recaptcha bypass'
     } else {
-      this.executeRecaptcha = await useVueRecaptcha(); // needs to be done before other await calls
+      this.executeRecaptcha = await useVueRecaptcha() // needs to be done before other await calls
     }
 
     await this.sitePagesStore.fetch()
     if (this.authStore.loggedin) {
-      navigateTo('/panel');
+      navigateTo('/panel')
     }
     this.miscStore.set({ key: 'page-title', value: 'Register' })
   },
@@ -50,7 +46,7 @@ export default {
   computed: {
     content() {
       const sitepage = this.sitePagesStore.get('/register')
-      return sitepage ? sitepage.content : '';
+      return sitepage ? sitepage.content : ''
     },
   },
   methods: {
@@ -63,7 +59,7 @@ export default {
         grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
       } else {
         if (this.executeRecaptcha) {
-          grecaptcha = await this.executeRecaptcha('login');
+          grecaptcha = await this.executeRecaptcha('login')
         }
       }
       if (grecaptcha == '') {
@@ -84,9 +80,9 @@ export default {
         this.authStore.setToken(res.token)
 
         const user = await api.auth.getuser()
-        this.authStore.setUser(user.user);
+        this.authStore.setUser(user.user)
 
-        navigateTo('/panel');
+        navigateTo('/panel')
       }
       catch (err: any) {
         console.log("REGISTER FAIL", err.message)

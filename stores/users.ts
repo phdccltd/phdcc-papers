@@ -9,9 +9,6 @@ export const useUsersStore = defineStore({
     strategies: [
       {
         storage: localStorage,
-
-        // Just persist everything
-        //paths: ['authorization'],
       },
     ],
   },
@@ -28,7 +25,6 @@ export const useUsersStore = defineStore({
     
     async fetchallusers() {
       try {
-        // console.log('store fetchallusers users.actions', pubid)
         const { allusers } = await api.auth.getUsers()
         this.allusers = allusers
       } catch (e) {
@@ -53,11 +49,9 @@ export const useUsersStore = defineStore({
   },
   getters: {
     getall: (state) => () => {
-      // console.log('getter users.getall')
       return state.allusers
     },
     pubusers: (state) => (pubid) => {
-      // console.log('getter users.pubusers.pubid', pubid)
       const pubusers = _.find(state.pubpubusers, (_pubusers, thispubid) => { return parseInt(thispubid) === pubid })
       return pubusers
     },

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- MOSTLY DONE -->
     <div v-html="content">
     </div>
   </div>
@@ -8,7 +7,7 @@
   
 <script lang="ts">
 import { useMiscStore } from '~/stores/misc'
-import { useSitePagesStore } from "~/stores/sitepages";
+import { useSitePagesStore } from "~/stores/sitepages"
 
 export default {
 
@@ -25,12 +24,11 @@ export default {
     content() {
       const route = useRoute()
       const path = '/' + route.params.id
-      // console.log('_id content path', path)
       const sitepage: { content: string } = this.sitePagesStore.get(path)
       if (sitepage) {
         this.miscStore.set({ key: 'page-title', value: sitepage.title })
       }
-      return sitepage ? sitepage.content : '';
+      return sitepage ? sitepage.content : ''
     }
   },
 }

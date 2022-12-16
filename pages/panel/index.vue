@@ -29,12 +29,10 @@
   </div>
 </template>
 <script lang="ts">
-import { useSitePagesStore } from "~/stores/sitepages";
+import { useSitePagesStore } from "~/stores/sitepages"
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
-import Messages from '~/components/Messages.vue'
-//import HelpHome from '~/components/HelpHome.vue'
 
 definePageMeta({
   middleware: 'authuser',
@@ -47,7 +45,7 @@ export default {
     const pubsStore = usePubsStore()
     const sitePagesStore = useSitePagesStore()
     const runtimeConfig = useRuntimeConfig()
-    const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS);
+    const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS)
 
     return { authStore, miscStore, pubsStore, sitePagesStore, grecaptcha }
   },

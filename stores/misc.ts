@@ -4,10 +4,8 @@ export const useMiscStore = defineStore('misc', {
   persist: {
     enabled: true,
     strategies: [
-      // These are sticky preferences.
       {
         storage: localStorage,
-        paths: ['vals'],
       },
     ],
   },

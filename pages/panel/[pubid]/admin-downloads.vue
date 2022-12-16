@@ -95,7 +95,6 @@ export default {
       return pub
     },
     fatalerror() {
-      //const error1 = this.$store.getters['users/error']
       return false
     },
     pubid() {
@@ -127,15 +126,12 @@ export default {
     },
   },
   methods: {
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
-    /* ************************ */
     async downloadAnonymousStageSubmissions() {
       try {
         if (this.selectedstage == 0) return this.msgBoxOk('No stage chosen!')
@@ -179,15 +175,15 @@ export default {
     },
     handleDownloadReturn(ret) {
       if (ret.data.type == 'application/json') {
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.addEventListener('loadend', async (e) => {
-          const text = e.srcElement.result;
+          const text = e.srcElement.result
           const rv = JSON.parse(text)
           if ('status' in rv) {
             this.msgBoxOk('Error: ' + rv.status)
           }
           this.message = ''
-        });
+        })
         reader.readAsText(ret.data)
         return
       }

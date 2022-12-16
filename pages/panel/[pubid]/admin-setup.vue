@@ -97,11 +97,9 @@ export default {
     },
   },
   methods: {
-    /* ************************ */
     setError(msg) {
       this.error = msg
     },
-    /* ************************ */
     setMessage(msg) {
       this.message = msg
     },
@@ -137,7 +135,7 @@ export default {
           if (ok) {
             await this.pubsStore.fetch()
             this.$nextTick(() => {
-              navigateTo('/panel');
+              navigateTo('/panel')
             })
           } else {
             this.msgBoxOk('Delete went wrong', { title: 'FAIL', headerBgVariant: 'warning' })

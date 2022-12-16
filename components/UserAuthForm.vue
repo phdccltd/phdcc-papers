@@ -40,8 +40,6 @@ export default {
       },
     }
   },
-  components: {
-  },
   props: {
     submitForm: {
       type: Function,
@@ -52,8 +50,6 @@ export default {
       required: true,
     },
     isRegister: Boolean,
-  },
-  computed: {
   },
   methods: {
     onSubmit(_evt: any) {

@@ -119,11 +119,11 @@ export default {
   methods: {
     async logout() {
       await this.authStore.logout()
-      this.miscStore.clearAll();
-      this.pubsStore.clearAll();
-      this.submitsStore.clearAll();
-      this.usersStore.clearAll();
-      navigateTo('/');
+      this.miscStore.clearAll()
+      this.pubsStore.clearAll()
+      this.submitsStore.clearAll()
+      this.usersStore.clearAll()
+      navigateTo('/')
     },
   }
 }

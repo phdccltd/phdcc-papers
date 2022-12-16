@@ -242,13 +242,11 @@ export default {
   },
 
   methods: {
-    /* ************************ */
     addpub() {
       this.pubname = ''
       this.pubdescr = ''
       this.showAddModal = true
     },
-    /* ************************ */
     async okAddPub() {
       //console.log('okAddPub', this.pubname, this.pubdescr)
       try {

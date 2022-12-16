@@ -6,14 +6,12 @@
 </template>
 
 <script>
-import EntryForm from '~/components/EntryForm'
 
 definePageMeta({
   middleware: ["authuser"]
 })
 
 export default {
-  components: { EntryForm },
   data() {
     return {
     }

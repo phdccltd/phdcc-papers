@@ -6,10 +6,8 @@ export const useSubmitsStore = defineStore('submits', {
   persist: {
     enabled: true,
     strategies: [
-      // These are sticky preferences.
       {
         storage: localStorage,
-        //paths: ['list'],
       },
     ],
   },
@@ -35,8 +33,7 @@ export const useSubmitsStore = defineStore('submits', {
             tickcolourno = (tickcolourno + 1) % tickcolours.length
           }
         }
-        this.pubflows[pubid] = flows // commit('addPubFlow', { pubid, flows })
-
+        this.pubflows[pubid] = flows
       } catch (e: any) {
         console.log('store fetchpub error', e.message)
         this.error = e.message
@@ -48,7 +45,7 @@ export const useSubmitsStore = defineStore('submits', {
         for (const field of entry.fields) {
           field.message = ''
         }
-        this.entries[entryid] = entry;  // commit('addEntry', { entryid, entry })
+        this.entries[entryid] = entry
       } catch (e: any) {
         console.log('store fetchentry', e.message)
         this.error = e.message
@@ -68,7 +65,7 @@ export const useSubmitsStore = defineStore('submits', {
           }
           field.message = ''
         }
-        this.flowfields[flowstageid] = entry; // commit('addFormFieldEntry', { flowstageid, entry })
+        this.flowfields[flowstageid] = entry
       } catch (e) {
         console.log('store fetchformfields', e.message)
         this.error = e.message
@@ -87,12 +84,10 @@ export const useSubmitsStore = defineStore('submits', {
   },
   getters: {
     flows: (state) => (pubid: number) => {
-      //console.log('getter submits.flows pubid', pubid)
       const flows = _.find(state.pubflows, (_flows, thispubid) => { return parseInt(thispubid) === pubid })
       return flows
     },
     entry: (state) => (entryid: number) => {
-      //console.log("submit.get.entry",entryid)
       const entry = _.find(state.entries, _entry => { return _entry.id === entryid })
       return entry
     },

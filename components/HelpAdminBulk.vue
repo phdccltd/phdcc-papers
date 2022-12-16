@@ -26,11 +26,9 @@
   </div>
 </template>
 <script>
-import NoticeMessage from './NoticeMessage.vue'
 import helpBox from '@/mixins/helpBox'
 
 export default {
-  components: { NoticeMessage },
   mixins: [helpBox],
   data: function () {
     return {
