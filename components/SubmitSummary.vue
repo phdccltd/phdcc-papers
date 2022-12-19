@@ -4,7 +4,7 @@
                               0x2 submit      Show 'needed'
                               0x4 entry       Show 'add grading'
     -->
-    <div v-if="submit">
+    <div v-if="submit && flow">
       <div v-if="showtype == 1">
         <h3 class="publist-submit-h3">
           <b-button v-if="showingadminoptions" variant="outline-danger" class="float-end" @click="deleteSubmit(submit)">
@@ -302,6 +302,7 @@ export default {
     },
     newstatusoptions() {
       const options = []
+      if( !this.flow) return options
       for (const flowstatus of this.flow.statuses) {
         options.push({ value: flowstatus.id, text: flowstatus.status })
       }

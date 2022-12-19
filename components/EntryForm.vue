@@ -29,74 +29,76 @@
         </span>
       </div>
 
-      <div v-if="submitid">
-        <SubmitSummary :showtype="4" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" :setError="setError"
-          :setMessage="setMessage" />
-      </div>
-      <div v-else>
-        <h2>{{ flow.name }}</h2>
-      </div>
+      <div v-if="submit && flow">
+        <div v-if="submitid">
+          <SubmitSummary :showtype="4" :pub="pub" :flow="flow" :submit="submit" :showingadminoptions="false" :setError="setError"
+            :setMessage="setMessage" />
+        </div>
+        <div v-else>
+          <h2>{{ flow.name }}</h2>
+        </div>
 
-      <!-- SHOW EXISTING OR NEW ENTRY -->
-      <div v-if="entry">
-        <h2 class="border border-primary rounded bg-yellow mt-2 p-2">
-          {{ sectionheading }}
-          <b-button v-if="pub.isowner && showingadminoptions" variant="outline-success" class="float-start me-2" @click="toggleEdit">
-            {{ editbtntext }}
-          </b-button>
-          <b-button v-if="pub.isowner && showingadminoptions" variant="outline-warning" class="float-end" @click="deleteEntry(entry)">
-            Delete
-          </b-button>
-        </h2>
-        <b-form @submit="onSubmit" @submit.stop.prevent>
-          <div v-if="formtype == 'addsubmit'" class="mt-2 pl-0 container">
-            <FormInput type="text" :edit="editable" label="Paper title" sid="field0" help="" :class="fieldclass(submittitle)"
-              :reqd="submittitle.required" :message="submittitle.message" v-on:input="changed(submittitle)" v-model="submittitle.val" />
-          </div>
-          <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 pl-0">
-            <FormInput v-if="field.type == 'email'" type="email" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              v-model="field.val.string" />
-            <FormFile v-if="field.type.substring(0, 4) == 'file'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message"
-              v-on:input="changedFile($event, field)" :allowedfiletypes="field.allowedfiletypes" :existingfile="field.val.file"
-              :relpath="entry.id + '/' + field.val.id" />
-            <FormLookup v-if="field.type == 'lookup'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              :publookupId="field.publookupId" v-model="field.val.integer" />
-            <FormLookups v-if="field.type == 'lookups'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              :publookupId="field.publookupId" v-model="field.val.string" />
-            <FormRoleLookups v-if="field.type == 'rolelookups'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              :pubroleId="field.pubroleId" v-model="field.val.string" />
-            <FormInput v-if="field.type == 'phone'" type="tel" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              v-model="field.val.string" />
-            <FormInput v-if="field.type == 'string'" type="text" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              v-model="field.val.string" />
-            <FormText v-if="field.type == 'text'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              v-model="field.val.text" />
-            <FormYes v-if="field.type == 'yes'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              v-model="field.val.integer" />
-            <FormYesNo v-if="field.type == 'yesno'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
-              :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
-              v-model="field.val.integer" />
-          </b-container>
-          <b-container v-if="editable">
-            <b-form-row>
-              <b-col cols="9" offset-md="3">
-                <b-button variant="success" type="submit">
-                  Submit
-                </b-button>
-                <Messages :message="submitstatus" :warning="validationsummary" :error="submiterror" />
-              </b-col>
-            </b-form-row>
-          </b-container>
-        </b-form>
+        <!-- SHOW EXISTING OR NEW ENTRY -->
+        <div v-if="entry">
+          <h2 class="border border-primary rounded bg-yellow mt-2 p-2">
+            {{ sectionheading }}
+            <b-button v-if="pub.isowner && showingadminoptions" variant="outline-success" class="float-start me-2" @click="toggleEdit">
+              {{ editbtntext }}
+            </b-button>
+            <b-button v-if="pub.isowner && showingadminoptions" variant="outline-warning" class="float-end" @click="deleteEntry(entry)">
+              Delete
+            </b-button>
+          </h2>
+          <b-form @submit="onSubmit" @submit.stop.prevent>
+            <div v-if="formtype == 'addsubmit'" class="mt-2 pl-0 container">
+              <FormInput type="text" :edit="editable" label="Paper title" sid="field0" help="" :class="fieldclass(submittitle)"
+                :reqd="submittitle.required" :message="submittitle.message" v-on:input="changed(submittitle)" v-model="submittitle.val" />
+            </div>
+            <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 pl-0">
+              <FormInput v-if="field.type == 'email'" type="email" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                v-model="field.val.string" />
+              <FormFile v-if="field.type.substring(0, 4) == 'file'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message"
+                v-on:input="changedFile($event, field)" :allowedfiletypes="field.allowedfiletypes" :existingfile="field.val.file"
+                :relpath="entry.id + '/' + field.val.id" />
+              <FormLookup v-if="field.type == 'lookup'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                :publookupId="field.publookupId" v-model="field.val.integer" />
+              <FormLookups v-if="field.type == 'lookups'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                :publookupId="field.publookupId" v-model="field.val.string" />
+              <FormRoleLookups v-if="field.type == 'rolelookups'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                :pubroleId="field.pubroleId" v-model="field.val.string" />
+              <FormInput v-if="field.type == 'phone'" type="tel" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                v-model="field.val.string" />
+              <FormInput v-if="field.type == 'string'" type="text" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                v-model="field.val.string" />
+              <FormText v-if="field.type == 'text'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                v-model="field.val.text" />
+              <FormYes v-if="field.type == 'yes'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                v-model="field.val.integer" />
+              <FormYesNo v-if="field.type == 'yesno'" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
+                :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
+                v-model="field.val.integer" />
+            </b-container>
+            <b-container v-if="editable">
+              <b-form-row>
+                <b-col cols="9" offset-md="3">
+                  <b-button variant="success" type="submit">
+                    Submit
+                  </b-button>
+                  <Messages :message="submitstatus" :warning="validationsummary" :error="submiterror" />
+                </b-col>
+              </b-form-row>
+            </b-container>
+          </b-form>
+        </div>
       </div>
     </div>
     <MessageBoxOK ref="okmsgbox" />
@@ -205,10 +207,12 @@ export default {
       const flows = this.submitsStore.flows(this.pubid)
       if (!flows) return false
       const flow = _.find(flows, _flow => { return _flow.id === this.flowid })
+      if (!flow) this.error = "Flow not found: "+this.flowid
       return flow
     },
     submit() {
       const submit = this.submitsStore.submit(this.pubid, this.submitid)
+      if( !submit) this.error = "Submit not found: "+this.submitid
       return submit
     },
     showingadminoptions() {

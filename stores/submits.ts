@@ -21,6 +21,7 @@ export const useSubmitsStore = defineStore('submits', {
     async fetchpub(pubid: number) {
       try {
         const { flows } = await api.submit.fetchpub({ pubid })
+        if( !flows) throw new Error("Publication not found: "+pubid)
         // Set collapse visibility for flow and submits - and tickcolour
         const tickcolours = ['cyan', 'green', 'maroon', 'blue']
         let tickcolourno = 0
@@ -42,6 +43,7 @@ export const useSubmitsStore = defineStore('submits', {
     async fetchentry(entryid: number) {
       try {
         const { entry } = await api.submit.fetchentry({ entryid })
+        if( !entry) throw new Error("invalid entryid")
         for (const field of entry.fields) {
           field.message = ''
         }
