@@ -59,6 +59,7 @@ definePageMeta({
 })
 
 export default {
+  inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
@@ -82,6 +83,7 @@ export default {
     }
   },
   async mounted() { // Client only
+    this.setLayoutMessage()
     this.error = ''
     this.message = ''
     await this.pubsStore.clearError()

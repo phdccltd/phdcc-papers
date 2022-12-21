@@ -39,6 +39,7 @@ definePageMeta({
 })
 
 export default {
+  inject: { setLayoutMessage: {} },
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
@@ -56,6 +57,7 @@ export default {
     }
   },
   async mounted() { // Client only
+    this.setLayoutMessage()
     let title = 'Publications'
     if ('publicsettings' in this.authStore && 'pubscalled' in this.authStore.publicsettings) {
       title = this.authStore.publicsettings.pubscalled

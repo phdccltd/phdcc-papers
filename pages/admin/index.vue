@@ -171,6 +171,7 @@ definePageMeta({
 })
 
 export default {
+  inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
@@ -197,6 +198,7 @@ export default {
   },
 
   async mounted() {
+    this.setLayoutMessage()
     this.error = ''
     this.message = ''
     await this.pubsStore.clearError()
@@ -204,7 +206,7 @@ export default {
     await this.usersStore.clearError()
     await this.usersStore.fetchallusers()
     this.miscStore.set({ key: 'page-title', value: 'Site super admin' })
-  },
+},
 
   computed: {
     pubs() {

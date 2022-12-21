@@ -117,6 +117,7 @@ import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
 export default {
+  inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
@@ -396,7 +397,7 @@ export default {
           this.submitstatus = ''
           if (entryid) {
             this.editable = false
-            this.miscStore.set({ key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
+            this.setLayoutMessage('Submitted OK. You should receive a confirmation email.')
             // OK: redirect so new entry displayed properly
             navigateTo('/panel/' + this.pubid + '/' + this.flowid + '/' + data.rv.submitid + '/' + entryid)
           } else {
@@ -419,7 +420,7 @@ export default {
           this.submitstatus = ''
           if (entryid) {
             this.editable = false
-            this.miscStore.set({ key: 'message', value: 'Submitted OK. You should receive a confirmation email.' })
+            this.setLayoutMessage('Submitted OK. You should receive a confirmation email.')
             // OK: redirect so new entry displayed properly
             navigateTo('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
           } else {

@@ -22,6 +22,7 @@ definePageMeta({
 })
 
 export default {
+  inject: { setLayoutMessage: {} },
   setup() {
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
@@ -36,6 +37,7 @@ export default {
     }
   },
   async mounted() { // Client only
+    this.setLayoutMessage()
     this.error = ''
     this.message = ''
     //console.log('_id mounted', this.pubid)
@@ -65,7 +67,7 @@ export default {
     },
     setMessage(msg) {
       this.message = msg
-    }
+    },
   },
 }
 </script>

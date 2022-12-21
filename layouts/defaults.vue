@@ -38,6 +38,9 @@
       </div>
     </div>
     <div class="container">
+      <b-alert variant="warning" :show="layoutmessage.length > 0" class="mt-2">
+        {{ layoutmessage }}
+      </b-alert>
       <slot />
     </div>
     <div class="container mt-3 pt-2 border-top" style="color: gray">
@@ -69,6 +72,29 @@ export default {
   },
   data: function () {
     return {
+      layoutmessage: ''
+    }
+  },
+  mounted() {
+  },
+  provide() {
+    const me = this
+    return {
+      setLayoutMessage(msg?: string) {
+        if (msg && msg.length > 0) {
+          me.miscStore.set({ key: 'message', value: msg })
+          me.layoutmessage = msg
+        }
+        else {
+          const startmessage = me.miscStore.get('message')
+          if (startmessage && startmessage.length > 0) {
+            me.layoutmessage = startmessage
+            me.miscStore.set({ key: 'message', value: '' })
+          } else {
+            me.layoutmessage = ''
+          }
+        }
+      }
     }
   },
   computed: {

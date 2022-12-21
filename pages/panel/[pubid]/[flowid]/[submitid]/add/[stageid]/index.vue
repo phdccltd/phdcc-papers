@@ -12,6 +12,10 @@ definePageMeta({
 })
 
 export default {
+  inject: { setLayoutMessage: {} },
+  mounted() {
+    this.setLayoutMessage()
+  },
   data() {
     return {
     }

@@ -13,6 +13,7 @@ import { useSitePagesStore } from "~/stores/sitepages"
 import api from '~/api'
 
 export default {
+  inject: { setLayoutMessage: {} },
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
@@ -28,6 +29,7 @@ export default {
     }
   },
   async mounted() {
+    this.setLayoutMessage()
     const runtimeConfig = useRuntimeConfig()
     let executeRecaptcha = null
     if (runtimeConfig.public.RECAPTCHA_BYPASS) {

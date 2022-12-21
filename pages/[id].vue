@@ -10,13 +10,14 @@ import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages"
 
 export default {
-
+  inject: { setLayoutMessage: {} },
   setup() {
     const miscStore = useMiscStore()
     const sitePagesStore = useSitePagesStore()
     return { miscStore, sitePagesStore }
   },
   async mounted() { // Client only
+    this.setLayoutMessage()
     await this.sitePagesStore.fetch()
   },
 

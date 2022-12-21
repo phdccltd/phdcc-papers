@@ -108,6 +108,7 @@ definePageMeta({
 })
 
 export default {
+  inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
@@ -134,12 +135,13 @@ export default {
     }
   },
   async mounted() { // Client only
+    this.setLayoutMessage()
     this.error = ''
     this.message = ''
     this.sitepagesStore.error = false
     await this.sitepagesStore.fetch()
     this.miscStore.set({ key: 'page-title', value: 'Site pages' })
-  },
+},
   computed: {
     fatalerror() {
       return this.sitepagesStore.error
