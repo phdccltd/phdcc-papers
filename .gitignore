@@ -4,3 +4,6 @@ node_modules
 dist
 .env
 .nuxt-build-jest
+/test-results/
+/playwright-report/
+/playwright/.cache/
