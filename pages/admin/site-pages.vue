@@ -69,13 +69,13 @@
       </template>
       <template #default>
         <form ref="form" @submit.stop.prevent>
-          <b-form-group label="Path" label-for="pagepath" label-cols-sm="2">
+          <b-form-group label="Path" label-for="pagepath" label-cols-sm="2" state="true">
             <b-form-input id="pagepath" v-model="pagepath" placeholder="Required" required></b-form-input>
           </b-form-group>
-          <b-form-group label="Title" label-for="pagetitle" label-cols-sm="2">
+          <b-form-group label="Title" label-for="pagetitle" label-cols-sm="2" state="true">
             <b-form-input id="pagetitle" v-model="pagetitle" placeholder="Required" required></b-form-input>
           </b-form-group>
-          <b-form-group label="Content" label-for="pagecontent" label-cols-sm="2">
+          <b-form-group label="Content" label-for="pagecontent" label-cols-sm="2" state="true">
             <b-form-textarea id="pagecontent" v-model="pagecontent" rows="10" max-rows="100" style="overflow-y: auto;" placeholder="Required"
               required>
             </b-form-textarea>

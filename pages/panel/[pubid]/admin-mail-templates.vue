@@ -66,13 +66,13 @@
     <b-modal v-model="showMailModal" id="bv-modal-mail-template" :title="modaltitle" centered>
       <template #default>
         <form ref="form" @submit.stop.prevent>
-          <b-form-group label="Name" label-for="templatename" label-cols-sm="2">
+          <b-form-group label="Name" label-for="templatename" label-cols-sm="2" state="true">
             <b-form-input id="templatename" v-model="templatename" placeholder="Required" required></b-form-input>
           </b-form-group>
-          <b-form-group label="Subject" label-for="templatesubject" label-cols-sm="2">
+          <b-form-group label="Subject" label-for="templatesubject" label-cols-sm="2" state="true">
             <b-form-input id="templatesubject" v-model="templatesubject" placeholder="Required" required></b-form-input>
           </b-form-group>
-          <b-form-group label="Body" label-for="templatebody" label-cols-sm="2">
+          <b-form-group label="Body" label-for="templatebody" label-cols-sm="2" state="true">
             <b-form-textarea id="templatebody" v-model="templatebody" rows="10" max-rows="100" style="overflow-y: auto;" placeholder="Required"
               required>
             </b-form-textarea>

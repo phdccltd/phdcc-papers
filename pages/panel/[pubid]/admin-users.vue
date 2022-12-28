@@ -62,10 +62,10 @@
       <template #default>
         <p>Note: adding some roles may send emails, eg Author.</p>
         <form ref="form" @submit.stop.prevent>
-          <b-form-group label="user" label-for="addroleusername" label-cols-sm="4">
+          <b-form-group label="user" label-for="addroleusername" label-cols-sm="4" state="true">
             <b-form-input id="addroleusername" disabled v-model="addroleusername"></b-form-input>
           </b-form-group>
-          <b-form-group label="Role" label-for="new-role" label-cols-sm="4">
+          <b-form-group label="Role" label-for="new-role" label-cols-sm="4" state="true">
             <b-form-select :options="this.availablenewroles" size="sm" v-model="chosennewrole" style="width:auto;">
               <template v-slot:first>
                 <b-form-select-option disabled value="0">Select a role</b-form-select-option>

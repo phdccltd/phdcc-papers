@@ -12,13 +12,13 @@
           {{ username }}
         </b-col>
       </b-row>
-      <b-form-group label="Name:" label-for="name" label-cols-sm="3">
+      <b-form-group label="Name:" label-for="name" label-cols-sm="3" state="true">
         <b-form-input id="name" v-model="form.name" autocomplete="name" placeholder="Enter name"></b-form-input>
       </b-form-group>
-      <b-form-group label="Email:" label-for="email" label-cols-sm="3">
+      <b-form-group label="Email:" label-for="email" label-cols-sm="3" state="true">
         <b-form-input id="email" v-model="form.email" type="email" placeholder="Enter email"></b-form-input>
       </b-form-group>
-      <b-form-group label="New password:" label-for="password" label-cols-sm="3">
+      <b-form-group label="New password:" label-for="password" label-cols-sm="3" state="true">
         <b-form-input id="password" v-model="form.password" type="password" autocomplete="new-password" placeholder="Optionally enter a new password">
         </b-form-input>
       </b-form-group>

@@ -191,15 +191,15 @@
               {{ helptext }}
             </b-col>
           </b-form-row>
-          <b-form-group label="Decision" label-for="decision" label-cols-sm="3">
+          <b-form-group label="Decision" label-for="decision" label-cols-sm="3" state="true">
             <b-form-select v-model="decision" :options="decisionoptions" value-field="id" text-field="name" :select-size="4">
             </b-form-select>
           </b-form-group>
-          <b-form-group v-if="cancomment" label="Comment" label-for="comment" label-cols-sm="3">
+          <b-form-group v-if="cancomment" label="Comment" label-for="comment" label-cols-sm="3" state="true">
             <b-form-textarea id="comment" v-model="comment" rows="10" max-rows="100" style="overflow-y: auto;">
             </b-form-textarea>
           </b-form-group>
-          <b-form-group v-if="canopttoreview" label-cols-sm="3">
+          <b-form-group v-if="canopttoreview" label-cols-sm="3" state="true">
             <b-form-checkbox v-model="canreview" name="checkbox-1" value="true" unchecked-value="false">
               I can review
             </b-form-checkbox>
