@@ -1,13 +1,15 @@
 {
   // https://v3.nuxtjs.org/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
-  "paths":{
+  "paths": {
     "pinia": [
       "./node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia"
     ],
   },
+  "include": ["components.d.ts"],
   "compilerOptions": {
     "types": [
+      "unplugin-icons/types/vue",
       //"pinia-plugin-persist"
       //"pinia", "lodash"
     ]

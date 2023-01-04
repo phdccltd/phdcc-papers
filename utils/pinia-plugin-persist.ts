@@ -1,4 +1,4 @@
-/// DONE - FROM pinis-plugin-persist package
+// from v1.0.0 https://github.com/Seb-L/pinia-plugin-persist
 import { PiniaPluginContext } from 'pinia'
 
 export interface PersistStrategy {

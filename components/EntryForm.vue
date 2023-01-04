@@ -12,7 +12,7 @@
     For case (a) above the data is received as entry.values but moved into the relevant field.val.
     For cases (b) and (c) the received entry fields contain empty values - as set ip in store/submits action fetchformfields.
     -->
-    <b-alert v-if="fatalerror" variant="warning" :show="true">
+    <b-alert v-if="fatalerror" variant="warning" :modelValue="true">
       ERROR {{ fatalerror }}
     </b-alert>
     <div v-else>

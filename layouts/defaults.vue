@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="container">
-      <b-alert variant="warning" :show="layoutmessage.length > 0" class="mt-2">
+      <b-alert variant="warning" :modelValue="layoutmessage.length > 0" class="mt-2">
         {{ layoutmessage }}
       </b-alert>
       <slot />

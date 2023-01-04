@@ -2,7 +2,7 @@
   <div>
     <!-- ADMIN SITE PAGES -->
     <!-- Access check: correctly fails as API returns error if not allowed -->
-    <b-alert v-if="fatalerror" variant="warning" :show="true">
+    <b-alert v-if="fatalerror" variant="warning" :modelValue="true">
       ERROR {{ fatalerror }}
     </b-alert>
     <HelpSuperSitePages />

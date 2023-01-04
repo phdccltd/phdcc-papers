@@ -2,7 +2,7 @@
   <div>
     <!-- MAIN PANEL SHOWING ALL PUBLICATIONS -->
     <HelpHome />
-    <b-alert v-if="fatalerror" variant="warning" :show="true">
+    <b-alert v-if="fatalerror" variant="warning" :modelValue="true">
       ERROR {{ fatalerror }}
     </b-alert>
     <div v-else>
