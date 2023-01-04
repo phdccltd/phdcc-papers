@@ -479,7 +479,7 @@ export default {
       }
     },
     enterGrading(submit, submitaction) {
-      console.log('submitaction', submitaction)
+      //console.log('submitaction', submitaction)
       this.submitaction = submitaction
       this.modaltitle = 'Add ' + submitaction.name
       this.decisionoptions = []
