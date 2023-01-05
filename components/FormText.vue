@@ -18,7 +18,7 @@
         {{ label }}
       </b-col>
       <b-col sm="8" class="formfieldview">
-        <b-form-textarea :id="sid" plaintext v-bind:model-value="modelValue" max-rows="100" class="font-weight-bold" style="overflow-y: auto;"></b-form-textarea>
+        <pre class="pre-textarea">{{ modelValue }}</pre>
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
         <span v-if="help" :title="help">

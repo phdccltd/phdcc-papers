@@ -24,8 +24,7 @@
         Comment
       </b-col>
       <b-col sm="9" class="formfieldview ps-1">
-        <b-form-textarea v-bind:model-value="grading.comment" plaintext max-rows="100" class="font-weight-bold"
-          style="overflow-y: auto;"></b-form-textarea>
+        <pre class="pre-textarea">{{ grading.comment }}</pre>
       </b-col>
     </b-row>
     <b-row no-gutters v-if="flowgrade.canopttoreview">

@@ -22,8 +22,7 @@
             <b-button variant="outline-success" @click="toggleShowSubstitutions()">
               Show substitution strings
             </b-button>
-            <b-form-textarea v-if="showsubstitutions" plaintext v-bind:model-value="substitutions" :rows="rowcount(substitutions)" max-rows="100"
-              style="overflow-y: auto;"></b-form-textarea>
+            <pre v-if="showsubstitutions" class="pre-textarea">{{ substitutions }}</pre>
           </b-col>
         </b-row>
       </b-container>
@@ -54,8 +53,7 @@
                 Body
               </b-col>
               <b-col sm="10" class="formfieldview">
-                <b-form-textarea plaintext v-bind:model-value="mailtemplate.body" :rows="rowcount(mailtemplate.body)" max-rows="100"
-                  style="overflow-y: auto;"></b-form-textarea>
+                <pre class="pre-textarea">{{ mailtemplate.body }}</pre>
               </b-col>
             </b-row>
           </b-container>
@@ -171,18 +169,18 @@ export default {
       return this.mailTemplatesStore.get(this.pubid)
     },
     substitutions() {
-      let substitutions = '{{site.name}}\r{{site.url}}\r{{pub.name}}\r{{submit.id}}\r{{submit.name}}\r{{user.username}}\r{{user.id}}\r{{now}}\r\r'
-      substitutions += '{{author.username}}\r{{author.id}}\r\r'
-      substitutions += '{{grading.score}}\r{{grading.comment}}\r{{grading.canreview}}\r\r'
-      substitutions += '{{entry.id}}\r'
+      let substitutions = '{{site.name}}\r\n{{site.url}}\r\n{{pub.name}}\r\n{{submit.id}}\r\n{{submit.name}}\r\n{{user.username}}\r\n{{user.id}}\r\n{{now}}\r\n\r\n'
+      substitutions += '{{author.username}}\r\n{{author.id}}\r\n\r\n'
+      substitutions += '{{grading.score}}\r\n{{grading.comment}}\r\n{{grading.canreview}}\r\n\r\n'
+      substitutions += '{{entry.id}}\r\n'
       const flows = this.submitsStore.flows(this.pubid)
       for (const flow of flows) {
         for (const stage of flow.stages) {
-          substitutions += '\r' + stage.name + ':\r'
+          substitutions += '\r\n' + stage.name + ':\r\n'
           const entry = this.submitsStore.stagefields(stage.id)
           if (entry) {
             for (const field of entry.fields) {
-              substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r'
+              substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r\n'
             }
           }
         }
@@ -195,9 +193,6 @@ export default {
     },
   },
   methods: {
-    rowcount(str) {
-      return 2 + str.split(/\r\n|\r|\n/).length
-    },
     cancelModal() {
       this.showMailModal = false
     },

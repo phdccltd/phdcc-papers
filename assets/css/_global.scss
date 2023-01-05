@@ -456,7 +456,7 @@ form .col-form-label {
 }
 
 .leadgrading {
-  background-color: #33ff33 !important;
+  background-color: #99ff99;
 }
 
 .actiondone {
@@ -603,4 +603,11 @@ a {
 a:hover {
   color: #0056b3;
   text-decoration: underline;
+}
+
+
+.pre-textarea{
+  font-family: var(--bs-body-font-family);    
+  font-size: var(--bs-body-font-size);
+  
 }

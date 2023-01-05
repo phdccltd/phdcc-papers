@@ -56,7 +56,7 @@
               Content
             </b-col>
             <b-col sm="10" class="formfieldview">
-              <b-form-textarea plaintext :value="sitepage.content" max-rows="100" style="overflow-y: auto;"></b-form-textarea>
+              <pre class="pre-textarea">{{ sitepage.content }}</pre>
             </b-col>
           </b-row>
         </b-container>
