@@ -28,7 +28,6 @@ export default {
   },
   methods: {
     show() {
-      console.log("SHOW MODAL")
       this.showModal = true
     },
     hide() {
