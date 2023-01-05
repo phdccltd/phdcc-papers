@@ -210,9 +210,7 @@ export default {
       return flow
     },
     submit() {
-      console.log("this.pubid, this.submitid", this.pubid, this.submitid)
       const submit = this.submitsStore.submit(this.pubid, this.submitid)
-      //if( !submit) this.error = "Submit not found: "+this.submitid
       return submit // OK if not found ie for addsubmit
     },
     showingadminoptions() {
