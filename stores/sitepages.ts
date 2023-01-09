@@ -19,8 +19,10 @@ export const useSitePagesStore = defineStore('sitepages', {
   actions: {
     async fetch() {
       const { sitepages } = await api.sitepages.fetch({})
-      for (const sitepage of sitepages) {
-        sitepage.visible = false
+      if (sitepages) {
+        for (const sitepage of sitepages) {
+          sitepage.visible = false
+        }
       }
       this.list = sitepages
     },
