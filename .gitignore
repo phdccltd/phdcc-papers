@@ -3,7 +3,6 @@ node_modules
 .output
 dist
 .env
-.nuxt-build-jest
-/test-results/
-/playwright-report/
-/playwright/.cache/
+cypress.env.json
+coverage
+.nyc_output

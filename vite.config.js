@@ -9,6 +9,8 @@ import Icons from 'unplugin-icons/vite'
 import Components from 'unplugin-vue-components/vite'
 import IconsResolve from 'unplugin-icons/resolver'
 
+import istanbul from 'vite-plugin-istanbul';
+
 export default defineConfig({
   debug: true,
 
@@ -43,7 +45,15 @@ export default defineConfig({
     Icons({
       compiler: 'vue3',
       autoInstall: true
-    })
+    }),
+    istanbul({
+      // include: ['api/*','components/*','composables/*','layouts/*','middleware/*','mixins/*','pages/*','pages/admin/*','plugins/*','stores/*','utils/*'],
+      include: ['api/*','components/*','composables/*','layouts/*','middleware/*','mixins/*','pages/**','plugins/*','stores/*','utils/*'],
+      exclude: ['node_modules', 'test/'],
+      extension: [ '.js', '.ts', '.vue' ],
+      cypress: true,
+      requireEnv: true,
+    }),
   ],
 
   server: {
