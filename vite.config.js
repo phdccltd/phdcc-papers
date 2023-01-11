@@ -32,12 +32,12 @@ export default defineConfig({
   plugins: [
     // Make Lint errors cause build failures.
     // eslintPlugin(),
-    legacy({
+    /*legacy({ // Do not use this as it generates System.register which stops tests
       targets: [
         // We want to try to support XP.
         '> 0.5%, last 2 versions, Firefox ESR, not dead or Chrome >= 49 or Firefox >= 52',
       ],
-    }),
+    }),*/
     Components({
       resolvers: [IconsResolve()],
       dts: true
