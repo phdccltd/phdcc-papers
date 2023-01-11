@@ -7,11 +7,11 @@
     <div v-else>
       <HelpPanelSubmit />
       <Messages :error="error" :message="message" />
-      <div v-if="pub.isowner" class="pl-1 mt-1 mb-1">
+      <div v-if="pub.isowner" class="ps-1 mt-1 mb-1">
         <strong>ADMIN</strong>
         <b-button variant="outline-warning" @click="toggleShowAdminOptions()" class="ms-1">Show/Hide admin options</b-button>
       </div>
-      <div class="pl-1">
+      <div class="ps-1">
         Your roles
         <strong v-if="issuper">SUPERADMIN</strong>
         <span v-for="myrole in pub.myroles">

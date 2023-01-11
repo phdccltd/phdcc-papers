@@ -8,7 +8,7 @@
     <div v-else>
       <Messages :error="error" :message="message" />
       <h2>{{ subtitle }}</h2>
-      <b-container v-for="(pub, index) in pubs" :key="index" class="mt-2 pl-0">
+      <b-container v-for="(pub, index) in pubs" :key="index" class="mt-2 ps-0">
         <b-row no-gutters :class="'p-2 ' + (pub.owner ? 'pub-owner' : (pub.notowner ? 'pub-notowner' : (issuper ? 'pub-super' : 'pub-weird')))">
           <b-col sm="3">
             <b-button variant="outline-primary" :to="'/panel/' + pub.id">

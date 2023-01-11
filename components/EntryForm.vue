@@ -21,7 +21,7 @@
       <HelpEntry v-if="formtype == 'showedit'" />
       <Messages :error="error" :message="message" />
 
-      <div class="pl-1">
+      <div class="ps-1">
         Your roles
         <strong v-if="issuper">SUPERADMIN</strong>
         <span v-for="myrole in pub.myroles">
@@ -49,11 +49,11 @@
           </b-button>
         </h2>
         <b-form @submit="onSubmit" @submit.stop.prevent>
-          <div v-if="formtype == 'addsubmit'" class="mt-2 pl-0 container">
+          <div v-if="formtype == 'addsubmit'" class="mt-2 ps-0 container">
             <FormInput type="text" :edit="editable" label="Paper title" sid="field0" help="" :class="fieldclass(submittitle)"
               :reqd="submittitle.required" :message="submittitle.message" v-on:input="changed(submittitle)" v-model="submittitle.val" />
           </div>
-          <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 pl-0">
+          <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 ps-0">
             <FormInput v-if="field.type == 'email'" type="email" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
               :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
               v-model="field.val.string" />
