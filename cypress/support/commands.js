@@ -31,12 +31,10 @@ Cypress.Commands.add('login', (username, password) => {
       cy.visit('/login')
       cy.get('#username').type(username)
       cy.get('#password').type(password)
-      //cy.get('input[name=username]').type(username)
       //cy.get('input[name=password]').type(`${password}{enter}`, { log: false })
       cy.get('form').contains('Login').click()
 
       cy.url().should('include', '/login')
-      //cy.get('h1').should('contain', username)
     }
     //,
     //{

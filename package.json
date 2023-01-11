@@ -13,8 +13,7 @@
     "static": "npx nuxi generate",
     "lint": "eslint --ext .js,.jsx,.ts,.vue .",
     "lintfix": "eslint --fix --ext .js,.jsx,.ts,.vue .",
-    "buildwithcoverage": "env-cmd -f .env.coverage nuxt build",
-    "clienttest": "env-cmd -f .env.clienttest node .output/server/index.mjs",
+    "clienttest": "env-cmd -f .env.clienttest nuxt dev",
     "runner": "cross-env PORT=n node .output/server/index.mjs"
   },
   "comments": {
