@@ -23,7 +23,8 @@
     "2": "Keep at sass-loader@10 ??? https://github.com/webpack-contrib/sass-loader",
     "3": "https://www.npmjs.com/package/@fortawesome/vue-fontawesome?activeTab=versions",
     "4": "Keep at 2.3.1 - https://www.npmjs.com/package/@vitejs/plugin-legacy?activeTab=versions",
-    "5": "bootstrap-vue-3 0.4.15 Switch to unplugin-icons https://cdmoro.github.io/bootstrap-vue-3/icons/"
+    "5": "bootstrap-vue-3 0.4.15 Switch to unplugin-icons https://cdmoro.github.io/bootstrap-vue-3/icons/",
+    "6": "bootstrap-vue-3 renaming to https://github.com/bootstrap-vue/bootstrap-vue-next"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
