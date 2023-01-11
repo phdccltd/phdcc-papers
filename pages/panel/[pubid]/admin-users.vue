@@ -37,8 +37,7 @@
                 {{ pubuser.email }}
                 <br />
                 Submissions: {{ pubuser.submitcount }}
-                <b-button v-if="canmasquerade(pubuser)" @click="masquerade(pubuser)" variant="outline-warning" size="sm"
-                  class="mr-2">Masquerade</b-button>
+                <b-button v-if="canmasquerade(pubuser)" @click="masquerade(pubuser)" variant="outline-warning" size="sm">Masquerade</b-button>
               </b-col>
               <b-col sm="6">
                 <b-button variant="link" class="float-end" @click="startAddUserRole(pubusers, pubuser)">
