@@ -47,6 +47,7 @@ export default defineConfig({
       autoInstall: true
     }),
     istanbul({ // For Cypress testing
+      // See also: https://github.com/iFaxity/vite-plugin-istanbul/issues/28
       include: ['api/*','components/*','composables/*','layouts/*','middleware/*','mixins/*','pages/**','plugins/*','stores/*','utils/*'],
       exclude: ['node_modules', 'test/'],
       extension: [ '.js', '.ts', '.vue' ],
@@ -54,6 +55,12 @@ export default defineConfig({
       requireEnv: true,
     }),
   ],
+
+  /*rollupOptions: {
+    output: {
+      manualChunks: () => 'bundle',
+    }
+  },*/
 
   server: {
     proxy: {
