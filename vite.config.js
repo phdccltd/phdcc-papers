@@ -46,7 +46,7 @@ export default defineConfig({
       compiler: 'vue3',
       autoInstall: true
     }),
-    istanbul({
+    istanbul({ // For Cypress testing
       include: ['api/*','components/*','composables/*','layouts/*','middleware/*','mixins/*','pages/**','plugins/*','stores/*','utils/*'],
       exclude: ['node_modules', 'test/'],
       extension: [ '.js', '.ts', '.vue' ],
