@@ -135,9 +135,9 @@
                   </b-link>
                   {{ reviewer.username }} {{ reviewer.lead ? '(Lead)' : '' }}
                   <v-icon v-for="grading in gradingicons(reviewer)" :key="grading.id" icon="check-circle" :color="grading.colour"
-                    x-v-b-popover.hover.top="grading.name" class="mr-1" /> <!--TODO-->
+                  :title="grading.name" class="me-1" />
                   <v-icon v-for="sentreminder in reviewer.sentreminders" :key="sentreminder.id" icon="envelope" color="pink"
-                    x-v-b-popover.hover.top="sentreminder.dt" class="mr-1" /><!--TODO-->
+                  :title="sentreminder.dt" class="me-1" />
                 </div>
               </b-col>
             </b-row>

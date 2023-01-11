@@ -47,7 +47,6 @@ export default defineConfig({
       autoInstall: true
     }),
     istanbul({
-      // include: ['api/*','components/*','composables/*','layouts/*','middleware/*','mixins/*','pages/*','pages/admin/*','plugins/*','stores/*','utils/*'],
       include: ['api/*','components/*','composables/*','layouts/*','middleware/*','mixins/*','pages/**','plugins/*','stores/*','utils/*'],
       exclude: ['node_modules', 'test/'],
       extension: [ '.js', '.ts', '.vue' ],
