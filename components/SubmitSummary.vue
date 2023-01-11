@@ -431,7 +431,7 @@ export default {
       try {
         const submitstatus = await api.submit.addSubmitStatus(this.confirmsubmit.id, this.confirmsubmit.newstatusid)
         if (!submitstatus) return this.msgBoxOk('Error adding status')
-        //submit.newstatusid = null // TODO This doesn't work ie status shows as selected when it is actually reset to null by following:
+        // Selected status deselected by the following:
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
           this.msgBoxOk('Status added')

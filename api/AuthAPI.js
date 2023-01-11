@@ -27,7 +27,7 @@ export default class AuthAPI extends BaseAPI {
     return forgotten
   }
 
-  async masquerade(userid) { // TODO
+  async masquerade(userid) {
     // console.log('authAPI masquerade', userid)
     const { ok } = await this.$get('/users/masquerade/' + userid)
     return ok
