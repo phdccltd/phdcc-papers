@@ -13,10 +13,9 @@
     "static": "npx nuxi generate",
     "lint": "eslint --ext .js,.jsx,.ts,.vue .",
     "lintfix": "eslint --fix --ext .js,.jsx,.ts,.vue .",
-    "runner": "cross-env PORT=n node .output/server/index.mjs",
-    "test": "jest --runInBand 2>tests1.txt",
-    "testci": "jest --runInBand",
-    "testvi": "nuxi test"
+    "buildwithcoverage": "env-cmd -f .env.coverage nuxt build",
+    "clienttest": "env-cmd -f .env.clienttest node .output/server/index.mjs",
+    "runner": "cross-env PORT=n node .output/server/index.mjs"
   },
   "comments": {
     "1": "pinia-plugin-persist package code in utils\\pinia-plugin-persist.ts from v1.0.0 https://github.com/Seb-L/pinia-plugin-persist",
@@ -51,6 +50,7 @@
     "@vue/compiler-sfc": "^3.2.45",
     "cross-env": "^7.0.3",
     "cypress": "^12.3.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",

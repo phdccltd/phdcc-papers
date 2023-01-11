@@ -5,7 +5,7 @@ module.exports = defineConfig({
     // login_url: '/login'  // Use as Cypress.env('login_url')
   },
   e2e: {
-    baseUrl: 'http://localhost:4445',  // should be in cypress.env.json
+    baseUrl: 'http://localhost:5555',  // should be in cypress.env.json
 
     setupNodeEvents(on, config) {
       // implement node event listeners here

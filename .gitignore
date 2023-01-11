@@ -3,6 +3,8 @@ node_modules
 .output
 dist
 .env
+.env.coverage
+.env.clienttest
 cypress.env.json
 coverage
 .nyc_output
