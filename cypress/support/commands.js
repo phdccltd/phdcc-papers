@@ -27,10 +27,10 @@
 Cypress.Commands.add('resetdb', () => {
   const api = 'http://localhost:9000/api'
   console.log(api)
-  cy.request('DELETE', api+'/resetdbfortest')
-  .then((response) => {
-    expect(response.body.ret).to.eq(0)
-  })
+  cy.request('DELETE', api + '/resetdbfortest')
+    .then((response) => {
+      expect(response.body.ret).to.eq(0)
+    })
 })
 
 Cypress.Commands.add('login', (username, password) => {

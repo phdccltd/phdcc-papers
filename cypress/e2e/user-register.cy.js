@@ -1,4 +1,4 @@
-describe('BASIC LOGIN', () => {
+describe('Register new user', () => {
   beforeEach(() => {
     // reset and seed the database prior to every test
     cy.resetdb();
@@ -7,9 +7,9 @@ describe('BASIC LOGIN', () => {
   it('register new user', () => {
     cy.visit('/register')
 
-    const username = Cypress.env('username')
-    const email = Cypress.env('email')
-    const password = Cypress.env('password')
+    const username = "author5"
+    const email = "author5@example.org"
+    const password = "author5-pwd"
 
     cy.get('#username').type(username)
     cy.get('#email').type(email)
@@ -18,5 +18,8 @@ describe('BASIC LOGIN', () => {
     cy.get('form').contains('Register').click()
 
     cy.url().should('include', '/panel')
+    cy.contains('Hello '+username)
+    cy.wait(500)
+    cy.screenshot()
   })
 })
