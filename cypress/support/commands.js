@@ -24,6 +24,15 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+Cypress.Commands.add('resetdb', () => {
+  const api = 'http://localhost:9000/api'
+  console.log(api)
+  cy.request('DELETE', api+'/resetdbfortest')
+  .then((response) => {
+    expect(response.body.ret).to.eq(0)
+  })
+})
+
 Cypress.Commands.add('login', (username, password) => {
   cy.session(
     username,

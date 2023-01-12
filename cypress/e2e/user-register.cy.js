@@ -1,15 +1,7 @@
 describe('BASIC LOGIN', () => {
   beforeEach(() => {
-    /*
     // reset and seed the database prior to every test
-    cy.exec('npm run db:reset && npm run db:seed')
-
-    // seed a user in the DB that we can control from our tests
-    // assuming it generates a random password for us
-    cy.request('POST', '/test/seed/user', { username: 'jane.lane' })
-      .its('body')
-      .as('currentUser')
-      */
+    cy.resetdb();
   })
 
   it('register new user', () => {
@@ -27,6 +19,4 @@ describe('BASIC LOGIN', () => {
 
     cy.url().should('include', '/panel')
   })
-
-  
 })
