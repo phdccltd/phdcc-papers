@@ -34,15 +34,15 @@ Cypress.Commands.add('resetdb', () => {
 })
 
 Cypress.Commands.add('login', (username, password) => {
-  /*cy.visit('/login')
+  cy.visit('/login')
   cy.get('#username').type(username)
   cy.get('#password').type(password)
   //cy.get('input[name=password]').type(`${password}{enter}`, { log: false })
   cy.get('#recaptchaok') // Wait until recaptcha function loaded
   cy.get('form').contains('Login').click()
 
-  cy.url().should('include', '/panel')*/
-  cy.session(
+  cy.url().should('include', '/panel')
+  /*cy.session(
     username,
     () => {
       cy.visit('/login')
@@ -60,5 +60,5 @@ Cypress.Commands.add('login', (username, password) => {
     //    //cy.getCookie('your-session-cookie').should('exist')
     //  },
     //}
-  )
+  )*/
 })
