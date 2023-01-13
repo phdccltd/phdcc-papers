@@ -1,10 +1,10 @@
 <template>
   <div>
-    <!-- MOSTLY DONE -->
     <Messages :error="error" :message="message" />
     <div v-html="content">
     </div>
     <UserAuthForm buttonText="Login" :submitForm="loginUser" v-bind:isRegister="false" />
+    <div v-if="showtestdiv" id="recaptchaok"></div>
   </div>
 </template>
 
@@ -37,11 +37,11 @@ export default {
   async mounted() {
     this.setLayoutMessage()
     const runtimeConfig = useRuntimeConfig()
-    if (runtimeConfig.public.RECAPTCHA_BYPASS) {
-      this.message = 'Recaptcha bypass'
-    } else {
-      this.executeRecaptcha = await useVueRecaptcha() // needs to be done before other await calls
-    }
+    //if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+    //  this.message = 'Recaptcha bypass'
+    //} else {
+    this.executeRecaptcha = await useVueRecaptcha() // needs to be done before other await calls
+    //}
 
     await this.sitePagesStore.fetch()
     if (this.authStore.loggedin) {
@@ -55,6 +55,10 @@ export default {
       const sitepage = this.sitePagesStore.get('/login')
       return sitepage ? sitepage.content : ''
     },
+    showtestdiv() {
+      const runtimeConfig = useRuntimeConfig()
+      return runtimeConfig.public.RECAPTCHA_BYPASS && (this.executeRecaptcha != null)
+    }
   },
   methods: {
     async loginUser(loginInfo: any) {
@@ -62,10 +66,10 @@ export default {
       this.message = ''
       const runtimeConfig = useRuntimeConfig()
       let grecaptcha = ''
-      if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+      if (runtimeConfig.public.RECAPTCHA_BYPASS && loginInfo.password !== 'userecapture') {
         grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
       } else {
-        if( this.executeRecaptcha){
+        if (this.executeRecaptcha) {
           grecaptcha = await this.executeRecaptcha('login')
         }
       }

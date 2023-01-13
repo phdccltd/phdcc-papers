@@ -22,7 +22,16 @@ users.author1 = {
   "password": "author1pwd",
   "roles": "Author"
 }
+// Add 4..8
+users.recapturer = {
+  "name": "Recapturer", // 9
+  "username": "recapturer",
+  "email": "recapturer@example.com",
+  "password": "userecapture",
+  "roles": "Author"
+}
 
-console.log("testutils",users)
 
-module.exports = users
+module.exports = {
+  users
+}

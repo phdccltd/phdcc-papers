@@ -19,7 +19,7 @@ describe('Register new user', () => {
 
     cy.url().should('include', '/panel')
     cy.contains('Hello '+username)
-    cy.wait(500)
-    cy.screenshot()
+    //cy.wait(500)
+    //cy.screenshot()
   })
 })

@@ -34,6 +34,14 @@ Cypress.Commands.add('resetdb', () => {
 })
 
 Cypress.Commands.add('login', (username, password) => {
+  /*cy.visit('/login')
+  cy.get('#username').type(username)
+  cy.get('#password').type(password)
+  //cy.get('input[name=password]').type(`${password}{enter}`, { log: false })
+  cy.get('#recaptchaok') // Wait until recaptcha function loaded
+  cy.get('form').contains('Login').click()
+
+  cy.url().should('include', '/panel')*/
   cy.session(
     username,
     () => {
@@ -41,6 +49,7 @@ Cypress.Commands.add('login', (username, password) => {
       cy.get('#username').type(username)
       cy.get('#password').type(password)
       //cy.get('input[name=password]').type(`${password}{enter}`, { log: false })
+      cy.get('#recaptchaok') // Wait until recaptcha function loaded
       cy.get('form').contains('Login').click()
 
       cy.url().should('include', '/login')
