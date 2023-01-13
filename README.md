@@ -7,6 +7,8 @@
 To be used in conjuction with [phdcc-papers-api](https://github.com/phdccltd/phdcc-papers-api).
 Please read the full set up instructions there.
 
+To be updated for Nuxt3.
+
 Create a `.env` text file in the root directory of this component with the following secrets:
 
 ```
@@ -64,12 +66,31 @@ npm run build
 
 Then restart eg using pm2.
 
+## Testing
+
+This code has [Cypress End to End](https://www.cypress.io/) tests which generate coverage of the JavaScript/TypeScript in vue js and ts files.
+
+The `clienttest` instance of this app must be run alongside the `forclient` instance of the Papers API code.
+* Papers API `forclient`: runs using Sqlite3 in-memory database listening on a localhost port: `npm run forclient`
+* Papers client `clienttest`: builds with coverage and runs at a local port access the API on its localhost port: `npm run clienttest`
+
+You can then run Cypress interactively or using command: `npm run cypress`.
+Coverage output is generated in `\coverage`.
+
+```
+CYPRESS_COVERAGE='true'
+NUXT_PORT=5555
+NUXT_PUBLIC_SITE='https://example.com'
+NUXT_PUBLIC_API='http://localhost:9000/api'
+RECAPTCHA_SITE_KEY=''
+```
+
 ## Used with thanks
 
 Thanks to all the developers who produced the open-source modules that are used, including
 
-* [Nuxt](https://nuxtjs.org), which is [Vue](https://vuejs.org/) 
-* [BootstrapVue](https://bootstrap-vue.js.org/), which is Bootstrap v4 for Vue/Nuxt. 
+* [Nuxt 3](https://nuxt.com), which is [Vue](https://vuejs.org/) 
+* [bootstrap-vue-next](https://github.com/bootstrap-vue/bootstrap-vue-next), which is Bootstrap v5 for Vue/Nuxt. 
 
 # Sponsors
 
