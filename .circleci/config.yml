@@ -5,7 +5,7 @@ orbs:
 workflows:
   build:
     jobs:
-      #- cypress/install:
+      #- cypress/install: 
       - cypress/run:
           #requires:
           #  - cypress/install
