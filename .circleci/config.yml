@@ -17,6 +17,7 @@ jobs:
           lts: true
       - run: npm -v
       - run: node -v
+      - run: npm install
 
       ################
       # START API SERVER
@@ -26,7 +27,10 @@ jobs:
       - run:
           name: run API server
           command: cd ../phdcc-papers-api; npm run forclient
-          #background: true
+          background: true
+
+      - run: npm run waiton
+      - run: npm run waiton
       
       ################
       # MAKE clienttest ENVIRONMENT VARIABLES FILE
