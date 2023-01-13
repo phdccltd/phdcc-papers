@@ -42,6 +42,7 @@ jobs:
       - run: echo "NUXT_PORT=3000" >>.env.clienttest
       - run: echo "NUXT_PUBLIC_SITE='https://example.org'" >>.env.clienttest
       - run: echo "NUXT_PUBLIC_API='http://localhost:9000/api'" >>.env.clienttest
+      - run: echo "RECAPTCHA_BYPASS='avoidrecaptcha'" >>.env.clienttest
 
       ################
       # RUN CLIENT SERVER
