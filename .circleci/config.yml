@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   node: circleci/node@4.1.0
 workflows:
-  phdcc_papers_api_coverage:
+  phdcc_papers_coverage:
     jobs:
       - test_coverage
 jobs:
@@ -26,7 +26,7 @@ jobs:
       - run:
           name: run API server
           command: cd ../phdcc-papers-api; npm run forclient
-          background: true
+          #background: true
       
       ################
       # MAKE clienttest ENVIRONMENT VARIABLES FILE
