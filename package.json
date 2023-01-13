@@ -16,7 +16,8 @@
     "clienttest": "env-cmd -f .env.clienttest nuxt dev",
     "cypress": "cypress run",
     "cypress2": "wait-on http://localhost:9000/ && wait-on http://localhost:5555/ && cypress run",
-    "waiton": "wait-on http://localhost:9000/ && echo 'READY'",
+    "waitonapi": "wait-on http://localhost:9000/ && echo 'READY'",
+    "waitonclient": "wait-on http://localhost:3000/ && echo 'READY'",
     "runner": "cross-env PORT=n node .output/server/index.mjs"
   },
   "comments": {

@@ -19,6 +19,9 @@ jobs:
       - run: node -v
       - run: npm install
 
+      # Install Cypress dependencies
+      - run: apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
       ################
       # START API SERVER
       - run: mkdir ../phdcc-papers-api
@@ -29,13 +32,12 @@ jobs:
           command: cd ../phdcc-papers-api; npm run forclient
           background: true
 
-      - run: npm run waiton
-      - run: npm run waiton
+      - run: npm run waitonapi
       
       ################
       # MAKE clienttest ENVIRONMENT VARIABLES FILE
       - run: echo "CYPRESS_COVERAGE='true'" >.env.clienttest
-      - run: echo "NUXT_PORT=5555" >>.env.clienttest
+      - run: echo "NUXT_PORT=3000" >>.env.clienttest
       - run: echo "NUXT_PUBLIC_SITE='https://example.org'" >>.env.clienttest
       - run: echo "NUXT_PUBLIC_API='http://localhost:9000/api'" >>.env.clienttest
       - run: cat .env.clienttest
@@ -46,6 +48,8 @@ jobs:
           name: run client server
           command: npm run clienttest
           background: true
+
+      - run: npm run waitonclient
 
       ################
       # RUN CYPRESS TESTS
