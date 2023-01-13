@@ -1,10 +1,13 @@
 # https://circleci.com/developer/orbs/orb/cypress-io/cypress
 version: 2.1
 orbs:
-  cypress: cypress-io/cypress@2 // Or 2.2.0
+  cypress: cypress-io/cypress@2 # Or 2.2.0
 workflows:
   build:
     jobs:
-      - cypress/run
-          start: npm run clienttest
+      - cypress/install:
+      - cypress/run:
+          requires:
+            - cypress/install
+          start: 'npm run clienttest'
           wait-on: 'http://localhost:5555'
