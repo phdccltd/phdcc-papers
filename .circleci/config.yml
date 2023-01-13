@@ -18,6 +18,7 @@ jobs:
       - run: npm -v
       - run: node -v
       - run: npm install
+      - run: npm install coveralls
 
       # Install Cypress dependencies
       - run: sudo apt-get update --fix-missing
@@ -41,7 +42,6 @@ jobs:
       - run: echo "NUXT_PORT=3000" >>.env.clienttest
       - run: echo "NUXT_PUBLIC_SITE='https://example.org'" >>.env.clienttest
       - run: echo "NUXT_PUBLIC_API='http://localhost:9000/api'" >>.env.clienttest
-      - run: cat .env.clienttest
 
       ################
       # RUN CLIENT SERVER
@@ -56,18 +56,6 @@ jobs:
       # RUN CYPRESS TESTS
       - run: npm run cypress
 
-
-
-## https://circleci.com/developer/orbs/orb/cypress-io/cypress
-#version: 2.1
-#orbs:
-#  cypress: cypress-io/cypress@2 # Or 2.2.0
-#workflows:
-#  build:
-#    jobs:
-#      #- cypress/install: 
-#      - cypress/run:
-#          #requires:
-#          #  - cypress/install
-#          start: 'npm run clienttest'
-#          wait-on: 'http://localhost:5555'
+      ################
+      # Upload results to coveralls
+      - run: node node_modules/coveralls/bin/coveralls.js < coverage/lcov.info # .coveralls.yml must contain circleci and add environment variable COVERALLS_REPO_TOKEN
