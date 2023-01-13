@@ -1,13 +1,65 @@
-# https://circleci.com/developer/orbs/orb/cypress-io/cypress
+# https://circleci.com/developer/orbs/orb/circleci/node
 version: 2.1
 orbs:
-  cypress: cypress-io/cypress@2 # Or 2.2.0
+  node: circleci/node@4.1.0
 workflows:
-  build:
+  phdcc_papers_api_coverage:
     jobs:
-      #- cypress/install: 
-      - cypress/run:
-          #requires:
-          #  - cypress/install
-          start: 'npm run clienttest'
-          wait-on: 'http://localhost:5555'
+      - test_coverage
+jobs:
+  test_coverage:
+    executor: node/default
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - checkout
+      - node/install:
+          lts: true
+      - run: npm -v
+      - run: node -v
+
+      ################
+      # START API SERVER
+      - run: mkdir ../phdcc-papers-api
+      - run: cd ..;git clone https://github.com/phdccltd/phdcc-papers-api.git
+      - run: cd ../phdcc-papers-api; npm install
+      - run:
+          name: run API server
+          command: cd ../phdcc-papers-api; npm run forclient
+          background: true
+      
+      ################
+      # MAKE clienttest ENVIRONMENT VARIABLES FILE
+      - run: echo "CYPRESS_COVERAGE='true'" >.env.clienttest
+      - run: echo "NUXT_PORT=5555" >>.env.clienttest
+      - run: echo "NUXT_PUBLIC_SITE='https://example.org'" >>.env.clienttest
+      - run: echo "NUXT_PUBLIC_API='http://localhost:9000/api'" >>.env.clienttest
+      - run: cat .env.clienttest
+
+      ################
+      # RUN CLIENT SERVER
+      - run:
+          name: run client server
+          command: npm run clienttest
+          background: true
+
+      ################
+      # RUN CYPRESS TESTS
+      - run: npm run cypress
+
+
+
+
+## https://circleci.com/developer/orbs/orb/cypress-io/cypress
+#version: 2.1
+#orbs:
+#  cypress: cypress-io/cypress@2 # Or 2.2.0
+#workflows:
+#  build:
+#    jobs:
+#      #- cypress/install: 
+#      - cypress/run:
+#          #requires:
+#          #  - cypress/install
+#          start: 'npm run clienttest'
+#          wait-on: 'http://localhost:5555'
