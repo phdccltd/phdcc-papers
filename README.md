@@ -79,7 +79,7 @@ Coverage output is generated in `\coverage`.
 
 ```
 CYPRESS_COVERAGE='true'
-NUXT_PORT=5555
+NUXT_PORT=3000
 NUXT_PUBLIC_SITE='https://example.com'
 NUXT_PUBLIC_API='http://localhost:9000/api'
 RECAPTCHA_SITE_KEY=''
