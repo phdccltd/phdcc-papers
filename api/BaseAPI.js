@@ -112,7 +112,7 @@ export default class BaseAPI {
         data.ret !== 999)
     ) {
       const retstr = data && data.ret ? data.ret : 'Unknown'
-      const statusstr = data && data.status ? data.status : 'Unknown'
+      // const statusstr = data && data.status ? data.status : 'Unknown'
 
       if (retstr === 111) {
         // Down for maintenance

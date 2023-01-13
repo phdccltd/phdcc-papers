@@ -1,10 +1,10 @@
 import path from 'path-browserify'
 // import eslintPlugin from 'vite-plugin-eslint'
-import legacy from '@vitejs/plugin-legacy'
-import config from './config'
+// import legacy from '@vitejs/plugin-legacy'
+// import config from './config'
 
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+// import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
 import Components from 'unplugin-vue-components/vite'
 import IconsResolve from 'unplugin-icons/resolver'

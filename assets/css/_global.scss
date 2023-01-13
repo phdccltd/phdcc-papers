@@ -373,7 +373,7 @@ form {
   .col-form-label {
     font-weight: bold;
     color: $color-black;
-    margin-top: 10px;
+    margin-top: 0;
   }
 
   .is-invalid label,
@@ -399,13 +399,6 @@ h3 {
 
 pre {
   margin-bottom: 0;
-}
-
-
-
-form label,
-form .col-form-label {
-  margin-top: 0;
 }
 
 .container {
@@ -539,10 +532,6 @@ form .col-form-label {
 
 .custom-file-label {
   white-space: nowrap;
-  overflow-x: hidden;
-}
-
-.custom-file-label {
   position: absolute;
   top: 0;
   right: 0;
@@ -551,6 +540,7 @@ form .col-form-label {
   height: calc(1.5em + 0.75rem + 2px);
   padding: 0.375rem 0.75rem;
   overflow: hidden;
+  overflow-x: hidden;
   font-weight: 400;
   line-height: 1.5;
   color: #495057;

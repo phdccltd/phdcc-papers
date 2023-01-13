@@ -1,7 +1,7 @@
 <template>
   <b-modal id="confirmmodal" v-model="showModal" :title="title" centered>
     <template #default>
-      <div v-html="message" />
+      {{ message }}
     </template>
     <template #footer>
       <b-button v-if="showcancel" variant="white" @click="cancel"> {{ cancelText }} </b-button>
@@ -35,7 +35,7 @@ export default {
       required: false,
       default: 'Cancel',
     },
-    okVariant:{
+    okVariant: {
       type: String,
       required: false,
       default: 'primary',
@@ -63,4 +63,3 @@ export default {
   },
 }
 </script>
-  

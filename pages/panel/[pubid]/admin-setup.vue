@@ -127,7 +127,7 @@ export default {
 
     async deletePub(pub) {
       this.confirmpub = pub
-      this.showConfirm(pub.name, 'Are you sure you want to delete this publication?<br/>CHECK THAT ALL TRACES REMOVED', this.confirmDeletePub, null, null, null, 'danger')
+      this.showConfirm(pub.name, 'Are you sure you want to delete this publication? CHECK THAT ALL TRACES REMOVED', this.confirmDeletePub, null, null, null, 'danger')
     },
 
     async confirmDeletePub() {
