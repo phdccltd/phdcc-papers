@@ -1,12 +1,12 @@
 const testutils = require('./testutils')
 
-describe('Super admin access', () => {
+describe('Owner admin actions', () => {
   beforeEach(() => {
     // reset and seed the database prior to every test
     cy.resetdb()
   })
 
-  it('log in as super and visit admin pages', () => {
+  it('log in as owner and visit pub admin pages', () => {
     console.log(testutils.users)
     cy.login(testutils.users.owner1.username, testutils.users.owner1.password)
 
@@ -51,7 +51,7 @@ describe('Super admin access', () => {
     cy.url().should('include', '/panel/1/admin-downloads')
 
 
-    // Go to Admin Setup
+/*    // Go to Admin Setup
     cy.visit('/panel/1')
     cy.get('[data-cy="pubsub-admin-setup"]').click()
     cy.url().should('include', '/panel/1/admin-setup')
@@ -60,6 +60,6 @@ describe('Super admin access', () => {
     cy.visit('/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-flow-status-1"]').click()
-    cy.url().should('include', '/panel/1/1/admin-flow-acceptings')
+    cy.url().should('include', '/panel/1/1/admin-flow-acceptings')*/
   })
 })

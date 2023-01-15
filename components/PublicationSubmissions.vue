@@ -32,7 +32,7 @@
           </b-button>
           {{ flow.name }}
           <span v-for="flowaction in flow.actions">
-            <b-button class="float-end me-2" variant="outline-success" :to="flowaction.route">{{ flowaction.name }}</b-button>
+            <b-button class="float-end me-2" variant="outline-success" :to="flowaction.route" :data-cy="'pubsub-flow-action-'+flow.id">{{ flowaction.name }}</b-button>
           </span>
           <b-button class="float-end me-2" v-if="pub.isowner && showingadminoptions" variant="outline-success"
             :to="'/panel/' + pubid + '/' + flow.id + '/admin-flow-acceptings'" :data-cy="'pubsub-flow-status-'+flow.id">Stage status</b-button>
