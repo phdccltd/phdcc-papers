@@ -26,10 +26,9 @@ jobs:
 
       ################
       # START API SERVER
-      - run: mkdir ../phdcc-papers-api
+      - run: cd ..;git clone https://github.com/phdccltd/phdcc-papers-api.git
       - run: mkdir ../phdcc-papers-api/testfilesdir
       - run: mkdir ../phdcc-papers-api/testtmpdir
-      - run: cd ..;git clone https://github.com/phdccltd/phdcc-papers-api.git
       - run: cd ../phdcc-papers-api; npm install
       - run:
           name: run API server
