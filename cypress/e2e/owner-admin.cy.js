@@ -41,14 +41,14 @@ describe('Owner admin actions', () => {
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-emails"]').click()
-    cy.url().should('include', '/panel/1/admin-mail')
+    cy.url().should('include', '/panel/1/admin-mail')*/
 
     // Go to Admin Downloads
     cy.get('[data-cy="layout-h1-a"]').click()
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-downloads"]').click()
-    cy.url().should('include', '/panel/1/admin-downloads')*/
+    cy.url().should('include', '/panel/1/admin-downloads')
 
 
     // Go to Admin Setup
