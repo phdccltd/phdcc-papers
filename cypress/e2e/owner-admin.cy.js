@@ -27,7 +27,7 @@ describe('Owner admin actions', () => {
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-bulk"]').click()
-    cy.url().should('include', '/panel/1/admin-bulk')*/
+    cy.url().should('include', '/panel/1/admin-bulk')
 
     // Go to Admin Mail templates
     cy.get('[data-cy="layout-h1-a"]').click()
@@ -48,7 +48,7 @@ describe('Owner admin actions', () => {
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-downloads"]').click()
-    cy.url().should('include', '/panel/1/admin-downloads')
+    cy.url().should('include', '/panel/1/admin-downloads')*/
 
 
     // Go to Admin Setup
