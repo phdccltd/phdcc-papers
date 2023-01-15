@@ -4,16 +4,16 @@
     <!-- Displays all the submits that a user can see ie those they've written and those they can grade - or all for owners -->
     <div v-if="pub.isowner || issuper" class="ps-1 mt-1 mb-1">
       <strong>ADMIN</strong>
-      <b-button variant="outline-danger" class="float-end" :to="'/panel/' + pubid + '/admin-setup'">Setup</b-button>
+      <b-button variant="outline-danger" class="float-end" :to="'/panel/' + pubid + '/admin-setup'" data-cy="pubsub-admin-setup">Setup</b-button>
       <b-badge v-if="!pub.enabled" pill variant="danger" class="float-end m-2">DISABLED FOR USERS</b-badge>
-      <b-button variant="outline-warning" @click="toggleShowAdminOptions()" class="ms-2">Show/Hide admin options</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-users'" class="ms-2">Users</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-bulk'" class="ms-2">Bulk</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail-templates'" class="ms-2">Mail
+      <b-button variant="outline-warning" @click="toggleShowAdminOptions()" class="ms-2" data-cy="pubsub-admin-options">Show/Hide admin options</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-users'" class="ms-2" data-cy="pubsub-admin-users">Users</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-bulk'" class="ms-2" data-cy="pubsub-admin-bulk">Bulk</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail-templates'" class="ms-2" data-cy="pubsub-admin-mailtemplates">Mail
         templates
       </b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail'" class="ms-2">Send email</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-downloads'" class="ms-2">Downloads
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail'" class="ms-2" data-cy="pubsub-admin-emails">Send email</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-downloads'" class="ms-2" data-cy="pubsub-admin-downloads">Downloads
       </b-button>
     </div>
     <div class="ps-1">
@@ -35,7 +35,7 @@
             <b-button class="float-end me-2" variant="outline-success" :to="flowaction.route">{{ flowaction.name }}</b-button>
           </span>
           <b-button class="float-end me-2" v-if="pub.isowner && showingadminoptions" variant="outline-success"
-            :to="'/panel/' + pubid + '/' + flow.id + '/admin-flow-acceptings'">Stage status</b-button>
+            :to="'/panel/' + pubid + '/' + flow.id + '/admin-flow-acceptings'" :data-cy="'pubsub-flow-status-'+flow.id">Stage status</b-button>
         </h2>
         <b-list-group v-if="flow.visible" class="flows">
           <p class="m-1">{{ flow.description }}</p>

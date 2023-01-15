@@ -29,7 +29,7 @@
           <v-icon icon="home" />
         </b-button>
         <h1 class="menu-title" data-cy="layout-h1">
-          <nuxt-link v-if="pubid" :to="'/panel/' + pubid">{{ title }}</nuxt-link>
+          <nuxt-link v-if="pubid" :to="'/panel/' + pubid" data-cy="layout-h1-a">{{ title }}</nuxt-link>
           <span v-else>
             {{ title }}
           </span>
