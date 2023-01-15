@@ -8,7 +8,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-select :id="sid" v-model="arrayvalues" :options="options" :select-size="4">
+      <b-form-select :id="sid" v-model="arrayvalues" :options="options" :select-size="4" :data-cy="'formlookup-'+sid">
       </b-form-select>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -16,7 +16,7 @@
       <b-col sm="3">
         {{ label }}
       </b-col>
-      <b-col sm="8" class="formfieldview">
+      <b-col sm="8" class="formfieldview" :data-cy="'formlookup-value-'+sid">
         {{ plainvalues }}
       </b-col>
       <b-col sm="1" class="formfieldview text-end">

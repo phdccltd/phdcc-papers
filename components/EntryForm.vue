@@ -89,7 +89,7 @@
           <b-container v-if="editable">
             <b-form-row>
               <b-col cols="9" offset-md="3">
-                <b-button variant="success" type="submit">
+                <b-button variant="success" type="submit" data-cy="entryform-submit">
                   Submit
                 </b-button>
                 <Messages :message="submitstatus" :warning="validationsummary" :error="submiterror" />

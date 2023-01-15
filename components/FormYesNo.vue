@@ -8,7 +8,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-radio-group :id="sid" v-model="selection" :options="options">
+      <b-form-radio-group :id="sid" v-model="selection" :options="options" :data-cy="'formyesno-'+sid">
       </b-form-radio-group>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -16,7 +16,7 @@
       <b-col sm="3">
         {{ label }}
       </b-col>
-      <b-col sm="8" class="formfieldview">
+      <b-col sm="8" class="formfieldview" :data-cy="'formyesno-value-'+sid">
         {{ yesno }}
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
