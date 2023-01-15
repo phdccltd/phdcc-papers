@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-html="content">
+    <div v-html="content" data-cy="id-sitepages-content">
     </div>
   </div>
 </template>

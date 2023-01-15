@@ -1,7 +1,7 @@
 describe('Register new user', () => {
   beforeEach(() => {
     // reset and seed the database prior to every test
-    cy.resetdb();
+    cy.resetdb()
   })
 
   it('register new user', () => {

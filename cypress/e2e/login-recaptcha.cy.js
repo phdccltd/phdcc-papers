@@ -3,7 +3,7 @@ const testutils = require('./testutils')
 describe('Login using recaptcha', () => {
   beforeEach(() => {
     // reset and seed the database prior to every test
-    cy.resetdb();
+    cy.resetdb()
   })
 
   it('existing login recapturer', () => {

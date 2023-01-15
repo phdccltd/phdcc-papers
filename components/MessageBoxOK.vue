@@ -1,11 +1,11 @@
 <template>
   <div>
     <b-modal id="modal-msgbox-ok" v-model="showModal" :title="title" :header-bg-variant="headerBgVariant" centered>
-      <template v-if="message" #default>
+      <template v-if="message" #default data-cy="MessageBoxOK-message">
         {{ message }}
       </template>
       <template #footer>
-        <b-button variant="primary" @click="ok"> OK </b-button>
+        <b-button variant="primary" @click="ok" data-cy="MessageBoxOK-ok"> OK </b-button>
       </template>
     </b-modal>
   </div>

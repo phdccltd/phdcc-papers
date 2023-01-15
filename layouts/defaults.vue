@@ -28,7 +28,7 @@
         <b-button variant="outline-secondary" class="me-2" to="/panel" v-if="loggedin" title="Control Panel">
           <v-icon icon="home" />
         </b-button>
-        <h1 class="menu-title">
+        <h1 class="menu-title" data-cy="layout-h1">
           <nuxt-link v-if="pubid" :to="'/panel/' + pubid">{{ title }}</nuxt-link>
           <span v-else>
             {{ title }}

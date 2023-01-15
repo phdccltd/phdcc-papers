@@ -1,11 +1,11 @@
 <template>
   <b-modal id="confirmmodal" v-model="showModal" :title="title" centered>
-    <template #default>
+    <template #default data-cy="ConfirmModal-message">
       {{ message }}
     </template>
     <template #footer>
-      <b-button v-if="showcancel" variant="white" @click="cancel"> {{ cancelText }} </b-button>
-      <b-button :variant="okVariant" @click="confirm"> {{ confirmText }} </b-button>
+      <b-button v-if="showcancel" variant="white" @click="cancel" data-cy="ConfirmModal-cancel"> {{ cancelText }} </b-button>
+      <b-button :variant="okVariant" @click="confirm" data-cy="ConfirmModal-confirm"> {{ confirmText }} </b-button>
     </template>
   </b-modal>
 </template>

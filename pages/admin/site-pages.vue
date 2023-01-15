@@ -10,7 +10,7 @@
     <b-container class="bg-yellow p-3">
       <b-row no-gutters>
         <b-col sm="6">
-          <b-button variant="outline-success" @click="startAddSitePage()">
+          <b-button variant="outline-success" @click="startAddSitePage()" data-cy="startAddSitePage">
             Add site page
           </b-button>
         </b-col>
@@ -21,16 +21,16 @@
     <b-list-group class="sitepages">
       <b-list-group-item v-for="(sitepage, index) in sitepages" :key="index" class="">
         <h3 class="sitepage-submit-h3">
-          <b-link @click.prevent="deleteSitePage(sitepage)" class="me-2">
+          <b-link @click.prevent="deleteSitePage(sitepage)" class="me-2" :data-cy="'deleteSitePage-'+sitepage.id">
             <v-icon icon="times-circle" class="btn-outline-danger" />
           </b-link>
-          <b-link @click.prevent="toggleSitePageShow(sitepage)">
+          <b-link @click.prevent="toggleSitePageShow(sitepage)" :data-cy="'sitePageTitle-'+sitepage.id">
             {{ sitepage.id }}: {{ sitepage.path }} - {{ sitepage.title }}
           </b-link>
           <NuxtLink target="_blank" :to="sitepage.path" class="float-end">
             <v-icon icon="external-link-alt" class="btn-outline-warning" />
           </NuxtLink>
-          <b-button variant="link" @click="startEditSitePage(sitepage)">
+          <b-button variant="link" @click="startEditSitePage(sitepage)" :data-cy="'editSitePage-'+sitepage.id">
             <v-icon icon="edit" class="btn-outline-warning" />
           </b-button>
         </h3>
@@ -55,7 +55,7 @@
             <b-col sm="2">
               Content
             </b-col>
-            <b-col sm="10" class="formfieldview">
+            <b-col sm="10" class="formfieldview" :data-cy="'sitePageVisibleContent-'+sitepage.id">
               <pre class="pre-textarea">{{ sitepage.content }}</pre>
             </b-col>
           </b-row>
@@ -68,7 +68,7 @@
         {{ modaltitle }}
       </template>
       <template #default>
-        <form ref="form" @submit.stop.prevent>
+        <form ref="form" @submit.stop.prevent data-cy="showSitePageModal">
           <b-form-group label="Path" label-for="pagepath" label-cols-sm="2" state="true">
             <b-form-input id="pagepath" v-model="pagepath" placeholder="Required" required></b-form-input>
           </b-form-group>
@@ -83,8 +83,8 @@
         </form>
       </template>
       <template #footer>
-        <b-button variant="outline-secondary" @click="cancelModal"> Cancel </b-button>
-        <b-button variant="primary" @click="okSitePage"> OK </b-button>
+        <b-button variant="outline-secondary" @click="cancelModal" data-cy="cancelSitePage"> Cancel </b-button>
+        <b-button variant="primary" @click="okSitePage" data-cy="okSitePage"> OK </b-button>
       </template>
     </b-modal>
     <MessageBoxOK ref="okmsgbox" />
