@@ -14,7 +14,7 @@
       <b-container class="bg-yellow p-3">
         <b-row no-gutters>
           <b-col sm="6">
-            <b-button variant="outline-success" @click="startAddMailTemplate()">
+            <b-button variant="outline-success" @click="startAddMailTemplate()" data-cy="admintemplates-add">
               Add mail template
             </b-button>
           </b-col>

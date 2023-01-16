@@ -69,7 +69,7 @@
         </b-form-group>
         <b-form-row>
           <b-col cols="10" offset-md="2">
-            <b-button variant="success" type="submit">
+            <b-button variant="success" type="submit" data-cy="adminmail-send">
               Send
             </b-button>
             <Messages :message="sendstatus" :warning="validationsummary" :error="senderror" />

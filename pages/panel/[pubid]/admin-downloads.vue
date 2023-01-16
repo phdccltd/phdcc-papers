@@ -28,7 +28,7 @@
             <b-form-select :options="allgrades" size="sm" multiple value-field="id" text-field="name" v-model="selectedgrades" style="width:auto;">
             </b-form-select>
           </div>
-          <b-button variant="success" @click="downloadReviewerPerformance()">Download reviewer performance</b-button>
+          <b-button variant="success" @click="downloadReviewerPerformance()" data-cy="admindownloads-reviewer">Download reviewer performance</b-button>
         </b-list-group-item>
       </b-list-group>
     </div>

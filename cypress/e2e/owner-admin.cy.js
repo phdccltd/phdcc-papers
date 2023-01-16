@@ -22,7 +22,7 @@ describe('Owner admin actions', () => {
     cy.url().should('include', '/panel/1/admin-users')
     cy.get('[data-cy="adminusers-pubusers"]').should('be.visible')
     
-    // Go to Admin Bulk TODO FIX
+    // Go to Admin Bulk
     cy.visit('/panel/1')
     //cy.get('[data-cy="layout-h1-a"]').click()
     //cy.url().should('include', '/panel/1')
@@ -31,27 +31,29 @@ describe('Owner admin actions', () => {
     cy.url().should('include', '/panel/1/admin-bulk')
     cy.get('[data-cy="adminbulk-move"]').should('be.visible')
     
-/*    // Go to Admin Mail templates
+    // Go to Admin Mail templates
     cy.get('[data-cy="layout-h1-a"]').click()
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-mailtemplates"]').click()
     cy.url().should('include', '/panel/1/admin-mail-templates')
-
+    cy.get('[data-cy="admintemplates-add"]').should('be.visible')
+    
     // Go to Admin Send email
     cy.get('[data-cy="layout-h1-a"]').click()
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-emails"]').click()
     cy.url().should('include', '/panel/1/admin-mail')
+    cy.get('[data-cy="adminmail-send"]').should('be.visible')
 
     // Go to Admin Downloads
     cy.get('[data-cy="layout-h1-a"]').click()
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-downloads"]').click()
-    cy.url().should('include', '/panel/1/admin-downloads')*/
-
+    cy.url().should('include', '/panel/1/admin-downloads')
+    cy.get('[data-cy="admindownloads-reviewer"]').should('be.visible')
 
     // Go to Admin Setup
     cy.visit('/panel/1')
