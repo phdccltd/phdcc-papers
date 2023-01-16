@@ -7,7 +7,6 @@ describe('Login using recaptcha', () => {
   })
 
   it('existing login recapturer', () => {
-    console.log(testutils.users)
     cy.login(testutils.users.recapturer.username, testutils.users.recapturer.password)
     cy.visit('/account')
   })

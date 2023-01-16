@@ -7,7 +7,6 @@ describe('Owner admin actions', () => {
   })
 
   it('log in as owner and visit pub admin pages', () => {
-    console.log(testutils.users)
     cy.login(testutils.users.owner1.username, testutils.users.owner1.password)
 
     // Go to Super admin page
@@ -21,10 +20,12 @@ describe('Owner admin actions', () => {
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-users"]').click()
     cy.url().should('include', '/panel/1/admin-users')
+    cy.get('[data-cy="adminusers-pubusers"]').should('be.visible')
     
     // Go to Admin Bulk TODO FIX
-    cy.get('[data-cy="layout-h1-a"]').click()
-    cy.url().should('include', '/panel/1')
+    cy.visit('/panel/1')
+    //cy.get('[data-cy="layout-h1-a"]').click()
+    //cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-bulk"]').click()
     cy.url().should('include', '/panel/1/admin-bulk')

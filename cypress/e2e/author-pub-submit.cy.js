@@ -7,7 +7,6 @@ describe('Author basic actions', () => {
   })
 
   it('log in as author and submit proposal', () => {
-    console.log(testutils.users)
     cy.login(testutils.users.author1.username, testutils.users.author1.password)
 
     // Go to Author panel for pub 1

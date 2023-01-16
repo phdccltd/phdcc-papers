@@ -25,7 +25,7 @@
         <b-col sm="6">
         </b-col>
       </b-row>
-      <b-list-group class="pubusers">
+      <b-list-group class="pubusers" data-cy="adminusers-pubusers">
         <div v-for="(pubuser, index) in pubusers.users" :key="index">
           <b-list-group-item class="pubuser" v-if="hasRole(pubuser)">
             <b-row no-gutters>

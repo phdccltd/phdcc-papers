@@ -7,7 +7,6 @@ describe('Basic login', () => {
   })
 
   it('existing login author1', () => {
-    console.log(testutils.users)
     cy.login(testutils.users.author1.username, testutils.users.author1.password)
     cy.visit('/account')
   })

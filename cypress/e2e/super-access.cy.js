@@ -7,7 +7,6 @@ describe('Super admin access', () => {
   })
 
   it('log in as super and visit admin pages', () => {
-    console.log(testutils.users)
     cy.login(testutils.users.jo.username, testutils.users.jo.password)
 
     // Go to Super admin page
