@@ -30,7 +30,7 @@
                 {{ confirmed }}
               </b-col>
               <b-col>
-                <b-button variant="success" @click="moveToNewStatus()">Move submissions to new status</b-button>
+                <b-button variant="success" @click="moveToNewStatus()" data-cy="adminbulk-move">Move submissions to new status</b-button>
               </b-col>
             </b-form-row>
           </div>

@@ -22,14 +22,15 @@ describe('Owner admin actions', () => {
     cy.get('[data-cy="pubsub-admin-users"]').click()
     cy.url().should('include', '/panel/1/admin-users')
     
-/*    // Go to Admin Bulk TODO FIX
+    // Go to Admin Bulk TODO FIX
     cy.get('[data-cy="layout-h1-a"]').click()
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
     cy.get('[data-cy="pubsub-admin-bulk"]').click()
     cy.url().should('include', '/panel/1/admin-bulk')
-
-    // Go to Admin Mail templates
+    cy.get('[data-cy="adminbulk-move"]').should('be.visible')
+    
+/*    // Go to Admin Mail templates
     cy.get('[data-cy="layout-h1-a"]').click()
     cy.url().should('include', '/panel/1')
     cy.get('[data-cy="pubsub-admin-options"]').click()
