@@ -27,6 +27,11 @@ describe('Author basic actions', () => {
     cy.get('[data-cy="formyesno-field4"]').get('#field4_option_0').click()
     cy.get('[data-cy="entryform-submit"]').click()
     cy.url().should('include', '/panel/1/1/1')
+
+    cy.visit('/panel/1')
+    cy.get('[data-cy="helppanel-toggle"]').should('be.visible')
     
+    cy.visit('/panel/1/1/1')
+    cy.get('[data-cy="helppanelsubmit-toggle"]').should('be.visible')
   })
 })

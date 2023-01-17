@@ -1,7 +1,7 @@
 <template>
   <div class="mt-1 mb-1">
     <NoticeMessage v-if="showHelp" variant="info">
-      <b-button variant="link" class="float-end" @click="toggleHelp">
+      <b-button variant="link" class="float-end" @click="toggleHelp" data-cy="helppanelsubmit-toggle">
         <v-icon icon="info-circle" size="2x" title="Hide help" />
         Hide this
       </b-button>
