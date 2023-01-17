@@ -9,13 +9,17 @@
 To be used in conjuction with [phdcc-papers-api](https://github.com/phdccltd/phdcc-papers-api).
 Please read the full set up instructions there.
 
-To be updated for Nuxt3.
+## Runtime environment
+
+### Run papers server
+
+#### server .env
 
 Create a `.env` text file in the root directory of this component with the following secrets:
 
 ```
-NUXT_PORT=1234
 API='https://papers.example.org/api'
+SITE='https://papers.example.org/'
 RECAPTCHA_SITE_KEY='recaptcha site key'
 ```
 
@@ -32,6 +36,30 @@ Do not put `RECAPTCHA_BYPASS` on your production site.
 
 *Note: any values you put in this .env file WILL BE INCLUDED in the compiled code sent to the user.*
 
+#### server shell command
+
+Also create a shell file such as `runpapers.sh`:
+
+```
+./node_modules/.bin/cross-env PORT=1234 node .output/server/index.mjs
+```
+
+### Run as static website
+
+Papers can be run as a static website without pm2 provided nginx, for example, is set up to server `200.html` if any page is not found,
+eg include this in your config file in /etc/nginx/sites-available:
+
+```
+  root /var/www/.output/public;
+  index index.html index.htm;
+  location / {
+		try_files $uri $uri/ =404;
+	}
+  error_page 404 /200.html;
+```
+
+In this case you simply need to run `npm run generate` instead of `npm run update` to restart the server.
+
 ## Build Setup
 
 ```
@@ -47,11 +75,11 @@ npm run dev
 
 # For simple production use:
 npm run build
-npm run start
+node .output/server/index.mjs
 
 # For production in PM2, create an ecosystem file or start
 npm run build
-pm2 start ./node_modules/nuxt/bin/nuxt.js --name papers -- start
+pm2 start runner.sh --name papersdev -- start
 ```
 
 ## Updating
