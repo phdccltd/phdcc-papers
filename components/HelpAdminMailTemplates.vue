@@ -1,7 +1,7 @@
 <template>
   <div class="mt-1 mb-1">
     <NoticeMessage v-if="showHelp" variant="info">
-      <b-button variant="link" class="float-end" @click="toggleHelp" data-cy="helpadminmailtemplates-toggle">
+      <b-button variant="link" class="float-end" @click="toggleHelp" data-cy="helpadminmailtemplates-hide">
         <v-icon icon="info-circle" size="2x" title="Hide help" />
         Hide this
       </b-button>
@@ -15,7 +15,7 @@
         The rules associated with each template are not yet displayed or editable.
       </p>
     </NoticeMessage>
-    <div v-else class="text-primary text-end clickme" @click="toggleHelp">
+    <div v-else class="text-primary text-end clickme" @click="toggleHelp" data-cy="helpadminmailtemplates-show">
       <v-icon icon="question-circle" title="Show help" />
       Show help
     </div>

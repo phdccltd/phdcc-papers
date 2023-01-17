@@ -38,7 +38,8 @@ describe('Owner admin actions', () => {
     cy.get('[data-cy="pubsub-admin-mailtemplates"]').click()
     cy.url().should('include', '/panel/1/admin-mail-templates')
     cy.get('[data-cy="admintemplates-add"]').should('be.visible')
-    cy.get('[data-cy="helpadminmailtemplates-toggle"]').should('be.visible')
+    cy.get('[data-cy="helpadminmailtemplates-hide"]').should('be.visible')
+    cy.get('[data-cy="helpadminmailtemplates-hide"]').click()
     
     // Go to Admin Send email
     cy.get('[data-cy="layout-h1-a"]').click()
@@ -61,6 +62,7 @@ describe('Owner admin actions', () => {
     cy.get('[data-cy="pubsub-admin-setup"]').click()
     cy.url().should('include', '/panel/1/admin-setup')
     cy.get('[data-cy="helpadminsetup-toggle"]').should('be.visible')
+    cy.get('[data-cy="helpadminsetup-toggle"]').click()
     
     // Go to Flow Stage status acceptings
     cy.visit('/panel/1')
