@@ -1,7 +1,7 @@
 <template>
   <div>
     <Messages :error="error" :message="message" />
-    <div v-html="content">
+    <div v-html="content" data-cy="resetpwd-content">
     </div>
   </div>
 </template>

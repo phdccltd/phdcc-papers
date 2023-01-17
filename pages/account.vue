@@ -24,7 +24,7 @@
       </b-form-group>
       <b-row no-gutters>
         <b-col cols="9" offset-md="3">
-          <b-button type="submit" variant="primary">Save</b-button>
+          <b-button type="submit" variant="primary" data-cy="account-save">Save</b-button>
         </b-col>
       </b-row>
     </b-form>
