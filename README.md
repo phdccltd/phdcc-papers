@@ -79,7 +79,7 @@ node .output/server/index.mjs
 
 # For production in PM2, create an ecosystem file or start
 npm run build
-pm2 start runner.sh --name papersdev -- start
+pm2 start runner.sh --name papers -- start
 ```
 
 ## Updating
