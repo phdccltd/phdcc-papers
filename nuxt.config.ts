@@ -22,7 +22,7 @@ export default defineNuxtConfig({
     pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
   },
 
-  modules: ['bootstrap-vue-3/nuxt', '@pinia/nuxt', 'unplugin-icons/nuxt'],
+  modules: ['bootstrap-vue-next/nuxt', '@pinia/nuxt', 'unplugin-icons/nuxt'],
   plugins: [
     // No need but it's there: '~/plugins/pinia-plugin-persist.client'
   ],
