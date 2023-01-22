@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "scripts": {
@@ -35,7 +35,7 @@
     "@pinia/nuxt": "^0.4.5",
     "@popperjs/core": "^2.11.6",
     "@vitejs/plugin-legacy": "^2.2.0",
-    "axios": "^1.2.2",
+    "axios": "^1.2.3",
     "bootstrap": "^5.2.2",
     "bootstrap-vue-3": "^0.5.0",
     "jwt-decode": "^3.1.2",
@@ -47,7 +47,7 @@
     "@nuxt/test-utils": "^3.0.0",
     "@nuxtjs/eslint-config": "^12.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
-    "@types/jest": "^29.2.4",
+    "@types/jest": "^29.2.6",
     "@types/lodash": "^4.14.191",
     "@vue/compiler-sfc": "^3.2.45",
     "cross-env": "^7.0.3",
