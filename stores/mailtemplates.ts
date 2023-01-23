@@ -24,6 +24,7 @@ export const useMailTemplatesStore = defineStore('mailtemplates', {
         const { pubmails } = await api.mail.getTemplates(pubid)
         for (const pubmail of pubmails) {
           pubmail.visible = false
+          pubmail.bodyParas = pubmail.body.split('\n')
         }
         this.mailtemplates[pubid] = pubmails
       } catch (e) {

@@ -22,6 +22,7 @@ export const useSitePagesStore = defineStore('sitepages', {
       if (sitepages) {
         for (const sitepage of sitepages) {
           sitepage.visible = false
+          sitepage.paras = sitepage.content.split('\n')
         }
       }
       this.list = sitepages

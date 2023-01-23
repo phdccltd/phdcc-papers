@@ -56,7 +56,7 @@
               Content
             </b-col>
             <b-col sm="10" class="formfieldview" :data-cy="'sitePageVisibleContent-'+sitepage.id">
-              <pre class="pre-textarea">{{ sitepage.content }}</pre>
+              <p v-for="para in sitepage.paras" class="pre-textarea mb-0">{{ para }}</p>
             </b-col>
           </b-row>
         </b-container>

@@ -22,7 +22,7 @@
             <b-button variant="outline-success" @click="toggleShowSubstitutions()">
               Show substitution strings
             </b-button>
-            <pre v-if="showsubstitutions" class="pre-textarea">{{ substitutions }}</pre>
+            <p v-if="showsubstitutions" v-for="para in substitutions" class="pre-textarea mb-0">{{ para }}</p>
           </b-col>
         </b-row>
       </b-container>
@@ -53,7 +53,7 @@
                 Body
               </b-col>
               <b-col sm="10" class="formfieldview">
-                <pre class="pre-textarea">{{ mailtemplate.body }}</pre>
+                <p v-for="para in mailtemplate.bodyParas" class="pre-textarea mb-0">{{ para }}</p>
               </b-col>
             </b-row>
           </b-container>
@@ -186,7 +186,7 @@ export default {
         }
       }
       console.log("substitutions", substitutions)
-      return substitutions
+      return substitutions.split('\n')
     },
     issuper() {
       return this.authStore.super

@@ -24,7 +24,7 @@
         Comment
       </b-col>
       <b-col sm="9" class="formfieldview ps-1">
-        <pre class="pre-textarea">{{ grading.comment }}</pre>
+        <p v-for="para in commentParas" class="pre-textarea">{{ para }}</p>
       </b-col>
     </b-row>
     <b-row no-gutters v-if="flowgrade.canopttoreview">
@@ -98,6 +98,9 @@ export default {
     isreviewer() {
       return _.find(this.submit.reviewers, (reviewer) => { return reviewer.userId === this.grading.userId })
     },
+    commentParas(){
+      return this.grading.comment.split('\n')
+    }
   },
   methods: {
     addAsReviewer() {
