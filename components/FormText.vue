@@ -18,7 +18,7 @@
         {{ label }}
       </b-col>
       <b-col sm="8" class="formfieldview" :data-cy="'formtext-value'+sid">
-        <pre class="pre-textarea">{{ modelValue }}</pre>
+        <p v-for="para in modelValueParas" class="pre-textarea">{{ para }}</p>
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
         <span v-if="help" :title="help">
@@ -49,6 +49,9 @@ export default {
     labelreqd() {
       return this.reqd ? this.label + ' *' : this.label
     },
+    modelValueParas(){
+      return this.modelValue.split('\n')
+    }
   }
 }
 </script>
