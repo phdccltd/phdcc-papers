@@ -15,6 +15,7 @@
     "lintfix": "eslint --fix --ext .js,.jsx,.ts,.vue .",
     "clienttest": "env-cmd -f .env.clienttest nuxt dev",
     "cypress": "cypress run",
+    "test": "npx cypress open",
     "waitonapi": "wait-on http://localhost:9000/ && echo 'READY'",
     "waitonclient": "wait-on http://localhost:3000/ && echo 'READY'",
     "runner": "cross-env PORT=n node .output/server/index.mjs"
@@ -50,7 +51,7 @@
     "@types/lodash": "^4.14.191",
     "@vue/compiler-sfc": "^3.2.45",
     "cross-env": "^7.0.3",
-    "cypress": "^12.3.0",
+    "cypress": "^12.4.0",
     "env-cmd": "^10.1.0",
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
