@@ -316,6 +316,9 @@ export default {
           options.push({ value: reviewer.id, text: reviewer.name + ' - ' + reviewer.roles })
         }
       }
+      options.sort(function(a, b){
+        return a.text.localeCompare(b.text)
+      })
       return options
     },
   },
