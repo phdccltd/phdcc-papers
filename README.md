@@ -65,7 +65,7 @@ In this case you simply need to run `npm run generate` instead of `npm run updat
 ```
 # Grab the code
 git clone https://github.com/phdccltd/phdcc-papers.git
-cd phdcc-papers-api
+cd phdcc-papers
 
 # install dependencies
 npm install
