@@ -22,7 +22,8 @@ export default defineNuxtConfig({
     pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
   },
 
-  modules: ['bootstrap-vue-next/nuxt', '@pinia/nuxt', 'unplugin-icons/nuxt'],
+  //modules: ['bootstrap-vue-next/nuxt', '@pinia/nuxt', 'unplugin-icons/nuxt'],
+  modules: ['@bootstrap-vue-next/nuxt', '@pinia/nuxt', 'unplugin-icons/nuxt'],
   plugins: [
     // No need but it's there: '~/plugins/pinia-plugin-persist.client'
   ],
@@ -53,7 +54,8 @@ export default defineNuxtConfig({
   },
   css: [
     '@/node_modules/@fortawesome/fontawesome-svg-core/styles.css',
-    'bootstrap/dist/css/bootstrap.css',
+    //'bootstrap/dist/css/bootstrap.css',
+    'bootstrap/dist/css/bootstrap.min.css',
     '@/assets/css/_global.scss',
   ],
   app: {

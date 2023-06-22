@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "scripts": {
@@ -36,13 +36,12 @@
     "@popperjs/core": "^2.11.6",
     "@vitejs/plugin-legacy": "^4.0.4",
     "axios": "^1.2.3",
-    "bootstrap": "^5.2.2",
-    "bootstrap-vue-next": "^0.7.1",
     "jwt-decode": "^3.1.2",
     "path-browserify": "^1.0.1",
     "vue-recaptcha-v3": "^2.0.1"
   },
   "devDependencies": {
+    "@bootstrap-vue-next/nuxt": "^0.1.0",
     "@cypress/code-coverage": "^3.10.0",
     "@nuxt/test-utils": "^3.0.0",
     "@nuxtjs/eslint-config": "^12.0.0",
@@ -50,6 +49,8 @@
     "@types/jest": "^29.2.6",
     "@types/lodash": "^4.14.191",
     "@vue/compiler-sfc": "^3.2.45",
+    "bootstrap": "^5.3.0",
+    "bootstrap-vue-next": "^0.9.9",
     "cross-env": "^7.0.3",
     "cypress": "^12.4.0",
     "env-cmd": "^10.1.0",
