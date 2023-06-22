@@ -25,13 +25,14 @@ describe('Super admin access', () => {
     cy.get('#pagecontent').type('Lorem ipsum')
     cy.get('[data-cy="okSitePage"]').click()
     
-    cy.get('#modal-msgbox-ok-label').should('be.visible')
+    //cy.get('#modal-msgbox-ok-label').should('be.visible')
+    cy.get('[data-cy="MessageBoxOK-ok"]').should('be.visible')
     cy.get('[data-cy="MessageBoxOK-ok"]').click()
     
     // Check home now has correct contents
     cy.visit('/')
-    //cy.get('[data-cy="layout-h1"]').contains('Welcome') // FIX
-    //cy.get('[data-cy="index-sitepages-content"]').contains('Lorem ipsum') // FIX
+    cy.get('[data-cy="layout-h1"]').contains('Welcome') // FIX
+    cy.get('[data-cy="index-sitepages-content"]').contains('Lorem ipsum') // FIX
 
     // Go to Site pages - check missing fields errors
     cy.visit('/admin/site-pages')
