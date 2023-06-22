@@ -30,8 +30,8 @@ describe('Super admin access', () => {
     
     // Check home now has correct contents
     cy.visit('/')
-    cy.get('[data-cy="layout-h1"]').contains('Welcome')
     cy.get('[data-cy="index-sitepages-content"]').contains('Lorem ipsum')
+    cy.get('[data-cy="layout-h1"]').contains('Welcome') // FIX?
 
     // Go to Site pages - check missing fields errors
     cy.visit('/admin/site-pages')
