@@ -11,7 +11,7 @@ const packageJson = fs.readFileSync('./package.json', 'utf8')
 const version = JSON.parse(packageJson).version || 0
 console.log('Building phdcc-papers', version)
 
-import istanbul from 'vite-plugin-istanbul';
+// import istanbul from 'vite-plugin-istanbul';
 
 export default defineNuxtConfig({
   ssr: false,
@@ -53,14 +53,14 @@ export default defineNuxtConfig({
       },
     },
     plugins: [
-      istanbul({ // For Cypress testing
+      /* istanbul({ // For Cypress testing copied from old vite.config.js but tests generate PayloadTooLargeError: request entity too large
         // See also: https://github.com/iFaxity/vite-plugin-istanbul/issues/28
         include: ['api/*', 'components/*', 'composables/*', 'layouts/*', 'middleware/*', 'mixins/*', 'pages/**', 'plugins/*', 'stores/*', 'utils/*'],
         exclude: ['node_modules', 'test/'],
         extension: ['.js', '.ts', '.vue'],
         cypress: true,
         requireEnv: true,
-      })
+      })*/
     ]
   },
   css: [
