@@ -15,6 +15,7 @@ console.log('Building phdcc-papers', version)
 
 export default defineNuxtConfig({
   ssr: false,
+  spaLoadingTemplate: false,
   build: {
     // Reduce size of CSS initial load.
     // extractCSS: true
@@ -45,7 +46,7 @@ export default defineNuxtConfig({
       STARTUP_FROM: process.env.STARTUP_FROM || ''
     },
   },
-  vite: {
+  vite: { // https://nuxt.com/docs/api/configuration/nuxt-config#vite
     css: {
       preprocessorOptions: {
         scss: {
