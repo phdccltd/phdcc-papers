@@ -11,6 +11,8 @@ const packageJson = fs.readFileSync('./package.json', 'utf8')
 const version = JSON.parse(packageJson).version || 0
 console.log('Building phdcc-papers', version)
 
+import istanbul from 'vite-plugin-istanbul';
+
 export default defineNuxtConfig({
   ssr: false,
   build: {
@@ -50,6 +52,16 @@ export default defineNuxtConfig({
         },
       },
     },
+    plugins: [
+      /*istanbul({ // For Cypress testing
+        // See also: https://github.com/iFaxity/vite-plugin-istanbul/issues/28
+        include: ['api/*', 'components/*', 'composables/*', 'layouts/*', 'middleware/*', 'mixins/*', 'pages/**', 'plugins/*', 'stores/*', 'utils/*'],
+        exclude: ['node_modules', 'test/'],
+        extension: ['.js', '.ts', '.vue'],
+        cypress: true,
+        requireEnv: true,
+      })*/
+    ]
   },
   css: [
     '@/node_modules/@fortawesome/fontawesome-svg-core/styles.css',
