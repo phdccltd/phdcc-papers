@@ -23,7 +23,6 @@
   "comments": {
     "1": "pinia-plugin-persist package code in utils\\pinia-plugin-persist.ts from v1.0.0 https://github.com/Seb-L/pinia-plugin-persist",
     "3": "https://www.npmjs.com/package/@fortawesome/vue-fontawesome?activeTab=versions",
-    "4": "Keep at 2.3.1 - https://www.npmjs.com/package/@vitejs/plugin-legacy?activeTab=versions",
     "5": "bootstrap-vue-next 0.4.15 Switch to unplugin-icons https://cdmoro.github.io/bootstrap-vue-3/icons/"
   },
   "dependencies": {
