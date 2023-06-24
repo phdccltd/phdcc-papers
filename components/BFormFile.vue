@@ -31,7 +31,7 @@ export default defineComponent({
     function useId(id?: Ref<string | undefined>, suffix?: string) { return computed(() => id?.value || getId(suffix)) }
 
     const computedId = useId(toRef(props, 'id'), 'file')
-    const isHighlighted = ref(false)
+    // const isHighlighted = ref(false)
 
     const computedClasses = computed(() => {
       return {
