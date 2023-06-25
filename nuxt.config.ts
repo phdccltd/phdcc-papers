@@ -11,7 +11,7 @@ const packageJson = fs.readFileSync('./package.json', 'utf8')
 const version = JSON.parse(packageJson).version || 0
 console.log('Building phdcc-papers', version)
 
-// import istanbul from 'vite-plugin-istanbul';
+import istanbul from 'vite-plugin-istanbul'
 
 export default defineNuxtConfig({
   ssr: false,
