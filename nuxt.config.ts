@@ -54,14 +54,14 @@ export default defineNuxtConfig({
       },
     },
     plugins: [
-      /* istanbul({ // For Cypress testing copied from old vite.config.js but tests generate PayloadTooLargeError: request entity too large
+      istanbul({ // For Cypress testing copied from old vite.config.js but tests generate PayloadTooLargeError: request entity too large
         // See also: https://github.com/iFaxity/vite-plugin-istanbul/issues/28
         include: ['api/*', 'components/*', 'composables/*', 'layouts/*', 'middleware/*', 'mixins/*', 'pages/**', 'plugins/*', 'stores/*', 'utils/*'],
         exclude: ['node_modules', 'test/'],
         extension: ['.js', '.ts', '.vue'],
         cypress: true,
         requireEnv: true,
-      })*/
+      })
     ]
   },
   css: [
