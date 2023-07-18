@@ -54,14 +54,13 @@ import { useUsersStore } from '~/stores/users'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
-definePageMeta({
-  middleware: 'authuser',
-})
-
 export default {
   inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
+    definePageMeta({
+      middleware: 'authuser',
+    })
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()

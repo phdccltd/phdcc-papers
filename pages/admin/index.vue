@@ -166,14 +166,13 @@ import { useUsersStore } from '~/stores/users'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
-definePageMeta({
-  middleware: 'authsuper',
-})
-
 export default {
   inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
+    definePageMeta({
+      middleware: 'authsuper',
+    })
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
@@ -206,7 +205,7 @@ export default {
     await this.usersStore.clearError()
     await this.usersStore.fetchallusers()
     this.miscStore.set({ key: 'page-title', value: 'Site super admin' })
-},
+  },
 
   computed: {
     pubs() {

@@ -21,16 +21,16 @@
     <b-list-group class="sitepages">
       <b-list-group-item v-for="(sitepage, index) in sitepages" :key="index" class="">
         <h3 class="sitepage-submit-h3">
-          <b-link @click.prevent="deleteSitePage(sitepage)" class="me-2" :data-cy="'deleteSitePage-'+sitepage.id">
+          <b-link @click.prevent="deleteSitePage(sitepage)" class="me-2" :data-cy="'deleteSitePage-' + sitepage.id">
             <v-icon icon="times-circle" class="btn-outline-danger" />
           </b-link>
-          <b-link @click.prevent="toggleSitePageShow(sitepage)" :data-cy="'sitePageTitle-'+sitepage.id">
+          <b-link @click.prevent="toggleSitePageShow(sitepage)" :data-cy="'sitePageTitle-' + sitepage.id">
             {{ sitepage.id }}: {{ sitepage.path }} - {{ sitepage.title }}
           </b-link>
           <NuxtLink target="_blank" :to="sitepage.path" class="float-end">
             <v-icon icon="external-link-alt" class="btn-outline-warning" />
           </NuxtLink>
-          <b-button variant="link" @click="startEditSitePage(sitepage)" :data-cy="'editSitePage-'+sitepage.id">
+          <b-button variant="link" @click="startEditSitePage(sitepage)" :data-cy="'editSitePage-' + sitepage.id">
             <v-icon icon="edit" class="btn-outline-warning" />
           </b-button>
         </h3>
@@ -55,7 +55,7 @@
             <b-col sm="2">
               Content
             </b-col>
-            <b-col sm="10" class="formfieldview" :data-cy="'sitePageVisibleContent-'+sitepage.id">
+            <b-col sm="10" class="formfieldview" :data-cy="'sitePageVisibleContent-' + sitepage.id">
               <p v-for="para in sitepage.paras" class="pre-textarea mb-0">{{ para }}</p>
             </b-col>
           </b-row>
@@ -76,8 +76,7 @@
             <b-form-input id="pagetitle" v-model="pagetitle" placeholder="Required" required></b-form-input>
           </b-form-group>
           <b-form-group label="Content" label-for="pagecontent" label-cols-sm="2" state="true">
-            <b-form-textarea id="pagecontent" v-model="pagecontent" rows="10" max-rows="100" style="overflow-y: auto;" placeholder="Required"
-              required>
+            <b-form-textarea id="pagecontent" v-model="pagecontent" rows="10" max-rows="100" style="overflow-y: auto;" placeholder="Required" required>
             </b-form-textarea>
           </b-form-group>
         </form>
@@ -103,14 +102,13 @@ import { useUsersStore } from '~/stores/users'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
-definePageMeta({
-  middleware: 'authsuper',
-})
-
 export default {
   inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
+    definePageMeta({
+      middleware: 'authsuper',
+    })
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
@@ -141,7 +139,7 @@ export default {
     this.sitepagesStore.error = false
     await this.sitepagesStore.fetch()
     this.miscStore.set({ key: 'page-title', value: 'Site pages' })
-},
+  },
   computed: {
     fatalerror() {
       return this.sitepagesStore.error

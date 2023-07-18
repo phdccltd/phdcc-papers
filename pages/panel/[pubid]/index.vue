@@ -17,13 +17,12 @@ import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 
-definePageMeta({
-  middleware: ["authuser"]
-})
-
 export default {
   inject: { setLayoutMessage: {} },
   setup() {
+    definePageMeta({
+      middleware: ["authuser"]
+    })
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
     const submitsStore = useSubmitsStore()

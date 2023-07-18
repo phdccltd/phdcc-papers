@@ -7,12 +7,14 @@
 
 <script lang="ts">
 
-definePageMeta({
-  middleware: ["authuser"]
-})
-
 export default {
   inject: { setLayoutMessage: {} },
+  setup() {
+    definePageMeta({
+      middleware: ["authuser"]
+    })
+    return {}
+  },
   mounted() {
     this.setLayoutMessage()
   },

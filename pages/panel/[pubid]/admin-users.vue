@@ -95,14 +95,13 @@ import _ from 'lodash/core'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
-definePageMeta({
-  middleware: 'authuser',
-})
-
 export default {
   inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
+    definePageMeta({
+      middleware: 'authuser',
+    })
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
     const pubsStore = usePubsStore()
@@ -248,13 +247,13 @@ export default {
     },
     addUserRole() {
       if (this.chosennewrole == 0) return this.msgBoxOk('No new role chosen!')
-        const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
-        if (!roletoadd) return
-        if (roletoadd.isowner) {
-          this.showConfirm(this.addroleusername, 'This is an OWNER role. Do you want to continue?', this.confirmAddUserRole, null, null, null, 'danger')
-        } else{
-          this.confirmAddUserRole()
-        }
+      const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
+      if (!roletoadd) return
+      if (roletoadd.isowner) {
+        this.showConfirm(this.addroleusername, 'This is an OWNER role. Do you want to continue?', this.confirmAddUserRole, null, null, null, 'danger')
+      } else {
+        this.confirmAddUserRole()
+      }
     },
     async confirmAddUserRole() {
       //console.log('addUserRole', this.addroleuserid, this.chosennewrole)

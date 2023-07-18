@@ -16,8 +16,8 @@
           <div class="mb-2">
             <div>
               <strong>Choose a role:</strong>
-              <b-form-select :options="pubusers.pubroles" size="sm" value-field="id" text-field="name" v-model="selectedrole"
-                v-on:input="rolechanged()" style="width:auto;">
+              <b-form-select :options="pubusers.pubroles" size="sm" value-field="id" text-field="name" v-model="selectedrole" v-on:input="rolechanged()"
+                style="width:auto;">
                 <template v-slot:first>
                   <b-form-select-option selected value="0">Select</b-form-select-option>
                   <b-form-select-option selected value="-1">All users</b-form-select-option>
@@ -96,14 +96,13 @@ import _ from 'lodash/core'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
-definePageMeta({
-  middleware: 'authuser',
-})
-
 export default {
   inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
+    definePageMeta({
+      middleware: 'authuser',
+    })
     const authStore = useAuthStore()
     const mailTemplatesStore = useMailTemplatesStore()
     const miscStore = useMiscStore()

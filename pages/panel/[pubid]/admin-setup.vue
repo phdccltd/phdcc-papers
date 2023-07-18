@@ -42,14 +42,13 @@ import _ from 'lodash/core'
 import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
-definePageMeta({
-  middleware: 'authuser',
-})
-
 export default {
   inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
+    definePageMeta({
+      middleware: 'authuser',
+    })
     const authStore = useAuthStore()
     const mailTemplatesStore = useMailTemplatesStore()
     const miscStore = useMiscStore()
@@ -132,19 +131,19 @@ export default {
 
     async confirmDeletePub() {
       console.log('deletePub')
-        try {
-          const ok = await api.pubs.deletePub(this.confirmpub.id)
-          if (ok) {
-            await this.pubsStore.fetch()
-            this.$nextTick(() => {
-              navigateTo('/panel')
-            })
-          } else {
-            this.msgBoxFail('Delete went wrong')
-          }
-        } catch (e) {
-          this.msgBoxError('Error deleting publication: ' + e.message)
+      try {
+        const ok = await api.pubs.deletePub(this.confirmpub.id)
+        if (ok) {
+          await this.pubsStore.fetch()
+          this.$nextTick(() => {
+            navigateTo('/panel')
+          })
+        } else {
+          this.msgBoxFail('Delete went wrong')
         }
+      } catch (e) {
+        this.msgBoxError('Error deleting publication: ' + e.message)
+      }
     }
   },
 }
