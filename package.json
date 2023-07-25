@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "scripts": {
@@ -60,7 +60,7 @@
     "unplugin-icons": "^0.16.3",
     "unplugin-vue-components": "^0.25.1",
     "vite-plugin-eslint": "^1.3.0",
-    "vite-plugin-istanbul": "^4.0.0",
+    "vite-plugin-istanbul": "^5.0.0",
     "wait-on": "^7.0.1"
   }
 }
