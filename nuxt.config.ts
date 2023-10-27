@@ -47,6 +47,10 @@ export default defineNuxtConfig({
     },
   },
   vite: { // https://nuxt.com/docs/api/configuration/nuxt-config#vite
+    /* Try as part of getting coverage to work
+    build:{
+      sourcemap: true
+    },*/
     css: {
       preprocessorOptions: {
         scss: {

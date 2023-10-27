@@ -18,8 +18,7 @@ describe('Author basic actions', () => {
 
     cy.get('[data-cy="pubsub-flow-action-1"]').click()
 
-    cy.visit('/panel/1/1/add/1')
-    cy.url().should('include', '/panel/1/1/add/1')
+    cy.url().should('include', '/panel/1/1/add/1') // This page not shown: since nuxt 3.8.0: vue.js... does not provide an export named Ref
 
     cy.get('[data-cy="forminput-field0"]').type('Lorem ipsum')
     cy.get('[data-cy="forminput-field1"]').type('Jo Bloggs')

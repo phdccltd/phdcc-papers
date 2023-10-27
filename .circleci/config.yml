@@ -58,11 +58,12 @@ jobs:
       # RUN CYPRESS TESTS
       - run: mkdir .nyc_output
       - run: mkdir coverage
-      - run: npm run cypress || true
+      # - run: npm run cypress || true
+      - run: npm run cypress
 
+      # Store Cypress fail screenshots as artifacts
       - store_artifacts:
           path: ./cypress/screenshots
-
 
       ################
       # Upload results to coveralls
