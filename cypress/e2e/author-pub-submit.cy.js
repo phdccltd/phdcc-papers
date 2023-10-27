@@ -18,7 +18,6 @@ describe('Author basic actions', () => {
 
     cy.get('[data-cy="pubsub-flow-action-1"]').click()
 
-    cy.visit('/panel/1/1/add/1')
     cy.url().should('include', '/panel/1/1/add/1')
 
     cy.get('[data-cy="forminput-field0"]').type('Lorem ipsum')
