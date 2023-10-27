@@ -104,7 +104,7 @@ The `clienttest` instance of this app must be run alongside the `forclient` inst
 * Papers API `forclient`: runs using Sqlite3 in-memory database listening on a localhost port: `npm run forclient`
 * Papers client `clienttest`: builds with coverage and runs at a local port access the API on its localhost port: `npm run clienttest`
 
-You can then run Cypress interactively or using command: `npm run cypress`.
+You can then run Cypress interactively using `npx cypress open` or using command: `npm run cypress`.
 Coverage output is generated in `\coverage`.
 
 ```

@@ -9,7 +9,7 @@
         <div v-else>{{ help }}</div>
       </div>
       <b-form-textarea :id="sid" v-bind:model-value="modelValue" v-on:input="$emit('update:modelValue', $event)" max-rows="100" class="font-weight-bold"
-        style="overflow-y: auto;" :placeholder="reqd ? 'Required' : ''" :data-cy="'formtext-'+sid">
+        style="overflow-y: auto;" :placeholder="reqd ? 'Required' : ''" :data-cy="'formtext-' + sid">
       </b-form-textarea>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -17,7 +17,7 @@
       <b-col sm="3">
         {{ label }}
       </b-col>
-      <b-col sm="8" class="formfieldview" :data-cy="'formtext-value'+sid">
+      <b-col sm="8" class="formfieldview" :data-cy="'formtext-value' + sid">
         <p v-for="para in modelValueParas" class="pre-textarea">{{ para }}</p>
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
@@ -49,7 +49,8 @@ export default {
     labelreqd() {
       return this.reqd ? this.label + ' *' : this.label
     },
-    modelValueParas(){
+    modelValueParas() {
+      if (this.modelValue == null) return []
       return this.modelValue.split('\n')
     }
   }
