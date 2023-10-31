@@ -12,7 +12,7 @@
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages"
-//import jwt_decode from 'jwt-decode'
+//import {jwt_decode} from 'jwt-decode'
 import api from '~/api'
 
 export default {
