@@ -32,7 +32,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@pinia/nuxt": "^0.5.1",
     "@popperjs/core": "^2.11.6",
-    "@vitejs/plugin-legacy": "^4.0.4",
+    "@vitejs/plugin-legacy": "^5.2.0",
     "axios": "^1.2.3",
     "jwt-decode": "^4.0.0",
     "path-browserify": "^1.0.1",
