@@ -20,6 +20,9 @@
     "waitonclient": "wait-on http://localhost:3000/ && echo 'READY'",
     "runner": "cross-env PORT=n node .output/server/index.mjs"
   },
+  "engines": {
+    "node": "^18.0.0"
+  },
   "comments": {
     "1": "pinia-plugin-persist package code in utils\\pinia-plugin-persist.ts from v1.0.0 https://github.com/Seb-L/pinia-plugin-persist",
     "3": "https://www.npmjs.com/package/@fortawesome/vue-fontawesome?activeTab=versions",
