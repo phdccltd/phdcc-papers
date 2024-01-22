@@ -1,4 +1,5 @@
 name: Azure Static Web Apps CI/CD
+# Note: Specify nodejs version in package.json - engines/node 
 
 on:
   push:

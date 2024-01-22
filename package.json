@@ -24,6 +24,7 @@
     "node": "^18.0.0"
   },
   "comments": {
+    "0": "engines/node specifies azure static web app runtime used",
     "1": "pinia-plugin-persist package code in utils\\pinia-plugin-persist.ts from v1.0.0 https://github.com/Seb-L/pinia-plugin-persist",
     "3": "https://www.npmjs.com/package/@fortawesome/vue-fontawesome?activeTab=versions",
     "5": "bootstrap-vue-next 0.4.15 Switch to unplugin-icons https://cdmoro.github.io/bootstrap-vue-3/icons/"
