@@ -7,6 +7,9 @@
     <div v-else>
       <HelpPanel :custom="pub.description" />
       <Messages :error="error" :message="message" />
+      <div v-for="pubrolemessage in pub.pubrolemessages">
+        <PubRoleMessage :message="pubrolemessage"/>
+      </div>
       <PublicationSubmissions :setError="setError" :setMessage="setMessage" />
     </div>
   </div>
