@@ -29,7 +29,9 @@ export default defineNuxtConfig({
   plugins: [
     // No need but it's there: '~/plugins/pinia-plugin-persist.client'
   ],
-
+  bootstrapVueNext: { // ?Needed for bootstrap-vue-next@0.16.0
+    composables: true, // Will include all composables
+  },
   runtimeConfig: {
     // The private keys which are only available server-side
     
