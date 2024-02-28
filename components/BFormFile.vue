@@ -10,13 +10,14 @@
 </template>
 
 <script lang="ts">
-import { computed, Ref } from 'vue'
+import { computed } from 'vue'
 
 export default defineComponent({
   props: {
     id: { type: String, required: true },
     accept: { type: String, required: true },
     placeholder: { type: String, required: true },
+    chosenfilename: { type: String, required: false },
   },
   data() {
     return {
@@ -28,7 +29,7 @@ export default defineComponent({
       return `__BVID__${Math.random().toString().slice(2, 8)}___BV_${suffix}__`
     }
 
-    function useId(id?: Ref<string | undefined>, suffix?: string) { return computed(() => id?.value || getId(suffix)) }
+    function useId(id, suffix) { return computed(() => id?.value || getId(suffix)) }
 
     const computedId = useId(toRef(props, 'id'), 'file')
     // const isHighlighted = ref(false)
@@ -44,16 +45,23 @@ export default defineComponent({
       computedId,
     }
   },
+  async mounted() {
+    // Already fetched: lookups, portals, teams
+  },
   computed: {
     displayedfilename() {
-      return this.placeholder
+      return this.chosenfilename || this.placeholder
     }
   },
   methods: {
-    onInput(evt: any) { // Must use @input.stop above to stop propogation
-      const file = evt.target.files[0]
-      this.displayedfilename = file.name
-      this.$emit('input', file)
+    onInput(evt: any) { // Must use @input.stop above to stop propagation
+      // console.log("BFormFile onInput", evt.target.files)
+      let file = null
+      if (evt.target.files.length > 0) {
+        file = evt.target.files[0]
+      }
+
+      this.$emit('input', file) // onInput handler then sets this.chosenfilename
     },
   }
 })
