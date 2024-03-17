@@ -66,19 +66,15 @@ export default {
     arrayvalues: {
       get: function () {
         if (!this.modelValue) return []
-        //console.log('arrayvalues get')
         return this.modelValue.split(',')
       },
       set: function (v) {
-        //console.log('arrayvalues set', v.join(','))
         this.$emit('update:modelValue', v.length == 0 ? null : v.join(','))
       },
     },
     plainvalues() {
-      //console.log("FormLookup plainvalues")
       if (!this.modelValue) return ''
       const avalues = this.modelValue.split(',')
-      //console.log(avalues)
       const atext = []
       for (const option of this.options) {
         for (const av of avalues) {
@@ -97,10 +93,9 @@ export default {
 
       const publookup = _.find(pub.publookups, _publookup => { return _publookup.id === this.publookupId })
       if (!publookup) return []
-      //console.log('publookup', publookup)
       if (publookup && publookup.values) {
         publookup.values.forEach(v => {
-          v.value = v.id
+          v.value = v.id.toString()
         })
       }
       return publookup.values

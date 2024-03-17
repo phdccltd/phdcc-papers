@@ -8,7 +8,8 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-input :id="sid" :type="type" v-bind:model-value="modelValue" v-on:input="input" :placeholder="reqd ? 'Required' : ''" :data-cy="'forminput-'+sid">
+      <b-form-input :id="sid" :type="type" v-bind:model-value="modelValue" :placeholder="reqd ? 'Required' : ''" :data-cy="'forminput-' + sid"
+        @update:modelValue="update">
       </b-form-input>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -16,7 +17,7 @@
       <b-col sm="3">
         {{ label }}
       </b-col>
-      <b-col sm="8" class="formfieldview" :data-cy="'forminput-value-'+sid">
+      <b-col sm="8" class="formfieldview" :data-cy="'forminput-value-' + sid">
         {{ modelValue }}
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
@@ -49,10 +50,10 @@ export default {
       return this.reqd ? this.label + ' *' : this.label
     },
   },
-  methods:{
-    input(event){ // this.$emit('update:modelValue', $event)
+  methods: {
+    update(event) { // this.$emit('update:modelValue', $event)
       this.$emit('update:modelValue', event)
-    }
+    },
   }
 }
 </script>

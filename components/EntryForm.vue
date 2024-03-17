@@ -441,6 +441,7 @@ export default {
       }
     },
     changed(field) {
+      //console.log('ENTRYFORM field changed',field, field.val, field.val.string, field.val.text)
       field.message = ''
       this.validationsummary = ''
     },

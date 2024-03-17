@@ -8,8 +8,8 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-textarea :id="sid" v-bind:model-value="modelValue" v-on:input="$emit('update:modelValue', $event)" max-rows="100" class="font-weight-bold"
-        style="overflow-y: auto;" :placeholder="reqd ? 'Required' : ''" :data-cy="'formtext-' + sid">
+      <b-form-textarea :id="sid" max-rows="100" v-model="modelValue2" class="font-weight-bold" style="overflow-y: auto;"
+        :placeholder="reqd ? 'Required' : ''" :data-cy="'formtext-' + sid" @update="update">
       </b-form-textarea>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -33,6 +33,7 @@
 export default {
   data() {
     return {
+      modelValue2: ''
     }
   },
   props: {
@@ -45,6 +46,9 @@ export default {
     modelValue: { type: String },
     message: { type: String },
   },
+  mounted() {
+    this.modelValue2 = this.modelValue
+  },
   computed: {
     labelreqd() {
       return this.reqd ? this.label + ' *' : this.label
@@ -52,6 +56,9 @@ export default {
     modelValueParas() {
       if (this.modelValue == null) return []
       return this.modelValue.split('\n')
+    },
+    update(event) {
+      this.$emit('update:modelValue', this.modelValue2)
     }
   }
 }

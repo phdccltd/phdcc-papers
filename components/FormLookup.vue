@@ -89,7 +89,7 @@ export default {
       const publookup = _.find(pub.publookups, _publookup => { return _publookup.id === this.publookupId })
       if (publookup && publookup.values) {
         publookup.values.forEach(v => {
-          v.value = v.id
+          v.value = v.id.toString()
         })
       }
       return publookup.values
