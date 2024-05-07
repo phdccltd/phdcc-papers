@@ -1,6 +1,6 @@
 {
   "name": "phdcc-papers",
-  "version": "2.0.29",
+  "version": "2.0.30",
   "description": "Papers journal/conference abstract and paper submission and review system",
   "author": "chriscant",
   "scripts": {
@@ -55,7 +55,6 @@
     "cross-env": "^7.0.3",
     "cypress": "^13.1.0",
     "env-cmd": "^10.1.0",
-    "eslint": "^8.57.0",
     "eslint-plugin-prettier": "^5.0.0",
     "nuxt": "^3.11.2",
     "prettier": "^3.0.0",
