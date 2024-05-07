@@ -49,7 +49,7 @@
         </b-form-select>
       </b-row>
       <b-form ref="form" @submit="onSubmit" @submit.stop.prevent novalidate>
-        <b-form-group label="To" label-for="mailsubject" label-cols-sm="2" state="true">
+        <b-form-group label="To" label-for="mailsubject" label-cols-sm="2" :state="true">
           <div v-if="selectedrole" class="col-form-label">
             Role {{ rolename }} will email {{ rolecounttext }}.
           </div>
@@ -58,10 +58,10 @@
             has roles: {{ chosenuser.sroles }}
           </div>
         </b-form-group>
-        <b-form-group label="Subject" label-for="mailsubject" label-cols-sm="2" state="true">
+        <b-form-group label="Subject" label-for="mailsubject" label-cols-sm="2" :state="true">
           <b-form-input id="mailsubject" v-model="mailsubject" placeholder="Required" required v-on:input="clearmessages()"></b-form-input>
         </b-form-group>
-        <b-form-group label="Text" label-for="mailtext" label-cols-sm="2" state="true">
+        <b-form-group label="Text" label-for="mailtext" label-cols-sm="2" :state="true">
           Only plain text supported. Substitutions NOT supported.
           <b-form-textarea id="mailtext" v-model="mailtext" v-on:input="clearmessages()" rows="10" max-rows="100" style="overflow-y: auto;"
             placeholder="Required" required>

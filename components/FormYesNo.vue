@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form-group v-if="edit" :label="labelreqd" label-cols-sm="3" state="true">
+    <b-form-group v-if="edit" :label="labelreqd" label-cols-sm="3" :state="true">
       <div class="form-help">
         <a v-if="helplink" :href="helplink" target="_blank">
           {{ help }}

@@ -78,13 +78,13 @@
                 <b-col sm="6">
                   <div v-if="pub.hasanyrole">
                     <b-form @submit.stop.prevent class="ms-5">
-                      <b-form-group label="User:" label-cols-sm="2" state="true">
+                      <b-form-group label="User:" label-cols-sm="2" :state="true">
                         <b-form-select v-model="pub.adduserid" :options="allusersoptions" class="me-2"></b-form-select>
                       </b-form-group>
-                      <b-form-group label="Role:" label-cols-sm="2" state="true">
+                      <b-form-group label="Role:" label-cols-sm="2" :state="true">
                         <b-form-select v-model="pub.addroleid" :options="allrolesoptions(pub.id)" class="me-2"></b-form-select>
                       </b-form-group>
-                      <b-form-group label="" label-cols-sm="3" state="true">
+                      <b-form-group label="" label-cols-sm="3" :state="true">
                         <b-button variant="outline-success" @click="addPubRole(pub)">
                           Add role
                         </b-button>
@@ -109,10 +109,10 @@
     <b-modal v-model="showAddModal" id="bv-modal-add-pub" title="Add publication" centered>
       <template #default>
         <form ref="form" @submit.stop.prevent>
-          <b-form-group label="Name" label-for="pubname" label-cols-sm="2" state="true">
+          <b-form-group label="Name" label-for="pubname" label-cols-sm="2" :state="true">
             <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
           </b-form-group>
-          <b-form-group label="Description" label-for="pubdescr" label-cols-sm="2" state="true">
+          <b-form-group label="Description" label-for="pubdescr" label-cols-sm="2" :state="true">
             <b-form-textarea id="pubdescr" v-model="pubdescr" rows="3" max-rows="10" style="overflow-y: auto;" placeholder="Required" required>
             </b-form-textarea>
           </b-form-group>
@@ -135,10 +135,10 @@
               You can choose whether or not to give the current publication users access to the new publication - and copy their roles across.
             </li>
           </ul>
-          <b-form-group label="Name" label-for="pubname" label-cols-sm="2" state="true">
+          <b-form-group label="Name" label-for="pubname" label-cols-sm="2" :state="true">
             <b-form-input id="pubname" v-model="pubname" placeholder="Required" required></b-form-input>
           </b-form-group>
-          <b-form-group label="Users" label-for="pubdupusers" label-cols-sm="2" state="true">
+          <b-form-group label="Users" label-for="pubdupusers" label-cols-sm="2" :state="true">
             <b-form-checkbox id="pubdupusers" v-model="pubdupusers" class="mt-2">
               Give users access and copy roles
             </b-form-checkbox>

@@ -5,7 +5,7 @@
     <div v-html="content">
     </div>
     <b-form @submit="onSubmit" @submit.stop.prevent>
-      <b-form-group label="Email address:" label-cols-sm="3" label-for="email" state="true">
+      <b-form-group label="Email address:" label-cols-sm="3" label-for="email" :state="true">
         <b-form-input id="email" v-model="form.email" type="email" required placeholder="Enter email"></b-form-input>
       </b-form-group>
       <b-row no-gutters>

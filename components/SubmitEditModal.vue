@@ -3,10 +3,10 @@
     <b-modal v-model="showModal" id="modal-edit-submit" title="Edit submission title and author" size="lg" centered>
       <template #default>
         <form ref="form" @submit.stop.prevent>
-          <b-form-group label="Title" label-for="new-title" invalid-feedback="Title is required" state="true">
+          <b-form-group label="Title" label-for="new-title" invalid-feedback="Title is required" :state="true">
             <b-form-input id="new-title" required v-model="newtitle"></b-form-input>
           </b-form-group>
-          <b-form-group label="Author" label-for="newauthor" state="true">
+          <b-form-group label="Author" label-for="newauthor" :state="true">
             <b-form-select v-model="newauthor" :options="newauthoroptions"></b-form-select>
           </b-form-group>
         </form>

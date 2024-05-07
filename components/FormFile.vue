@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Uses our own BFormFile as this not in bootstrap-vue-3 yet -->
-    <b-form-group v-if="edit" :label="labelreqd" :label-for="sid" label-cols-sm="3" state="true">
+    <b-form-group v-if="edit" :label="labelreqd" :label-for="sid" label-cols-sm="3" :state="true">
       <div class="form-help">
         <a v-if="helplink" :href="helplink" target="_blank">
           {{ help }}

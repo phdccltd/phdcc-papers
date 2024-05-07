@@ -36,14 +36,14 @@
       </template>
       <template #default>
         <form ref="form" @submit.stop.prevent>
-          <b-form-group label="Stage" label-for="stage" label-cols-sm="2" state="true">
+          <b-form-group label="Stage" label-for="stage" label-cols-sm="2" :state="true">
             <b-form-select id="stage" :options="this.availablestages" size="sm" v-model="chosenstage" style="width:auto;">
               <template v-slot:first>
                 <b-form-select-option disabled value="0">Select a stage</b-form-select-option>
               </template>
             </b-form-select>
           </b-form-group>
-          <b-form-group label="Open" label-for="open" label-cols-sm="2" state="true">
+          <b-form-group label="Open" label-for="open" label-cols-sm="2" :state="true">
             <b-form-checkbox id="open" v-model="chosenopen">
               Open for submissions
             </b-form-checkbox>
@@ -51,7 +51,7 @@
           <div>
             If a user's submission needs to be at a certain stage before they can submit this type of entry, select it here:
           </div>
-          <b-form-group label="Status" label-for="status" label-cols-sm="2" state="true">
+          <b-form-group label="Status" label-for="status" label-cols-sm="2" :state="true">
             <b-form-select id="status" :options="this.availablestatuses" size="sm" v-model="chosenstatus" style="width:auto;">
               <template v-slot:first>
                 <b-form-select-option value="0">No status needed</b-form-select-option>
