@@ -288,12 +288,12 @@ export default {
           field.message = ''
           const fv = {
             formfieldid: field.id,
-            string: field.val.string,
-            integer: field.val.integer,
-            text: field.val.text,
+            string: field.val.string ?? null,
+            integer: field.val.integer ?? null,
+            text: field.val.text ?? null,
             //file: field.val.newfile ? field.val.newfile.name : null,
-            existingfile: field.val.file,
-            file: field.val.newfile,
+            existingfile: field.val.file ?? null,
+            file: field.val.newfile ?? null,
           }
           if (field.val.newfile) { // View filename
             field.val.file = field.val.newfile.name // field.val.file = field.val.newfile.name
