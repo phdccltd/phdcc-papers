@@ -252,7 +252,7 @@ export default {
     },
     sectionheading() {
       const stagename = this.entry.stage.name
-      const isadd = this.formtype == 'addsubmit' || 'addstage'
+      const isadd = (this.formtype == 'addsubmit') || (this.formtype == 'addstage')
       return (this.editable ? (isadd ? 'Add ' : 'Edit ') : '') + stagename
     },
   },
