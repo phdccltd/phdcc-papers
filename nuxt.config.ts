@@ -16,6 +16,7 @@ console.log('Building phdcc-papers', version)
 export default defineNuxtConfig({
   ssr: false,
   spaLoadingTemplate: false,
+
   build: {
     // Reduce size of CSS initial load.
     // extractCSS: true
@@ -26,12 +27,15 @@ export default defineNuxtConfig({
   },
 
   modules: ['@bootstrap-vue-next/nuxt', '@pinia/nuxt', 'unplugin-icons/nuxt'],
+
   plugins: [
     // No need but it's there: '~/plugins/pinia-plugin-persist.client'
   ],
+
   bootstrapVueNext: { // ?Needed for bootstrap-vue-next@0.16.0
     composables: true, // Will include all composables
   },
+
   runtimeConfig: {
     // The private keys which are only available server-side
     
@@ -48,6 +52,7 @@ export default defineNuxtConfig({
       STARTUP_FROM: process.env.STARTUP_FROM || ''
     },
   },
+
   vite: { // https://nuxt.com/docs/api/configuration/nuxt-config#vite
     /* Try as part of getting coverage to work
     build:{
@@ -70,12 +75,16 @@ export default defineNuxtConfig({
       }) */
     ]
   },
+
   css: [
     '@/node_modules/@fortawesome/fontawesome-svg-core/styles.css',
     'bootstrap/dist/css/bootstrap.min.css',
     '@/assets/css/_global.scss',
   ],
+
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
   },
+
+  compatibilityDate: '2024-11-01',
 })

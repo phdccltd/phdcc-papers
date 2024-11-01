@@ -18,7 +18,7 @@ export default {
 </script>
   
 <style scoped lang="scss">
-@import '@/assets/css/_color-vars';
+@use '@/assets/css/_color-vars' as colors;
 
 .notice {
   border-width: 1px;
@@ -26,27 +26,27 @@ export default {
 }
 
 .notice--primary {
-  background-color: $color-white;
-  border-color: $colour-success-border;
-  color: $colour-success-fg;
+  background-color: colors.$color-white;
+  border-color: colors.$colour-success-border;
+  color: colors.$colour-success-fg;
 }
 
 .notice--info {
-  background-color: $color-blue--x-light;
-  border-color: $color-blue-x-light2;
-  color: $color-blue--1;
+  background-color: colors.$color-blue--x-light;
+  border-color: colors.$color-blue-x-light2;
+  color: colors.$color-blue--1;
 }
 
 .notice--warning {
-  background-color: $color-yellow-1;
-  border-color: $color-yellow-2;
-  color: $color-yellow-3;
+  background-color: colors.$color-yellow-1;
+  border-color: colors.$color-yellow-2;
+  color: colors.$color-yellow-3;
 }
 
 .notice--danger {
-  background-color: $color-red--lighter;
-  border-color: $color-red--light;
-  color: $color-red--dark;
+  background-color: colors.$color-red--lighter;
+  border-color: colors.$color-red--light;
+  color: colors.$color-red--dark;
 }
 </style>
   
