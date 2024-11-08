@@ -5,7 +5,7 @@ module.exports = defineConfig({
     // login_url: '/login'  // Use as Cypress.env('login_url')
   },
   e2e: {
-    baseUrl: 'http://localhost:3000',  // should be in cypress.env.json
+    baseUrl: 'http://127.0.0.1:3000',  // should be in cypress.env.json
 
     video: false,
 
