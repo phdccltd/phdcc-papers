@@ -3,6 +3,9 @@
 // Generated brokenly:
 // .nuxt\tsconfig.json: "pinia": [
 //    "node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia"
+  //alias: {
+  //  pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
+  //},
 // ]
 
 import fs from 'fs'
@@ -26,10 +29,6 @@ export default defineNuxtConfig({
     host: '127.0.0.1',
     port: 3000,
   },  
-
-  alias: {
-    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
-  },
 
   modules: ['@bootstrap-vue-next/nuxt', '@pinia/nuxt', 'unplugin-icons/nuxt'],
 
