@@ -9,7 +9,7 @@
   "include": ["components.d.ts"],
   "compilerOptions": {
     "types": [
-      "unplugin-icons/types/vue",
+      //"unplugin-icons/types/vue",
       //"pinia-plugin-persist"
       //"pinia", "lodash"
     ]
