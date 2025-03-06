@@ -8,7 +8,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-textarea :id="sid" max-rows="100" v-model="modelValue2" class="font-weight-bold" style="overflow-y: auto;"
+      <b-form-textarea :id="sid" max-rows="100" v-model="modelValue2" style="overflow-y: auto;"
         :placeholder="reqd ? 'Required' : ''" :data-cy="'formtext-' + sid" @update="update">
       </b-form-textarea>
       <div class="alert-warning">{{ message }}</div>

@@ -54,6 +54,8 @@
               :reqd="submittitle.required" :message="submittitle.message" v-on:input="changed(submittitle)" v-model="submittitle.val" />
           </div>
           <b-container v-for="(field, index) in entry.fields" :key="index" class="mt-2 ps-0">
+            <div v-if="field.type == 'plain'">{{field.label}}</div>
+            <div v-if="field.type == 'heading'" class="font-weight-bold">{{field.label}}</div>
             <FormInput v-if="field.type == 'email'" type="email" :edit="editable" :label="field.label" :sid="'field' + field.id" :help="field.help"
               :helplink="field.helplink" :class="fieldclass(field)" :reqd="field.required" :message="field.message" v-on:input="changed(field)"
               v-model="field.val.string" />
