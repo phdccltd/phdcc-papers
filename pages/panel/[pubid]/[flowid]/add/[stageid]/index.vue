@@ -8,15 +8,11 @@
 <script lang="ts">
 
 export default {
-  inject: { setLayoutMessage: {} },
   setup() {
     definePageMeta({
       middleware: ["authuser"]
     })
     return {}
-  },
-  mounted() {
-    this.setLayoutMessage()
   },
   data() {
     return {

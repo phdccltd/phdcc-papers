@@ -30,10 +30,9 @@ export default defineNuxtConfig({
     port: 3000,
   },  
 
-  modules: ['@bootstrap-vue-next/nuxt', '@pinia/nuxt'], //'unplugin-icons/nuxt'
+  modules: ['@bootstrap-vue-next/nuxt', '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt'], //'unplugin-icons/nuxt'
 
   plugins: [
-    // No need but it's there: '~/plugins/pinia-plugin-persist.client'
   ],
 
   bootstrapVueNext: { // ?Needed for bootstrap-vue-next@0.16.0

@@ -38,8 +38,8 @@
       </div>
     </div>
     <div class="container">
-      <b-alert variant="warning" :modelValue="layoutmessage.length > 0" class="mt-2">
-        {{ layoutmessage }}
+      <b-alert variant="warning" :modelValue="getlayoutmessage.length > 0" class="mt-2">
+        {{ getlayoutmessage }}
       </b-alert>
       <slot />
     </div>
@@ -53,107 +53,97 @@
   </div>
 </template>
 
-<script lang="ts">
-
+<script setup>
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const usersStore = useUsersStore()
 
-export default {
-  setup() {
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
-    const usersStore = useUsersStore()
-    return { authStore, miscStore, pubsStore, submitsStore, usersStore }
-  },
-  data: function () {
-    return {
-      layoutmessage: ''
-    }
-  },
-  mounted() {
-  },
-  provide() {
-    const me = this
-    return {
-      setLayoutMessage(msg?: string) {
-        if (msg && msg.length > 0) {
-          me.miscStore.set({ key: 'message', value: msg })
-          me.layoutmessage = msg
-        }
-        else {
-          const startmessage = me.miscStore.get('message')
-          if (startmessage && startmessage.length > 0) {
-            me.layoutmessage = startmessage
-            me.miscStore.set({ key: 'message', value: '' })
-          } else {
-            me.layoutmessage = ''
-          }
-        }
-      }
-    }
-  },
-  computed: {
-    // Client and Server
-    yourtime() {
-      const now = new Date()
-      return now.toLocaleString()
-    },
-    version() {
-      const runtimeConfig = useRuntimeConfig()
-      return runtimeConfig.public.VERSION
-    },
-    BUILD_DATE() {
-      const runtimeConfig = useRuntimeConfig()
-      return runtimeConfig.public.BUILD_DATE
-    },
-    apiversion() {
-      return this.miscStore.get('apiversion')
-    },
-    title() {
-      return this.miscStore.get('page-title')
-    },
-    titlesuffix() {
-      return this.miscStore.get('page-title-suffix')
-    },
-    loggedin() {
-      return this.authStore.loggedin
-    },
-    ismasquerading() {
-      return this.authStore.masquerading
-    },
-    issuper() {
-      return this.authStore.super
-    },
-    username() {
-      return this.authStore.name
-    },
-    pubid() {
-      const route = useRoute()
-      const path = '/' + route.params.id
-      if ('pubid' in route.params) {
-        return parseInt(route.params.pubid)
-      }
-      else
-        return false
-    },
-  },
-  methods: {
-    async logout() {
-      await this.authStore.logout()
-      this.miscStore.clearAll()
-      this.pubsStore.clearAll()
-      this.submitsStore.clearAll()
-      this.usersStore.clearAll()
-      navigateTo('/')
-    },
+const layoutmessage = ref('')
+const getlayoutmessage = computed(() => {
+  const startmessage = miscStore.get('message')
+  return startmessage ?? ''
+})
+
+const loggedin = computed(() => {
+  return authStore.loggedin
+})
+const issuper = computed(() => {
+  return authStore.super
+})
+const ismasquerading = computed(() => {
+  return authStore.masquerading
+})
+const pubid = computed(() => {
+  const route = useRoute()
+  const path = '/' + route.params.id
+  if ('pubid' in route.params) {
+    return parseInt(route.params.pubid)
   }
+  else
+    return false
+})
+const title = computed(() => {
+  return miscStore.get('page-title')
+})
+const titlesuffix = computed(() => {
+  return miscStore.get('page-title-suffix')
+})
+
+const yourtime = computed(() => {
+  const now = new Date()
+  return now.toLocaleString()
+})
+const version = computed(() => {
+  const runtimeConfig = useRuntimeConfig()
+  return runtimeConfig.public.VERSION
+})
+const BUILD_DATE = computed(() => {
+  const runtimeConfig = useRuntimeConfig()
+  return runtimeConfig.public.BUILD_DATE
+})
+const apiversion = computed(() => {
+  return miscStore.get('apiversion')
+})
+const username = computed(() => {
+  return authStore.name
+})
+
+async function logout() {
+  await authStore.logout()
+  miscStore.clearAll()
+  pubsStore.clearAll()
+  submitsStore.clearAll()
+  usersStore.clearAll()
+  navigateTo('/')
 }
+
+const nuxtApp = useNuxtApp()
+
+// provide $setLayoutMessage on nuxtApp for all pages and components if they wish to...
+// Set stored message for next page
+nuxtApp.provide('setLayoutMessage', (msg) => {
+  layoutmessage.value = msg
+  console.log('setLayoutMessage', layoutmessage.value)
+})
+
+// On page navigate, set message for next page and clear stored message
+const unregisterNavigationGuard = useRouter().beforeEach((to, from, next) => {
+  miscStore.set({ key: 'message', value: layoutmessage.value })
+  layoutmessage.value = false
+  next()
+})
+
+onUnmounted(unregisterNavigationGuard)
+
 </script>
+
 
 <style>
 .menu-title {

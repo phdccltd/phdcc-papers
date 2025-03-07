@@ -55,7 +55,6 @@ import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
 export default {
-  inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
     definePageMeta({
@@ -82,7 +81,6 @@ export default {
     }
   },
   async mounted() { // Client only
-    this.setLayoutMessage()
     this.error = ''
     this.message = ''
     await this.pubsStore.clearError()

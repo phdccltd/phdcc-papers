@@ -1,17 +1,10 @@
 import { defineStore } from 'pinia'
 import api from '~/api'
 
-export const useAuthStore = defineStore({
-  id: 'auth',
+export const useAuthStore = defineStore('auth', {
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-        // Just persist everything
-        //paths: [],
-      },
-    ],
+    storage: window.localStorage,
+    //pick: [],
   },
   state: () => ({
     authorization: null,

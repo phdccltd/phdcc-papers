@@ -21,7 +21,6 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 
 export default {
-  inject: { setLayoutMessage: {} },
   setup() {
     definePageMeta({
       middleware: ["authuser"]
@@ -39,7 +38,6 @@ export default {
     }
   },
   async mounted() { // Client only
-    this.setLayoutMessage()
     this.error = ''
     this.message = ''
     //console.log('_id mounted', this.pubid)

@@ -4,12 +4,8 @@ import api from '~/api'
 
 export const useMailTemplatesStore = defineStore('mailtemplates', {
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-      },
-    ],
+    storage: window.localStorage,
+    //pick: [],
   },
   state: () => ({
     mailtemplates: {},

@@ -4,13 +4,8 @@ import api from '~/api'
 
 export const useSitePagesStore = defineStore('sitepages', {
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-        paths: ['list'],
-      },
-    ],
+    storage: window.localStorage,
+    pick: ['list'],
   },
   state: () => ({
     list: [],

@@ -4,12 +4,8 @@ import api from '~/api'
 
 export const usePubsStore = defineStore('pubs', {
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-      },
-    ],
+    storage: window.localStorage,
+    //pick: [],
   },
   state: () => ({
     pubs: {},

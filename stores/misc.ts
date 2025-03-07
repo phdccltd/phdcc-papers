@@ -2,12 +2,8 @@ import { defineStore } from 'pinia'
 
 export const useMiscStore = defineStore('misc', {
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-      },
-    ],
+    storage: window.localStorage,
+    //pick: [],
   },
   state: () => ({
     vals: {},

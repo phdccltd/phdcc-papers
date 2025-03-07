@@ -35,7 +35,6 @@ import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 
 export default {
-  inject: { setLayoutMessage: {} },
   setup() {
     definePageMeta({
       middleware: 'authuser',
@@ -56,7 +55,6 @@ export default {
     }
   },
   async mounted() { // Client only
-    this.setLayoutMessage()
     let title = 'Publications'
     if ('publicsettings' in this.authStore && 'pubscalled' in this.authStore.publicsettings) {
       title = this.authStore.publicsettings.pubscalled

@@ -2,15 +2,10 @@ import { defineStore } from 'pinia'
 import _ from 'lodash/core'
 import api from '~/api'
 
-export const useUsersStore = defineStore({
-  id: 'users',
+export const useUsersStore = defineStore('users', {
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-      },
-    ],
+    storage: window.localStorage,
+    //pick: [],
   },
   state: () => ({
     allusers: [],
@@ -22,7 +17,7 @@ export const useUsersStore = defineStore({
       this.pubpubusers = {}
       this.error = false
     },
-    
+
     async fetchallusers() {
       try {
         const { allusers } = await api.auth.getUsers()

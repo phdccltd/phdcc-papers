@@ -11,7 +11,6 @@ import { useMiscStore } from "~/stores/misc"
 import { useSitePagesStore } from "~/stores/sitepages"
 
 export default {
-  inject: { setLayoutMessage: {} },
   data() {
     return {
       error: '',
@@ -32,7 +31,6 @@ export default {
   },
 
   mounted() { // Client only
-    this.setLayoutMessage()
     this.sitePagesStore.fetch()
   },
   computed: {

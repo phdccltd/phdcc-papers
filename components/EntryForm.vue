@@ -117,7 +117,6 @@ import api from '~/api'
 import modalBoxes from '@/mixins/modalBoxes'
 
 export default {
-  inject: { setLayoutMessage: {} },
   mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
@@ -267,6 +266,7 @@ export default {
     },
     async onSubmit(evt) {
       try {
+        const { $setLayoutMessage } = useNuxtApp()
         this.message = ''
         this.error = ''
         this.validationsummary = ''
@@ -396,7 +396,7 @@ export default {
           this.submitstatus = ''
           if (entryid) {
             this.editable = false
-            this.setLayoutMessage('Submitted OK. You should receive a confirmation email.')
+            $setLayoutMessage('Submitted OK. You should receive a confirmation email.')
             // OK: redirect so new entry displayed properly
             navigateTo('/panel/' + this.pubid + '/' + this.flowid + '/' + data.rv.submitid + '/' + entryid)
           } else {
@@ -419,7 +419,7 @@ export default {
           this.submitstatus = ''
           if (entryid) {
             this.editable = false
-            this.setLayoutMessage('Submitted OK. You should receive a confirmation email.')
+            $setLayoutMessage('Submitted OK. You should receive a confirmation email.')
             // OK: redirect so new entry displayed properly
             navigateTo('/panel/' + this.pubid + '/' + this.flowid + '/' + this.submitid + '/' + entryid)
           } else {

@@ -38,7 +38,6 @@ import { useSitePagesStore } from "~/stores/sitepages"
 import api from '~/api'
 
 export default {
-  inject: { setLayoutMessage: {} },
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
@@ -58,7 +57,6 @@ export default {
     }
   },
   async mounted() {
-    this.setLayoutMessage()
     await this.sitePagesStore.fetch()
     if (!this.authStore.loggedin) {
       navigateTo('/login')
