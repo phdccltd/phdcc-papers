@@ -82,7 +82,7 @@ const ismasquerading = computed(() => {
 })
 const pubid = computed(() => {
   const route = useRoute()
-  const path = '/' + route.params.id
+  // const path = '/' + route.params.id
   if ('pubid' in route.params) {
     return parseInt(route.params.pubid)
   }
@@ -96,10 +96,10 @@ const titlesuffix = computed(() => {
   return miscStore.get('page-title-suffix')
 })
 
-const yourtime = computed(() => {
-  const now = new Date()
-  return now.toLocaleString()
-})
+//const yourtime = computed(() => {
+//  const now = new Date()
+//  return now.toLocaleString()
+//})
 const version = computed(() => {
   const runtimeConfig = useRuntimeConfig()
   return runtimeConfig.public.VERSION
