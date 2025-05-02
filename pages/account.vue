@@ -31,78 +31,81 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
-import { useSitePagesStore } from "~/stores/sitepages"
+import { useSitePagesStore } from '~/stores/sitepages'
 import api from '~/api'
 
-export default {
-  setup() {
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const sitePagesStore = useSitePagesStore()
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const sitePagesStore = useSitePagesStore()
 
-    return { authStore, miscStore, sitePagesStore }
-  },
-  data() {
-    return {
-      form: {
-        name: this.authStore.name,
-        email: this.authStore.email,
-        password: '',
-      },
-      error: '',
-      message: '',
-    }
-  },
-  async mounted() {
-    await this.sitePagesStore.fetch()
-    if (!this.authStore.loggedin) {
-      navigateTo('/login')
-    }
-    this.miscStore.set({ key: 'page-title', value: 'Account' })
-  },
+const form = ref({
+  name: authStore.name,
+  email: authStore.email,
+  password: '',
+})
 
-  computed: {
-    content() {
-      const sitepage = this.sitePagesStore.get('/account')
-      return sitepage ? sitepage.content : ''
-    },
-    username() {
-      return this.authStore.username
+const error = ref('')
+const message = ref('')
+
+onMounted(async () => {
+  await sitePagesStore.fetch()
+  if (!authStore.loggedin) {
+    navigateTo('/login')
+  }
+  miscStore.set({ key: 'page-title', value: 'Account' })
+})
+
+const content = computed(() => {
+  const sitepage = sitePagesStore.get('/account')
+  return sitepage ? sitepage.content : ''
+})
+
+const username = computed(() => {
+  return authStore.username
+})
+
+async function onSubmit() {
+  error.value = ''
+  message.value = ''
+  form.value.name = form.value.name.trim()
+  form.value.email = form.value.email.trim()
+  
+  if (form.value.name.length === 0) { 
+    error.value = 'No name given'
+    return 
+  }
+  
+  if (form.value.email.length === 0) { 
+    error.value = 'No email given'
+    return 
+  }
+  
+  const changedName = form.value.name !== authStore.name
+  const changedEmail = form.value.email !== authStore.email
+  const changedPassword = form.value.password
+  
+  if (!changedName && !changedEmail && !changedPassword) {
+    error.value = 'No changes'
+    return
+  }
+  
+  try {
+    const response = await api.auth.save(form.value)
+    if (response.ret !== 0) {
+      error.value = response.status
+    } else {
+      const user = await api.auth.getuser()
+      authStore.setUser(user.user)
+      message.value = 'Changes saved'
     }
-  },
-  methods: {
-    async onSubmit() {
-      this.error = ''
-      this.message = ''
-      this.form.name = this.form.name.trim()
-      this.form.email = this.form.email.trim()
-      if (this.form.name.length === 0) { this.error = 'No name given'; return }
-      if (this.form.email.length === 0) { this.error = 'No email given'; return }
-      const changedName = this.form.name !== this.authStore.name
-      const changedEmail = this.form.email !== this.authStore.email
-      const changedPassword = this.form.password
-      if (!changedName && !changedEmail && !changedPassword) {
-        this.error = 'No changes'
-        return
-      }
-      try {
-        const response = await api.auth.save(this.form)
-        if (response.ret !== 0) {
-          this.error = response.status
-        } else {
-          const user = await api.auth.getuser()
-          this.authStore.setUser(user.user)
-          this.message = 'Changes saved'
-        }
-      }
-      catch (err: any) {
-        console.log("ACCOUNT FAIL", err.message)
-        this.error = err.message
-      }
-    }
-  },
+  }
+  catch (err: any) {
+    console.log("ACCOUNT FAIL", err.message)
+    error.value = err.message
+  }
 }
 </script>
