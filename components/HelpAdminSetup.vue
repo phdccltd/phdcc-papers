@@ -18,18 +18,27 @@
     </div>
   </div>
 </template>
-<script>
-  import helpBox from '@/mixins/helpBox'
 
-  export default {
-    mixins: [helpBox],
-    data: function () {
-      return {
-        id: 'admin-setup'
-      }
-    },
-    props: {
-      custom: { type: String },
-    },
-  }
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { useMiscStore } from '~/stores/misc'
+
+defineProps({
+  custom: { type: String }
+})
+
+const id = ref('admin-setup')
+const helpKey = computed(() => 'help-' + id.value)
+
+const miscStore = useMiscStore()
+const showHelp = computed(() => {
+  return !(miscStore.get(helpKey.value) ?? false)
+})
+
+function toggleHelp() {
+  miscStore.set({
+    key: helpKey.value,
+    value: showHelp.value
+  })
+}
 </script>
