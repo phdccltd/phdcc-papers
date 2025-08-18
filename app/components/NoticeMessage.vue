@@ -18,7 +18,7 @@ export default {
 </script>
   
 <style scoped lang="scss">
-@use '@/assets/css/_color-vars' as colors;
+@use '../assets/css/_color-vars' as colors;
 
 .notice {
   border-width: 1px;

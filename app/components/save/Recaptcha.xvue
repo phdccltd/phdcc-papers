@@ -1,0 +1,29 @@
+<template>
+    <div>Component Token: {{ componentToken }}</div>
+  </template>
+  <script>
+  import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
+  export default {
+    setup() {
+      const { vueApp } = useNuxtApp();
+      const componentToken = ref('');
+
+      const miscStore = useMiscStore();
+      const siteKey = runtimeConfig.public.RECAPTCHA_SITE_KEY;
+      console.log('Recatcha.vue ',siteKey)
+      vueApp.use(VueReCaptcha, {
+        siteKey: siteKey,
+        loaderOptions: {
+          autoHideBadge: false,
+        },
+      });
+      return { componentToken };
+    },
+    async mounted() {
+      const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
+      await recaptchaLoaded();
+      this.componentToken = await executeRecaptcha('login');
+    },
+  };
+  </script>
+  

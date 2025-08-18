@@ -81,9 +81,9 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '@/node_modules/@fortawesome/fontawesome-svg-core/styles.css',
+    '@fortawesome/fontawesome-svg-core/styles.css',
     'bootstrap/dist/css/bootstrap.min.css',
-    '@/assets/css/_global.scss',
+    'assets/css/_global.scss',
   ],
 
   app: {

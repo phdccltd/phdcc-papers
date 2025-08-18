@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Architecture
+For detailed system architecture, see [@CLAUDE-architecture.md](./@CLAUDE-architecture.md).
+
 ## Build/Test Commands
 - `npm run dev` - Start development server
 - `npm run lint` - Run ESLint
