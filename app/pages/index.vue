@@ -6,41 +6,26 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useMiscStore } from "~/stores/misc"
 import { useSitePagesStore } from "~/stores/sitepages"
 
-export default {
-  data() {
-    return {
-      error: '',
-      message: '',
-    }
-  },
+const error = ref('')
+const message = ref('')
 
-  setup() {
-    // const runtimeConfig = useRuntimeConfig()
-    // console.log('INDEX.VUE', runtimeConfig.public.API) // public is on server and in client
-    // const appConfig = useAppConfig()
-    // console.log("INDEX.VUE",appConfig.testing) // on server and in client
+const sitePagesStore = useSitePagesStore()
+const miscStore = useMiscStore()
 
-    const sitePagesStore = useSitePagesStore()
-    const miscStore = useMiscStore()
+const content = computed(() => {
+  const sitepage = sitePagesStore.get('/')
+  if (sitepage) {
+    miscStore.set({ key: 'page-title', value: sitepage.title })
+  }
+  return sitepage ? sitepage.content : ''
+})
 
-    return { miscStore, sitePagesStore }
-  },
-
-  mounted() { // Client only
-    this.sitePagesStore.fetch()
-  },
-  computed: {
-    content() {
-      const sitepage = this.sitePagesStore.get('/')
-      if (sitepage) {
-        this.miscStore.set({ key: 'page-title', value: sitepage.title })
-      }
-      return sitepage ? sitepage.content : ''
-    },
-  },
-}
+onMounted(() => {
+  sitePagesStore.fetch()
+})
 </script>

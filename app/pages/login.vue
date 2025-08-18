@@ -8,90 +8,76 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages"
 //import {jwt_decode} from 'jwt-decode'
 import api from '~/api'
 
-export default {
-  setup() {
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const sitePagesStore = useSitePagesStore()
-    const runtimeConfig = useRuntimeConfig()
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const sitePagesStore = useSitePagesStore()
+const runtimeConfig = useRuntimeConfig()
 
-    return { authStore, miscStore, sitePagesStore }
-  },
+const error = ref('')
+const message = ref('')
+const executeRecaptcha = ref(null)
 
-  data() {
-    return {
-      error: '',
-      message: '',
-      executeRecaptcha: null,
-    }
-  },
+const content = computed(() => {
+  const sitepage = sitePagesStore.get('/login')
+  return sitepage ? sitepage.content : ''
+})
 
-  async mounted() {
-    const runtimeConfig = useRuntimeConfig()
-    //if (runtimeConfig.public.RECAPTCHA_BYPASS) {
-    //  this.message = 'Recaptcha bypass'
-    //} else {
-    this.executeRecaptcha = await useVueRecaptcha() // needs to be done before other await calls
-    //}
+const showtestdiv = computed(() => {
+  return runtimeConfig.public.RECAPTCHA_BYPASS && (executeRecaptcha.value != null)
+})
 
-    await this.sitePagesStore.fetch()
-    if (this.authStore.loggedin) {
-      navigateTo('/panel')
-    }
-    this.miscStore.set({ key: 'page-title', value: 'Login' })
-  },
-
-  computed: {
-    content() {
-      const sitepage = this.sitePagesStore.get('/login')
-      return sitepage ? sitepage.content : ''
-    },
-    showtestdiv() {
-      const runtimeConfig = useRuntimeConfig()
-      return runtimeConfig.public.RECAPTCHA_BYPASS && (this.executeRecaptcha != null)
-    }
-  },
-  methods: {
-    async loginUser(loginInfo: any) {
-      this.error = ''
-      this.message = ''
-      const runtimeConfig = useRuntimeConfig()
-      let grecaptcha = ''
-      if (runtimeConfig.public.RECAPTCHA_BYPASS && loginInfo.password !== 'userecapture') {
-        grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
-      } else {
-        if (this.executeRecaptcha) {
-          grecaptcha = await this.executeRecaptcha('login')
-        }
-      }
-
-      if (grecaptcha == '') {
-        this.error = 'Captcha not set'
-        return
-      }
-      loginInfo.grecaptcharesponse = grecaptcha
-
-      const res = await api.auth.login(loginInfo)
-      if (res.ret !== 0) {
-        this.error = res.status
-        return
-      }
-      //const ppuser = jwt_decode(res.token)
-      //console.log("===PPUSER",ppuser)
-      this.authStore.setToken(res.token)
-
-      const user = await api.auth.getuser()
-      this.authStore.setUser(user.user)
-
-      navigateTo('/panel')
+const loginUser = async (loginInfo: any) => {
+  error.value = ''
+  message.value = ''
+  let grecaptcha = ''
+  if (runtimeConfig.public.RECAPTCHA_BYPASS && loginInfo.password !== 'userecapture') {
+    grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
+  } else {
+    if (executeRecaptcha.value) {
+      grecaptcha = await executeRecaptcha.value('login')
     }
   }
+
+  if (grecaptcha == '') {
+    error.value = 'Captcha not set'
+    return
+  }
+  loginInfo.grecaptcharesponse = grecaptcha
+
+  const res = await api.auth.login(loginInfo)
+  if (res.ret !== 0) {
+    error.value = res.status
+    return
+  }
+  //const ppuser = jwt_decode(res.token)
+  //console.log("===PPUSER",ppuser)
+  authStore.setToken(res.token)
+
+  const user = await api.auth.getuser()
+  authStore.setUser(user.user)
+
+  navigateTo('/panel')
 }
+
+onMounted(async () => {
+  //if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+  //  message.value = 'Recaptcha bypass'
+  //} else {
+  executeRecaptcha.value = await useVueRecaptcha() // needs to be done before other await calls
+  //}
+
+  await sitePagesStore.fetch()
+  if (authStore.loggedin) {
+    navigateTo('/panel')
+  }
+  miscStore.set({ key: 'page-title', value: 'Login' })
+})
 </script>

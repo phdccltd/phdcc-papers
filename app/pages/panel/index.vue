@@ -28,71 +28,66 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useSitePagesStore } from "~/stores/sitepages"
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: 'authuser',
-    })
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const sitePagesStore = useSitePagesStore()
-    const runtimeConfig = useRuntimeConfig()
-    const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS)
+definePageMeta({
+  middleware: 'authuser',
+})
 
-    return { authStore, miscStore, pubsStore, sitePagesStore, grecaptcha }
-  },
-  data() { // Client and Server
-    return {
-      error: '',
-      subtitle: '',
-    }
-  },
-  async mounted() { // Client only
-    let title = 'Publications'
-    if ('publicsettings' in this.authStore && 'pubscalled' in this.authStore.publicsettings) {
-      title = this.authStore.publicsettings.pubscalled
-      this.subtitle = 'Your ' + title.toLowerCase()
-    }
-    this.miscStore.set({ key: 'page-title', value: title })
-    await this.pubsStore.clearError()
-    await this.pubsStore.fetch()
-  },
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const sitePagesStore = useSitePagesStore()
+const runtimeConfig = useRuntimeConfig()
+const grecaptcha = ref(runtimeConfig.public.RECAPTCHA_BYPASS)
 
+const error = ref('')
+const subtitle = ref('')
 
-  computed: {
-    message() {
-      return 'Hello ' + this.authStore.username
-    },
-    fatalerror() {
-      return this.pubsStore.error
-    },
-    issuper() {
-      return this.authStore.super
-    },
-    pubs() {
-      const pubs = this.pubsStore.pubs
+const message = computed(() => {
+  return 'Hello ' + authStore.username
+})
 
-      // Set apiversion here
-      for (const pub in pubs) {
-        this.miscStore.set({ key: 'apiversion', value: pubs[pub].apiversion })
-        break
-      }
+const fatalerror = computed(() => {
+  return pubsStore.error
+})
 
-      return pubs
-    },
-    nowtavailable() {
-      const pubs = this.pubsStore.pubs
-      let count = 0
-      for (const pub in pubs) { count++ }
-      return count === 0
-    },
+const issuper = computed(() => {
+  return authStore.super
+})
+
+const pubs = computed(() => {
+  const pubs = pubsStore.pubs
+
+  // Set apiversion here
+  for (const pub in pubs) {
+    miscStore.set({ key: 'apiversion', value: pubs[pub].apiversion })
+    break
   }
-}
+
+  return pubs
+})
+
+const nowtavailable = computed(() => {
+  const pubs = pubsStore.pubs
+  let count = 0
+  for (const pub in pubs) { count++ }
+  return count === 0
+})
+
+onMounted(async () => {
+  let title = 'Publications'
+  if ('publicsettings' in authStore && 'pubscalled' in authStore.publicsettings) {
+    title = authStore.publicsettings.pubscalled
+    subtitle.value = 'Your ' + title.toLowerCase()
+  }
+  miscStore.set({ key: 'page-title', value: title })
+  await pubsStore.clearError()
+  await pubsStore.fetch()
+})
 </script>  
