@@ -1,65 +1,36 @@
 <template>
-  <b-modal id="confirmmodal" v-model="showModal" :title="title" centered>
+  <b-modal id="confirmmodal" ref="confirmmodal" :title="confirmTitle" centered>
     <template #default data-cy="ConfirmModal-message">
-      {{ message }}
+      {{  confirmMessage }}
     </template>
     <template #footer>
-      <b-button v-if="showcancel" variant="white" @click="cancel" data-cy="ConfirmModal-cancel"> {{ cancelText }} </b-button>
-      <b-button :variant="okVariant" @click="confirm" data-cy="ConfirmModal-confirm"> {{ confirmText }} </b-button>
+      <b-button variant="white" @click="cancel" data-cy="ConfirmModal-cancel"> {{ confirmCancelText }} </b-button>
+      <b-button :variant="okVariant" @click="confirm" data-cy="ConfirmModal-confirm"> {{ confirmOKText }} </b-button>
     </template>
   </b-modal>
 </template>
-<script>
-import modal from '@/mixins/modal'
+<script setup>
+import { confirmmodal, confirmshow, confirmhide, confirmTitle, confirmMessage, confirmCancelText, confirmOKText, okVariant } from '~/composables/useModalBoxes'
 
-export default {
-  mixins: [modal],
-  props: {
-    title: {
-      type: String,
-      required: false,
-      default: 'Are you sure?',
-    },
-    message: {
-      type: String,
-      required: false,
-      default: '<p>Are you sure you want to do this?</p>',
-    },
-    confirmText: {
-      type: String,
-      required: false,
-      default: 'Confirm',
-    },
-    cancelText: {
-      type: String,
-      required: false,
-      default: 'Cancel',
-    },
-    okVariant: {
-      type: String,
-      required: false,
-      default: 'primary',
-    }
-  },
-  data() {
-    return {
-      showModal: false,
-    }
-  },
-  computed: {
-    showcancel() {
-      return this.cancelText.length > 0
-    },
-  },
-  methods: {
-    cancel() {
-      this.$emit('cancel')
-      this.hide()
-    },
-    confirm() {
-      this.$emit('confirm')
-      this.hide()
-    },
-  },
+onMounted(() => {
+  confirmshow()
+})
+
+const props = defineProps({
+})
+
+const emit = defineEmits([
+  'cancel',
+  'confirm',
+])
+
+function cancel() {
+  emit('cancel')
+  confirmhide()
+}
+
+function confirm() {
+  emit('confirm')
+  confirmhide()
 }
 </script>

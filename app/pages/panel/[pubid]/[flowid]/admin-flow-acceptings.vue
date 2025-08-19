@@ -65,9 +65,8 @@
         <b-button variant="primary" @click="okAccepting"> OK </b-button>
       </template>
     </b-modal>
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -77,10 +76,9 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: ["authuser"]
@@ -204,25 +202,25 @@ export default {
       try {
         //console.log('okAccepting', this.chosenstage, this.chosenopen, this.chosenstatus)
 
-        if (this.chosenstage === 0) return this.msgBoxOk('Please choose a stage')
+        if (this.chosenstage === 0) return msgBoxOk('Please choose a stage')
 
         const ok = await api.acceptings.addEditAccepting(this.flowid, this.acceptingid, this.chosenstage, this.chosenopen, this.chosenstatus)
         if (ok) {
           await this.submitsStore.fetchpub(this.pubid)
           this.$nextTick(() => {
             this.showModal = false
-            this.msgBoxOk('Accepting added/edited')
+            msgBoxOk('Accepting added/edited')
           })
         } else {
-          this.msgBoxFail('Accepting could not be added/edited')
+          msgBoxFail('Accepting could not be added/edited')
         }
       } catch (e) {
-        this.msgBoxError('Error adding/editing accepting: ' + e.message)
+        msgBoxError('Error adding/editing accepting: ' + e.message)
       }
     },
     async deleteAccepting(accepting: any) {
       this.accepting = accepting
-      this.showConfirm(accepting.flowstagename, "Are you sure you want to delete this accepting?", this.confirmedDeleteAccepting)
+      showConfirm(accepting.flowstagename, "Are you sure you want to delete this accepting?", this.confirmedDeleteAccepting)
     },
 
     async confirmedDeleteAccepting() {
@@ -231,13 +229,13 @@ export default {
         if (ok) {
           await this.submitsStore.fetchpub(this.pubid)
           this.$nextTick(() => {
-            this.msgBoxOk('Accepting deleted')
+            msgBoxOk('Accepting deleted')
           })
         } else {
-          this.msgBoxFail('Accepting could not be deleted')
+          msgBoxFail('Accepting could not be deleted')
         }
       } catch (e) {
-        this.msgBoxError('Error deleting accepting: ' + e.message)
+        msgBoxError('Error deleting accepting: ' + e.message)
       }
     },
   },

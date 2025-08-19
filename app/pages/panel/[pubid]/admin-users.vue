@@ -79,9 +79,8 @@
       </template>
     </b-modal>
 
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm"  />
   </div>
 </template>
 
@@ -93,10 +92,9 @@ import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authuser',
@@ -180,13 +178,13 @@ export default {
     deletePubUser(pubuser) {
       this.confirmpubuser = pubuser
       if (pubuser.id === this.authStore.id) {
-        this.showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', this.confirmDeletePubUser, null, null, null, 'danger')
+        showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', this.confirmDeletePubUser, null, null, null, 'danger')
       } else {
         this.confirmDeletePubUser()
       }
     },
     confirmDeletePubUser() {
-      this.showConfirm(this.confirmpubuser.name, 'Are you sure you want to stop this user accessing your publication/conference?  No submissions etc will be removed.', this.reallyDeletePubUser)
+      showConfirm(this.confirmpubuser.name, 'Are you sure you want to stop this user accessing your publication/conference?  No submissions etc will be removed.', this.reallyDeletePubUser)
     },
     async reallyDeletePubUser() {
       try {
@@ -195,35 +193,35 @@ export default {
         if (ok) {
           await this.usersStore.fetchpubusers(this.pubid)
         } else {
-          this.msgBoxFail('User could not be removed')
+          msgBoxFail('User could not be removed')
         }
       } catch (e) {
-        this.msgBoxError('Error removing user: ' + e.message)
+        msgBoxError('Error removing user: ' + e.message)
       }
     },
     async deleteUserRole(pubuser, role) {
       this.confirmpubuser = pubuser
       this.confirmrole = role
       if (pubuser.id === this.authStore.id) {
-        this.showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', this.confirmDeleteUserRole, null, null, null, 'danger')
+        showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', this.confirmDeleteUserRole, null, null, null, 'danger')
       } else {
         this.confirmDeleteUserRole()
       }
     },
     async confirmDeleteUserRole() {
-      this.showConfirm(this.confirmpubuser.name + ': ' + this.confirmrole.name, 'Are you sure you want to delete this role?', this.reallyDeleteUserRole)
+      showConfirm(this.confirmpubuser.name + ': ' + this.confirmrole.name, 'Are you sure you want to delete this role?', this.reallyDeleteUserRole)
     },
     async reallyDeleteUserRole() {
       try {
         //console.log('deleteUserRole', pubuser.id, role.id)
         const ok = await api.auth.deleteUserRole(this.pubid, this.confirmpubuser.id, this.confirmrole.id)
         if (!ok) {
-          this.msgBoxFail('User role could not be deleted')
+          msgBoxFail('User role could not be deleted')
         } else {
           await this.usersStore.fetchpubusers(this.pubid)
         }
       } catch (e) {
-        this.msgBoxError('Error removing user role: ' + e.message)
+        msgBoxError('Error removing user role: ' + e.message)
       }
     },
     async startAddUserRole(pubusers, pubuser) {
@@ -239,16 +237,16 @@ export default {
         }
       }
       if (this.availablenewroles.length === 0) {
-        return this.msgBoxOk('Add role', 'No more roles available!')
+        return msgBoxOk('No more roles available!')
       }
       this.showAddRoleModal = true
     },
     addUserRole() {
-      if (this.chosennewrole == 0) return this.msgBoxOk('No new role chosen!')
+      if (this.chosennewrole == 0) return msgBoxOk('No new role chosen!')
       const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
       if (!roletoadd) return
       if (roletoadd.isowner) {
-        this.showConfirm(this.addroleusername, 'This is an OWNER role. Do you want to continue?', this.confirmAddUserRole, null, null, null, 'danger')
+        showConfirm(this.addroleusername, 'This is an OWNER role. Do you want to continue?', this.confirmAddUserRole, null, null, null, 'danger')
       } else {
         this.confirmAddUserRole()
       }
@@ -263,10 +261,10 @@ export default {
             this.showAddRoleModal = false
           })
         } else {
-          this.msgBoxFail('User role could not be added')
+          msgBoxFail('User role could not be added')
         }
       } catch (e) {
-        this.msgBoxError('Error adding role: ' + e.message)
+        msgBoxError('Error adding role: ' + e.message)
       }
     },
     async masquerade(pubuser) {
@@ -283,10 +281,10 @@ export default {
           this.usersStore.clearAll()
           navigateTo('/panel')
         } else {
-          this.msgBoxFail('Could not masquerade')
+          msgBoxFail('Could not masquerade')
         }
       } catch (e) {
-        this.msgBoxError('Error masquerading: ' + e.message)
+        msgBoxError('Error masquerading: ' + e.message)
       }
     }
   },

@@ -122,7 +122,6 @@ app/api/
 - `app/composables/` - Vue composables
 - `app/layouts/` - Page layout templates
 - `app/middleware/` - Route guards for authorisation
-- `app/mixins/` - Components optionally added to pages/components
 - `app/pages/` - Route-based page components
 - `app/plugins/` - Nuxt plugins
 - `app/stores/` - Pinia state management

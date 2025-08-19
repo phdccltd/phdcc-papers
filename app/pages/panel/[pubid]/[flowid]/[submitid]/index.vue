@@ -22,10 +22,9 @@
         :setError="setError" :setMessage="setMessage" />
     </div>
 
-    <SubmitEditModal ref="submitEditModal" :newauthoroptions="newauthoroptions" @confirm="okEdited" />
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <SubmitEditModal v-if="showSubmitEditModal" :newauthoroptions="newauthoroptions" :newtitle="newtitle" :newauthor="newauthor" @confirm="okEdited" @hidden="showSubmitEditModal = false" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -37,11 +36,10 @@ import { useSubmitsStore } from '~/stores/submits'
 
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: ["authuser"]
@@ -63,6 +61,7 @@ export default {
       newauthor: 0,
       newauthoroptions: [],
       showEditSubmitQuick: false,
+      showSubmitEditModal: false
     }
   },
   async mounted() { // Client only
@@ -133,24 +132,24 @@ export default {
         this.newauthoroptions.push({ value: user.id, text: user.username })
       }
       this.submitbeingedited = submit
-      this.waitForRef('submitEditModal', async () => {
-        this.$refs.submitEditModal.show(submit.name, submit.userId)
-      })
+      this.newtitle = submit.name
+      this.newauthor = submit.userId
+      this.showSubmitEditModal = true
     },
     okEdited(newtitle: String, newauthor: Number) {
       try {
         this.newtitle = newtitle.trim()
-        if (newtitle.length === 0) return this.msgBoxOk('No new title given!')
+        if (newtitle.length === 0) return msgBoxOk('No new title given!')
         this.newauthor = newauthor
         if (this.newauthor !== this.submitbeingedited.userId) {
           const prev = _.find(this.newauthoroptions, option => { return option.value === this.submitbeingedited.userId })
           const next = _.find(this.newauthoroptions, option => { return option.value === this.newauthor })
-          this.showConfirm('Are you sure you want to change the author?', `Change author from ${prev.text} to ${next.text}?`, this.confirmedAuthorChange)
+          showConfirm('Are you sure you want to change the author?', `Change author from ${prev.text} to ${next.text}?`, this.confirmedAuthorChange)
         } else {
           this.confirmedAuthorChange()
         }
       } catch (e) {
-        this.msgBoxError('Error changing submit: ' + e.message)
+        msgBoxError('Error changing submit: ' + e.message)
       }
     },
     async confirmedAuthorChange() {
@@ -160,12 +159,10 @@ export default {
         newauthor = this.newauthor
       }
       const amended = await api.submit.changeSubmitTitle(this.submitbeingedited, newtitle, newauthor)
-      if (!amended) return this.msgBoxOk('Error changing submit')
+      if (!amended) return msgBoxOk('Error changing submit')
       await this.submitsStore.fetchpub(this.pubid)
-      this.$nextTick(() => {
-        this.$refs.submitEditModal.hide()
-        this.msgBoxOk('Submit changed')
-      })
+      this.showSubmitEditModal = false
+      msgBoxOk('Submit changed')
     },
   },
 }

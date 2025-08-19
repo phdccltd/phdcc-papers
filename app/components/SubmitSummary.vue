@@ -211,9 +211,8 @@
         <b-button variant="primary" @click="okGrading"> OK </b-button>
       </template>
     </b-modal>
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template> 
 
@@ -225,10 +224,9 @@ import { useSubmitsStore } from '~/stores/submits'
 
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   props: {
     showtype: {
       type: Number,
@@ -393,92 +391,92 @@ export default {
     },
     async deleteSubmit(submit: any) {
       this.confirmsubmit = submit
-      this.showConfirm(submit.name, "Are you sure you want to delete this submission and all its entries?", this.confirmedDeleteSubmit)
+      showConfirm(submit.name, "Are you sure you want to delete this submission and all its entries?", this.confirmedDeleteSubmit)
     },
     async confirmedDeleteSubmit() {
       try {
         const deleted = await api.submit.deleteSubmit(this.confirmsubmit.id)
-        if (!deleted) return this.msgBoxOk('Could not delete this submission')
+        if (!deleted) return msgBoxOk('Could not delete this submission')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk(this.confirmsubmit.name, 'Submission deleted')
+          msgBoxOk(this.confirmsubmit.name, 'Submission deleted')
         })
       } catch (e) {
-        this.msgBoxError('Error deleting submission: ' + e.message)
+        msgBoxError('Error deleting submission: ' + e.message)
       }
     },
     deleteSubmitStatus(submitstatus: any) {
       this.confirmsubmitstatus = submitstatus
-      this.showConfirm(submitstatus.status, "Are you sure you want to delete this status?", this.confirmDeleteSubmitStatus)
+      showConfirm(submitstatus.status, "Are you sure you want to delete this status?", this.confirmDeleteSubmitStatus)
     },
     async confirmDeleteSubmitStatus() {
       try {
         const OK = await api.submit.deleteSubmitStatus(this.confirmsubmitstatus.id)
-        if (!OK) return this.msgBoxOk('Error deleting status')
+        if (!OK) return msgBoxOk('Error deleting status')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk('Status deleted')
+          msgBoxOk('Status deleted')
         })
       } catch (e) {
-        this.msgBoxError('Error deleting status: ' + e.message)
+        msgBoxError('Error deleting status: ' + e.message)
       }
     },
     addSubmitStatus(flow, submit) {
-      if (!submit.newstatusid) return this.msgBoxOk('Please choose a new status')
+      if (!submit.newstatusid) return msgBoxOk('Please choose a new status')
       const flowstatus = _.find(flow.statuses, _flowstatus => { return _flowstatus.id === submit.newstatusid })
-      if (!flowstatus) return this.msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
+      if (!flowstatus) return msgBoxOk('Could not find flowstatus for ' + submit.newstatusid)
       this.confirmsubmit = submit
-      this.showConfirm(flowstatus.status, "Adding this status will send any relevant emails. OK?", this.confirmAddSubmitStatus)
+      showConfirm(flowstatus.status, "Adding this status will send any relevant emails. OK?", this.confirmAddSubmitStatus)
     },
     async confirmAddSubmitStatus(flow, submit) {
       try {
         const submitstatus = await api.submit.addSubmitStatus(this.confirmsubmit.id, this.confirmsubmit.newstatusid)
-        if (!submitstatus) return this.msgBoxOk('Error adding status')
+        if (!submitstatus) return msgBoxOk('Error adding status')
         // Selected status deselected by the following:
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk('Status added')
+          msgBoxOk('Status added')
         })
       } catch (e) {
-        this.msgBoxError('Error adding status: ' + e.message)
+        msgBoxError('Error adding status: ' + e.message)
       }
     },
     removeReviewer(submit: any, reviewer: any) {
       this.confirmsubmit = submit
       this.confirmreviewer = reviewer
-      this.showConfirm(reviewer.username, "Are you sure you want to remove this reviewer?", this.confirmRemoveReviewer)
+      showConfirm(reviewer.username, "Are you sure you want to remove this reviewer?", this.confirmRemoveReviewer)
     },
     async confirmRemoveReviewer() {
       try {
         const OK = await api.reviewers.removeReviewer(this.confirmsubmit.id, this.confirmreviewer.id)
-        if (!OK) return this.msgBoxOk('Error removing reviewer')
+        if (!OK) return msgBoxOk('Error removing reviewer')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk(this.confirmreviewer.username, 'Reviewer removed')
+          msgBoxOk(this.confirmreviewer.username, 'Reviewer removed')
         })
       } catch (e) {
-        this.msgBoxError('Error removing reviewer: ' + e.message)
+        msgBoxError('Error removing reviewer: ' + e.message)
       }
     },
     async addReviewer(submit: any) {
-      if (!submit.newreviewerid) return this.msgBoxOk('Please choose a reviewer')
+      if (!submit.newreviewerid) return msgBoxOk('Please choose a reviewer')
       const reviewer = _.find(this.pub.reviewers, _already => { return _already.id === submit.newreviewerid })
       this.confirmsubmit = submit
       this.confirmreviewer = reviewer
-      this.showConfirm(reviewer.name, "Do you want to add this reviewer as the LEAD? Cancel using (X) above.", () => { this.confirmAddReviewer(true) },
+      showConfirm(reviewer.name, "Do you want to add this reviewer as the LEAD? Cancel using (X) above.", () => { this.confirmAddReviewer(true) },
         'Add as lead reviewer', 'Add as reviewer', () => { this.confirmAddReviewer(false) })
     },
     async confirmAddReviewer(lead: Boolean) {
       try {
         const submit = this.confirmsubmit
         const submitreviewer = await api.reviewers.addReviewer(submit.id, submit.newreviewerid, lead)
-        if (!submitreviewer) return this.msgBoxOk('Error adding reviewer')
+        if (!submitreviewer) return msgBoxOk('Error adding reviewer')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk(this.confirmreviewer.name, 'Reviewer added')
+          msgBoxOk(this.confirmreviewer.name, 'Reviewer added')
         })
       } catch (e) {
-        this.msgBoxError('Error adding status: ' + e.message)
+        msgBoxError('Error adding status: ' + e.message)
       }
     },
     enterGrading(submit, submitaction) {
@@ -487,7 +485,7 @@ export default {
       this.modaltitle = 'Add ' + submitaction.name
       this.decisionoptions = []
       const flowgrade = _.find(this.flow.flowgrades, _flowgrade => { return _flowgrade.id === submitaction.flowgradeid })
-      if (!flowgrade) return this.msgBoxOk('Could not find flowgrade info')
+      if (!flowgrade) return msgBoxOk('Could not find flowgrade info')
       this.helptext = flowgrade.helptext
       this.helplinktext = flowgrade.helplinktext
       this.helplink = flowgrade.helplink
@@ -502,7 +500,7 @@ export default {
     },
     async okGrading() {
       try {
-        if (this.decision === 0) return this.msgBoxOk('No decision made!')
+        if (this.decision === 0) return msgBoxOk('No decision made!')
         const ok = await api.gradings.addGrading(this.submit.id, 0, this.flowgradeid, this.decision, this.comment, this.canreview)
         if (ok) {
           // Don't do this as it removes Next/Previous buttons:
@@ -513,10 +511,10 @@ export default {
             this.setMessage('Review added')
           })
         } else {
-          this.msgBoxFail('Could not add review')
+          msgBoxFail('Could not add review')
         }
       } catch (e) {
-        this.msgBoxError('Error saving review: ' + e.message)
+        msgBoxError('Error saving review: ' + e.message)
       }
     },
   }

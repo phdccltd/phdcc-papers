@@ -33,9 +33,8 @@
       </b-list-group>
     </div>
 
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -49,10 +48,9 @@ import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authuser',
@@ -133,35 +131,35 @@ export default {
     },
     async downloadAnonymousStageSubmissions() {
       try {
-        if (this.selectedstage == 0) return this.msgBoxOk('No stage chosen!')
+        if (this.selectedstage == 0) return msgBoxOk('No stage chosen!')
 
         this.message = 'Please wait...'
         const ret = await api.downloads.downloadAnonymousStageSubmissions(this.pubid, this.selectedstage)
         this.handleDownloadReturn(ret)
       } catch (e) {
-        this.msgBoxError('Error downloading: ' + e.message)
+        msgBoxError('Error downloading: ' + e.message)
       }
     },
     async downloadSummary() {
       try {
-        if (this.selectedstage == 0) return this.msgBoxOk('No stage chosen!')
+        if (this.selectedstage == 0) return msgBoxOk('No stage chosen!')
 
         this.message = 'Please wait...'
         const ret = await api.downloads.downloadSummary(this.pubid, this.selectedstage)
         this.handleDownloadReturn(ret)
       } catch (e) {
-        this.msgBoxError('Error downloading: ' + e.message)
+        msgBoxError('Error downloading: ' + e.message)
       }
     },
     async downloadAll() {
-      if (this.selectedstage == 0) return this.msgBoxOk('No stage chosen!')
+      if (this.selectedstage == 0) return msgBoxOk('No stage chosen!')
 
       this.message = 'Please wait...'
       const ret = await api.downloads.downloadAll(this.pubid, this.selectedstage)
       this.handleDownloadReturn(ret)
     },
     async downloadReviewerPerformance() {
-      if (this.selectedgrades.length == 0) return this.msgBoxOk('No grade(s) chosen!')
+      if (this.selectedgrades.length == 0) return msgBoxOk('No grade(s) chosen!')
 
       this.message = 'Please wait...'
       const ret = await api.downloads.downloadReviewerPerformance(this.pubid, this.selectedgrades)
@@ -179,7 +177,7 @@ export default {
           const text = e.srcElement.result
           const rv = JSON.parse(text)
           if ('status' in rv) {
-            this.msgBoxOk('Error: ' + rv.status)
+            msgBoxOk('Error: ' + rv.status)
           }
           this.message = ''
         })

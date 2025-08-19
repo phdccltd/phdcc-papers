@@ -78,9 +78,8 @@
       </b-form>
     </div>
 
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -94,10 +93,9 @@ import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authuser',
@@ -278,7 +276,7 @@ export default {
         const ok = await api.mail.sendMail(this.pubid, this.selecteduser, this.selectedrole, this.mailsubject, this.mailtext)
         if (ok) {
           this.sendstatus = 'Sent OK'
-          this.msgBoxOk('Mail sent OK')
+          msgBoxOk('Mail sent OK')
         } else {
           this.senderror = 'Error sending mail'
           this.sendstatus = ''

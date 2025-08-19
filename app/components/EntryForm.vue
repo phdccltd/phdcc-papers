@@ -101,9 +101,8 @@
         </b-form>
       </div>
     </div>
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -114,10 +113,9 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     const authStore = useAuthStore()
     const miscStore = useMiscStore()
@@ -455,7 +453,7 @@ export default {
     },
     deleteEntry(entry) {
       this.error = ''
-      this.showConfirm(entry.stage.name, 'Are you sure you want to delete this entry?', this.confirmDeleteEntry)
+      showConfirm(entry.stage.name, 'Are you sure you want to delete this entry?', this.confirmDeleteEntry)
     },
     async confirmDeleteEntry() {
       try {
@@ -464,7 +462,7 @@ export default {
           this.error = 'Could not delete this entry'
           return
         }
-        this.showConfirm('Entry deleted', 'Note: no statuses removed', this.doneDeleteEntry, 'OK', '')
+        showConfirm('Entry deleted', 'Note: no statuses removed', this.doneDeleteEntry, 'OK', '')
       } catch (e) {
         this.error = e.message
       }

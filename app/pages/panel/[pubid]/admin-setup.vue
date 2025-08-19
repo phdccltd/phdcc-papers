@@ -24,9 +24,8 @@
       </div>
     </div>
 
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -40,10 +39,9 @@ import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authuser',
@@ -105,7 +103,7 @@ export default {
 
     async togglePubEnable(pub) {
       this.confirmpub = pub
-      this.showConfirm(pub.name, 'Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?', this.confirmTogglePubEnable)
+      showConfirm(pub.name, 'Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?', this.confirmTogglePubEnable)
     },
 
     async confirmTogglePubEnable() {
@@ -115,16 +113,16 @@ export default {
           // pub.enabled = !pub.enabled
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxFail('Toggling enable went wrong')
+          msgBoxFail('Toggling enable went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error toggling enable on publication: ' + e.message)
+        msgBoxError('Error toggling enable on publication: ' + e.message)
       }
     },
 
     async deletePub(pub) {
       this.confirmpub = pub
-      this.showConfirm(pub.name, 'Are you sure you want to delete this publication? CHECK THAT ALL TRACES REMOVED', this.confirmDeletePub, null, null, null, 'danger')
+      showConfirm(pub.name, 'Are you sure you want to delete this publication? CHECK THAT ALL TRACES REMOVED', this.confirmDeletePub, null, null, null, 'danger')
     },
 
     async confirmDeletePub() {
@@ -137,10 +135,10 @@ export default {
             navigateTo('/panel')
           })
         } else {
-          this.msgBoxFail('Delete went wrong')
+          msgBoxFail('Delete went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error deleting publication: ' + e.message)
+        msgBoxError('Error deleting publication: ' + e.message)
       }
     }
   },

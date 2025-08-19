@@ -151,9 +151,8 @@
         <b-button variant="primary" @click="okDupPub"> OK </b-button>
       </template>
     </b-modal>
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -164,10 +163,9 @@ import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authsuper',
@@ -251,8 +249,8 @@ export default {
       try {
         this.pubname = this.pubname.trim()
         this.pubdescr = this.pubdescr.trim()
-        if (this.pubname.length === 0) return this.msgBoxOk('Please give a publication name')
-        if (this.pubdescr.length === 0) return this.msgBoxOk('Please give a publication description')
+        if (this.pubname.length === 0) return msgBoxOk('Please give a publication name')
+        if (this.pubdescr.length === 0) return msgBoxOk('Please give a publication description')
 
         const ok = await api.pubs.addPub(this.pubname, this.pubdescr)
 
@@ -260,13 +258,13 @@ export default {
           await this.pubsStore.fetch()
           this.$nextTick(() => {
             this.showAddModal = false
-            this.msgBoxOk('Publication added')
+            msgBoxOk('Publication added')
           })
         } else {
-          this.msgBoxFail('Add went wrong')
+          msgBoxFail('Add went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error adding publication: ' + e.message)
+        msgBoxError('Error adding publication: ' + e.message)
       }
     },
     togglePubEdit(pub) {
@@ -279,7 +277,7 @@ export default {
     togglePubEnable(pub) {
       console.log('togglePubEnable')
       this.confirmpub = pub
-      this.showConfirm(pub.name, 'Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?', this.confirmTogglePubEnable)
+      showConfirm(pub.name, 'Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?', this.confirmTogglePubEnable)
     },
     async confirmTogglePubEnable() {
       try {
@@ -288,16 +286,16 @@ export default {
           this.confirmpub.enabled = !this.confirmpub.enabled
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxFail('Toggling enable went wrong')
+          msgBoxFail('Toggling enable went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error toggling enable on publication: ' + e.message)
+        msgBoxError('Error toggling enable on publication: ' + e.message)
       }
     },
     deletePub(pub) {
       console.log('deletePub')
       this.confirmpub = pub
-      this.showConfirm(pub.name, 'Are you sure you want to delete this publication?', this.confirmDeletePub, 'YES', 'NO', null, 'danger') // TODO CHECK THAT ALL TRACES REMOVED okVariant: 'danger'
+      showConfirm(pub.name, 'Are you sure you want to delete this publication?', this.confirmDeletePub, 'YES', 'NO', null, 'danger') // TODO CHECK THAT ALL TRACES REMOVED okVariant: 'danger'
     },
     async confirmDeletePub() {
       try {
@@ -305,13 +303,13 @@ export default {
         if (ok) {
           await this.pubsStore.fetch()
           this.$nextTick(() => {
-            this.msgBoxOk('Publication deleted')
+            msgBoxOk('Publication deleted')
           })
         } else {
-          this.msgBoxFail('Delete went wrong')
+          msgBoxFail('Delete went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error deleting publication: ' + e.message)
+        msgBoxError('Error deleting publication: ' + e.message)
       }
     },
     async addPubRoleOwner(pub) {
@@ -320,24 +318,24 @@ export default {
         if (ok) {
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxFail('Add owner role went wrong')
+          msgBoxFail('Add owner role went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error adding owner role: ' + e.message)
+        msgBoxError('Error adding owner role: ' + e.message)
       }
     },
     async addPubRole(pub) {
       try {
-        if (pub.adduserid === 0) return this.msgBoxOk('Please select a user to add')
-        if (pub.addroleid === 0) return this.msgBoxOk('Please select a role to add')
+        if (pub.adduserid === 0) return msgBoxOk('Please select a user to add')
+        if (pub.addroleid === 0) return msgBoxOk('Please select a role to add')
         const ok = await api.pubs.addPubRole(pub.id, pub.adduserid, pub.addroleid)
         if (ok) {
           await this.pubsStore.fetch()
         } else {
-          this.msgBoxFail('Add owner went wrong')
+          msgBoxFail('Add owner went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error adding owner: ' + e.message)
+        msgBoxError('Error adding owner: ' + e.message)
       }
     },
     duplicatePub(pub) {
@@ -350,7 +348,7 @@ export default {
     async okDupPub() {
       try {
         this.pubname = this.pubname.trim()
-        if (this.pubname.length === 0) return this.msgBoxOk('Please give a publication name')
+        if (this.pubname.length === 0) return msgBoxOk('Please give a publication name')
 
         this.showdupwait = true
         const ok = await api.pubs.duplicatePub(this.pubduppubid, this.pubname, this.pubdupusers)
@@ -359,15 +357,15 @@ export default {
           await this.pubsStore.fetch()
           this.$nextTick(() => {
             this.showDuplicateModal = false
-            this.msgBoxOk('Publication duplicated')
+            msgBoxOk('Publication duplicated')
           })
         } else {
           this.showdupwait = false
-          this.msgBoxFail('Duplicate went wrong')
+          msgBoxFail('Duplicate went wrong')
         }
       } catch (e) {
         this.showdupwait = false
-        this.msgBoxError('Error duplicating publication: ' + e.message)
+        msgBoxError('Error duplicating publication: ' + e.message)
       }
     }
   },

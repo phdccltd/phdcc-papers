@@ -40,9 +40,8 @@
         </span>
       </b-col>
     </b-row>
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -50,10 +49,9 @@
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   props: {
     pub: {
       required: true,
@@ -110,18 +108,18 @@ export default {
     deleteGrading() {
       console.log("deleteGrading")
       const title = this.date + ': ' + this.grading.username + ' - ' + this.grading.score
-      this.showConfirm(title, "Are you sure you want to remove this review?", this.confirmDeleteGrading)
+      showConfirm(title, "Are you sure you want to remove this review?", this.confirmDeleteGrading)
     },
     async confirmDeleteGrading() {
       try {
         const OK = await api.gradings.deleteGrading(this.submit.id, this.grading.id)
-        if (!OK) return this.msgBoxOk('Error removing review')
+        if (!OK) return msgBoxOk('Error removing review')
         await this.submitsStore.fetchpub(this.pubid)
         this.$nextTick(() => {
-          this.msgBoxOk('Review removed')
+          msgBoxOk('Review removed')
         })
       } catch (e) {
-        this.msgBoxError('Error removing review: ' + e.message)
+        msgBoxError('Error removing review: ' + e.message)
       }
     },
   },

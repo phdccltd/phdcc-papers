@@ -38,9 +38,8 @@
       </b-list-group>
     </div>
 
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
 
@@ -52,10 +51,9 @@ import { useSitePagesStore } from '~/stores/sitepages'
 import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authuser',
@@ -130,9 +128,9 @@ export default {
       try {
         this.message = ''
         this.error = ''
-        if (this.fromstatus === 0) return this.msgBoxOk('No FROM status chosen!')
-        if (this.tostatus === 0) return this.msgBoxOk('No TO status chosen!')
-        if (this.fromstatus === this.tostatus) return this.msgBoxOk('No change requested!')
+        if (this.fromstatus === 0) return msgBoxOk('No FROM status chosen!')
+        if (this.tostatus === 0) return msgBoxOk('No TO status chosen!')
+        if (this.fromstatus === this.tostatus) return msgBoxOk('No change requested!')
 
         if ((this.fromstatus !== this.lastfrom) || (this.tostatus !== this.lastto)) this.confirmed = ''
         this.lastfrom = this.fromstatus
@@ -155,7 +153,7 @@ export default {
           if (countAtFromStatus > 0) this.confirmed += '. Click again to confirm:'
           return
         }
-        if (countAtFromStatus === 0) return this.msgBoxOk('Nothing to do')
+        if (countAtFromStatus === 0) return msgBoxOk('Nothing to do')
         this.confirmed = 'Please wait...'
 
         const status = await api.pubs.bulkSubmitStatusUpdate(this.pubid, this.fromstatus, this.tostatus)
@@ -167,7 +165,7 @@ export default {
         this.confirmed = ''
         await this.submitsStore.fetchpub(this.pubid)
       } catch (e) {
-        this.msgBoxError('Error moving to status: ' + e.message)
+        msgBoxError('Error moving to status: ' + e.message)
       }
     },
   },

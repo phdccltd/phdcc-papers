@@ -86,8 +86,8 @@
         <b-button variant="primary" @click="okSitePage" data-cy="okSitePage"> OK </b-button>
       </template>
     </b-modal>
-    <MessageBoxOK2 v-if="showMsgModal" />
-    <ConfirmModal2 v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm"  />
+    <MessageBoxOK v-if="showMsgModal" />
+    <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm"  />
   </div>
 </template>
 
