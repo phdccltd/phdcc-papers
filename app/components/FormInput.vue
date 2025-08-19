@@ -28,32 +28,28 @@
     </b-row>
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-    }
-  },
-  props: {
-    edit: { type: Boolean },
-    type: { type: String },
-    reqd: { type: Boolean },
-    label: { type: String },
-    sid: { type: String },
-    help: { type: String },
-    helplink: { type: String },
-    modelValue: { type: String },
-    message: { type: String },
-  },
-  computed: {
-    labelreqd() {
-      return this.reqd ? this.label + ' *' : this.label
-    },
-  },
-  methods: {
-    update(event) { // this.$emit('update:modelValue', $event)
-      this.$emit('update:modelValue', event)
-    },
-  }
+<script setup lang="ts">
+const props = defineProps<{
+  edit?: boolean
+  type?: string
+  reqd?: boolean
+  label?: string
+  sid?: string
+  help?: string
+  helplink?: string
+  modelValue?: string
+  message?: string
+}>()
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+}>()
+
+const labelreqd = computed(() => {
+  return props.reqd ? props.label + ' *' : props.label
+})
+
+function update(event: string) {
+  emit('update:modelValue', event)
 }
 </script>

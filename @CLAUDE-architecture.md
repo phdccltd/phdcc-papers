@@ -28,7 +28,7 @@ nuxt.config.ts → ssr: false (SPA mode)
 ### 2. State Management
 ```
 app/stores/
-├── auth.ts (user authentication & authorization)
+├── auth.ts (user authentication & authorisation)
 ├── misc.ts (general app state)
 ├── pubs.ts (publications management)
 ├── submits.ts (submission handling)
@@ -57,7 +57,7 @@ app/api/
 
 ### Authentication & Security
 - JWT token-based authentication stored in localStorage
-- Authorization headers automatically injected via BaseAPI
+- Authorisation headers automatically injected via BaseAPI
 - Role-based access control (normal users, super users)
 - User masquerading capability for admin support
 - reCAPTCHA integration for form protection
@@ -70,13 +70,15 @@ app/api/
 
 ### Route Structure
 ```
-/                     → Home/landing
-/login, /register     → Authentication
-/account              → User profile
-/panel                → Main dashboard (authenticated)
-/panel/[pubid]        → Publication management
-/panel/[pubid]/[flowid] → Workflow management
-/admin                → Super user administration
+/                                            → Home/landing
+/login, /register                            → Authentication
+/account                                     → User profile
+/panel                                       → Main dashboard (authenticated)
+/panel/[pubid]                               → Publication management
+/panel/[pubid]/[flowid]/[submitid]           → Submission management
+/panel/[pubid]/[flowid]/[submitid]/[entryid] → Submission entry management
+/admin                                       → Super user admin
+/admin/site-pages                            → Super user site pages admin
 ```
 
 ### Middleware
@@ -114,13 +116,19 @@ app/api/
 - **Authentication**: vue-recaptcha-v3, jwt-decode
 
 ## File Organisation
-- `app/components/` - Reusable Vue components
-- `app/pages/` - Route-based page components
-- `app/stores/` - Pinia state management
 - `app/api/` - Backend API integration
-- `app/middleware/` - Route guards
-- `app/layouts/` - Page layout templates
 - `app/assets/` - Static assets and styles
+- `app/components/` - Reusable Vue components
 - `app/composables/` - Vue composables
+- `app/layouts/` - Page layout templates
+- `app/middleware/` - Route guards for authorisation
+- `app/mixins/` - Components optionally added to pages/components
+- `app/pages/` - Route-based page components
 - `app/plugins/` - Nuxt plugins
+- `app/stores/` - Pinia state management
 - `app/utils/` - Utility functions
+- `coverage/` - Coverage analysis output
+- `cypress/` - Test system
+- `node_modules/` - Packages
+- `public/` - Static site contents
+- `server/` - SSR not used

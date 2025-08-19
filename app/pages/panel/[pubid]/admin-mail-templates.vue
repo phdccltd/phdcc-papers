@@ -83,9 +83,8 @@
       </template>
     </b-modal>
 
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK2 v-if="showMsgModal" />
+    <ConfirmModal2 v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm"  />
   </div>
 </template>
 
@@ -98,10 +97,9 @@ import { useSitePagesStore } from '~/stores/sitepages'
 import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authuser',
@@ -114,7 +112,8 @@ export default {
     const sitepagesStore = useSitePagesStore()
     const usersStore = useUsersStore()
 
-    return { authStore, mailTemplatesStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
+    return {
+      authStore, mailTemplatesStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
   },
   data() {
     return {
@@ -207,7 +206,7 @@ export default {
     },
     deleteMailTemplate(mailtemplate) {
       this.confirmtemplate = mailtemplate
-      this.showConfirm(mailtemplate.name, 'Are you sure you want to delete this template?', this.confirmDeleteMailTemplate, null, null, null, 'danger')
+      showConfirm(mailtemplate.name, 'Are you sure you want to delete this template?', this.confirmDeleteMailTemplate, null, null, null, 'danger')
     },
     async confirmDeleteMailTemplate() {
       try {
@@ -216,13 +215,13 @@ export default {
           await this.mailTemplatesStore.fetch(this.pubid)
           this.$nextTick(() => {
             this.showMailModal = false
-            this.msgBoxOk('Mail template removed')
+            msgBoxOk('Mail template removed')
           })
         } else {
-          this.msgBoxFail('Remove went wrong')
+          msgBoxFail('Remove went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error adding template: ' + e.message)
+        msgBoxError('Error adding template: ' + e.message)
       }
     },
     startAddMailTemplate() {
@@ -242,14 +241,13 @@ export default {
       this.showMailModal = true
     },
     async okMailTemplate() {
-      //console.log('addMailTemplate', this.templateid, this.templatename, this.templatesubject, this.templatebody)
       try {
         this.templatename = this.templatename.trim()
         this.templatesubject = this.templatesubject.trim()
         this.templatebody = this.templatebody.trim()
-        if (this.templatename.length === 0) return this.msgBoxOk('Please give a name')
-        if (this.templatesubject.length === 0) return this.msgBoxOk('Please give a subject')
-        if (this.templatebody.length === 0) return this.msgBoxOk('Please give a body')
+        if (this.templatename.length === 0) return msgBoxOk('Please give a name')
+        if (this.templatesubject.length === 0) return msgBoxOk('Please give a subject')
+        if (this.templatebody.length === 0) return msgBoxOk('Please give a body')
 
         const ok = await api.mail.addEditMailTemplate(this.pubid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
 
@@ -257,13 +255,13 @@ export default {
           await this.mailTemplatesStore.fetch(this.pubid)
           this.$nextTick(() => {
             this.showMailModal = false
-            this.msgBoxOk('Mail template added/edited')
+            msgBoxOk('Mail template added/edited')
           })
         } else {
-          this.msgBoxFail('Add/Edit went wrong')
+          msgBoxFail('Add/Edit went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error adding template: ' + e.message)
+        msgBoxError('Error adding template: ' + e.message)
       }
     }
   },

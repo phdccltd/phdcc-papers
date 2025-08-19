@@ -86,9 +86,8 @@
         <b-button variant="primary" @click="okSitePage" data-cy="okSitePage"> OK </b-button>
       </template>
     </b-modal>
-    <MessageBoxOK ref="okmsgbox" />
-    <ConfirmModal ref="confirm" :title="confirmTitle" :message="confirmMessage" :cancelText="confirmCancelText" :confirmText="confirmOKText"
-      :okVariant="okVariant" @confirm="confirmedOK" @cancel="cancelConfirm" />
+    <MessageBoxOK2 v-if="showMsgModal" />
+    <ConfirmModal2 v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm"  />
   </div>
 </template>
 
@@ -100,10 +99,9 @@ import { useSitePagesStore } from '~/stores/sitepages'
 import { useSubmitsStore } from '~/stores/submits'
 import { useUsersStore } from '~/stores/users'
 import api from '~/api'
-import modalBoxes from '@/mixins/modalBoxes'
+import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
 export default {
-  mixins: [modalBoxes],
   setup() {
     definePageMeta({
       middleware: 'authsuper',
@@ -161,7 +159,7 @@ export default {
     },
     deleteSitePage(sitepage) {
       this.confirmsitepage = sitepage
-      this.showConfirm(sitepage.path + ' - ' + sitepage.title, 'Are you sure you want to delete this site page?', this.confirmDeleteSitePage)
+      showConfirm(sitepage.path + ' - ' + sitepage.title, 'Are you sure you want to delete this site page?', this.confirmDeleteSitePage)
     },
     async confirmDeleteSitePage() {
       try {
@@ -169,13 +167,13 @@ export default {
         if (ok) {
           await this.sitepagesStore.fetch()
           this.$nextTick(() => {
-            this.msgBoxOk('Site page removed')
+            msgBoxOk('Site page removed')
           })
         } else {
-          this.msgBoxOk('FAIL', 'Remove went wrong', 'warning')
+          msgBoxOk('FAIL', 'Remove went wrong', 'warning')
         }
       } catch (e) {
-        this.msgBoxError('Error adding site page: ' + e.message)
+        msgBoxError('Error adding site page: ' + e.message)
       }
     },
     startAddSitePage() {
@@ -200,9 +198,9 @@ export default {
         this.pagepath = this.pagepath.trim()
         this.pagetitle = this.pagetitle.trim()
         this.pagecontent = this.pagecontent.trim()
-        if (this.pagepath.length === 0) return this.msgBoxOk('Please give a path')
-        if (this.pagetitle.length === 0) return this.msgBoxOk('Please give a page title')
-        if (this.pagecontent.length === 0) return this.msgBoxOk('Please give some page content')
+        if (this.pagepath.length === 0) return msgBoxOk('Please give a path')
+        if (this.pagetitle.length === 0) return msgBoxOk('Please give a page title')
+        if (this.pagecontent.length === 0) return msgBoxOk('Please give some page content')
 
         const ok = await api.sitepages.addEditSitePage(this.pageid, this.pagepath, this.pagetitle, this.pagecontent)
 
@@ -210,13 +208,13 @@ export default {
           await this.sitepagesStore.fetch()
           this.$nextTick(() => {
             this.showSitePageModal = false
-            this.msgBoxOk('Site page added/edited')
+            msgBoxOk('Site page added/edited')
           })
         } else {
-          this.msgBoxFail('Add/Edit went wrong')
+          msgBoxFail('Add/Edit went wrong')
         }
       } catch (e) {
-        this.msgBoxError('Error adding site page: ' + e.message)
+        msgBoxError('Error adding site page: ' + e.message)
       }
     }
   },

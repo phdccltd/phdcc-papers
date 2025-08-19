@@ -22,42 +22,34 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import _ from 'lodash/core'
-export default {
-  props: {
-    flowgrade: {
-      required: true,
-    },
-    submit: {
-      required: true,
-    },
-  },
-  computed: {
-    pubid() {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-  },
-  methods: {
-    scorecount(score) {
-      let scorecount = 0
-      for (const grading of this.submit.gradings) {
-        if (grading.flowgradescoreId === score.id) {
-          scorecount++
-        }
-      }
-      return scorecount
-    },
-    canreviewers() {
-      let canreviewercount = 0
-      for (const grading of this.submit.gradings) {
-        if (grading.canreview) {
-          canreviewercount++
-        }
-      }
-      return canreviewercount
-    },
-  },
+
+const props = defineProps<{
+  flowgrade: any
+  submit: any
+}>()
+
+const route = useRoute()
+const pubid = computed(() => parseInt(route.params.pubid as string))
+
+function scorecount(score: any) {
+  let scorecount = 0
+  for (const grading of props.submit.gradings) {
+    if (grading.flowgradescoreId === score.id) {
+      scorecount++
+    }
+  }
+  return scorecount
+}
+
+function canreviewers() {
+  let canreviewercount = 0
+  for (const grading of props.submit.gradings) {
+    if (grading.canreview) {
+      canreviewercount++
+    }
+  }
+  return canreviewercount
 }
 </script>
