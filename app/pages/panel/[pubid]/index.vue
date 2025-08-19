@@ -15,60 +15,54 @@
   </div>
 </template>
   
-<script lang="ts">
+<script setup lang="ts">
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: ["authuser"]
-    })
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
+definePageMeta({
+  middleware: ["authuser"]
+})
 
-    return { miscStore, pubsStore, submitsStore }
-  },
-  data() {
-    return {
-      error: '',
-      message: '',
-    }
-  },
-  async mounted() { // Client only
-    this.error = ''
-    this.message = ''
-    //console.log('_id mounted', this.pubid)
-    await this.pubsStore.clearError()
-    await this.submitsStore.clearError()
-    await this.pubsStore.fetch()
-    await this.submitsStore.fetchpub(this.pubid)
-  },
-  computed: {
-    pubid(): number {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-    pub() {
-      const pub = this.pubsStore.getPub(this.pubid)
-      return pub ? pub : {}
-    },
-    fatalerror() {
-      const error1 = this.pubsStore.error
-      const error2 = this.submitsStore.error
-      return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
-    },
-  },
-  methods: {
-    setError(msg) {
-      this.error = msg
-    },
-    setMessage(msg) {
-      this.message = msg
-    },
-  },
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const route = useRoute()
+
+const error = ref('')
+const message = ref('')
+
+onMounted(async () => { // Client only
+  error.value = ''
+  message.value = ''
+  //console.log('_id mounted', pubid.value)
+  await pubsStore.clearError()
+  await submitsStore.clearError()
+  await pubsStore.fetch()
+  await submitsStore.fetchpub(pubid.value)
+})
+
+const pubid = computed((): number => {
+  return parseInt(route.params.pubid as string)
+})
+
+const pub = computed(() => {
+  const pub = pubsStore.getPub(pubid.value)
+  return pub ? pub : {}
+})
+
+const fatalerror = computed(() => {
+  const error1 = pubsStore.error
+  const error2 = submitsStore.error
+  return error1 ? error2 ? error1 + ". " + error2 : error1 : error2
+})
+
+function setError(msg: string) {
+  error.value = msg
+}
+
+function setMessage(msg: string) {
+  message.value = msg
 }
 </script>
   

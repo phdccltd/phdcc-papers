@@ -8,7 +8,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-radio-group :id="sid" v-model="selection" :options="options" :data-cy="'formyesno-'+sid">
+      <b-form-radio-group :id="sid" v-model="selection" :options="options" :data-cy="'formyesno-' + sid">
       </b-form-radio-group>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -16,7 +16,7 @@
       <b-col sm="3">
         {{ label }}
       </b-col>
-      <b-col sm="8" class="formfieldview" :data-cy="'formyesno-value-'+sid">
+      <b-col sm="8" class="formfieldview" :data-cy="'formyesno-value-' + sid">
         {{ yesno }}
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
@@ -28,47 +28,44 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import _ from 'lodash/core'
 
-export default {
-  data() {
-    return {
-      options: [
-        { value: 0, text: 'No' },
-        { value: 1, text: 'Yes' },
-      ],
-    }
-  },
-  props: {
-    edit: { type: Boolean },
-    reqd: { type: Boolean },
-    label: { type: String },
-    sid: { type: String },
-    help: { type: String },
-    helplink: { type: String },
-    modelValue: { type: Number },
-    message: { type: String },
-  },
-  computed: {
-    labelreqd() {
-      return this.reqd ? this.label + ' *' : this.label
-    },
-    selection: {
-      get: function () {
-        //if( this.modelValue==null) return 0
-        return this.modelValue
-      },
-      set: function (v) {
-        if( !v) v = 0
-        this.$emit('update:modelValue', v)
-      },
-    },
-    yesno() {
-      const option = _.find(this.options, _option => { return _option.value === this.modelValue })
-      if (option) return option.text
-      return 'Unknown'
-    }
+const props = defineProps({
+  edit: { type: Boolean },
+  reqd: { type: Boolean },
+  label: { type: String },
+  sid: { type: String },
+  help: { type: String },
+  helplink: { type: String },
+  modelValue: { type: Number },
+  message: { type: String },
+})
+
+const emit = defineEmits<{
+  'update:modelValue': [value: number]
+}>()
+
+const options = [
+  { value: 0, text: 'No' },
+  { value: 1, text: 'Yes' },
+]
+
+const labelreqd = computed(() => {
+  return props.reqd ? props.label + ' *' : props.label
+})
+
+const selection = computed({
+  get: () => props.modelValue,
+  set: (v: number) => {
+    if (!v) v = 0
+    emit('update:modelValue', v)
   }
-}
+})
+
+const yesno = computed(() => {
+  const option = _.find(options, _option => _option.value === props.modelValue)
+  if (option) return option.text
+  return 'Unknown'
+})
 </script>

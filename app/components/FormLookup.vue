@@ -8,7 +8,7 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-select :id="sid" v-model="arrayvalues" :options="options" :select-size="4" :data-cy="'formlookup-'+sid">
+      <b-form-select :id="sid" v-model="arrayvalues" :options="options" :select-size="4" :data-cy="'formlookup-' + sid">
       </b-form-select>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -16,7 +16,7 @@
       <b-col sm="3">
         {{ label }}
       </b-col>
-      <b-col sm="8" class="formfieldview" :data-cy="'formlookup-value-'+sid">
+      <b-col sm="8" class="formfieldview" :data-cy="'formlookup-value-' + sid">
         {{ plainvalues }}
       </b-col>
       <b-col sm="1" class="formfieldview text-end">
@@ -28,72 +28,65 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
 
-export default {
-  data() {
-    return {
-    }
-  },
-  props: {
-    edit: { type: Boolean },
-    reqd: { type: Boolean },
-    label: { type: String },
-    sid: { type: String },
-    help: { type: String },
-    helplink: { type: String },
-    modelValue: { type: Number },
-    publookupId: { type: Number },
-    message: { type: String },
-  },
-  setup() {
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
+const props = defineProps({
+  edit: { type: Boolean },
+  reqd: { type: Boolean },
+  label: { type: String },
+  sid: { type: String },
+  help: { type: String },
+  helplink: { type: String },
+  modelValue: { type: Number },
+  publookupId: { type: Number },
+  message: { type: String },
+})
 
-    return { authStore, miscStore, pubsStore, submitsStore }
-  },
-  computed: {
-    labelreqd() {
-      return this.reqd ? this.label + ' *' : this.label
-    },
-    arrayvalues: {
-      get: function () {
-        return this.modelValue
-      },
-      set: function (v) {
-        this.$emit('update:modelValue', v)
-      },
-    },
-    plainvalues() {
-      if (!this.modelValue) return ''
-      const atext = []
-      for (const option of this.options) {
-        if (option.id === this.modelValue) {
-          atext.push(option.text)
-        }
-      }
-      return atext.join(' | ')
-    },
-    options() {
-      const route = useRoute()
-      const pubid = parseInt(route.params.pubid)
-      const pub = this.pubsStore.getPub(pubid)
-      if (!pub) return []
-      const publookup = _.find(pub.publookups, _publookup => { return _publookup.id === this.publookupId })
-      if (publookup && publookup.values) {
-        publookup.values.forEach(v => {
-          v.value = v.id.toString()
-        })
-      }
-      return publookup.values
+const emit = defineEmits<{
+  'update:modelValue': [value: number]
+}>()
+
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const route = useRoute()
+
+const labelreqd = computed(() => {
+  return props.reqd ? props.label + ' *' : props.label
+})
+
+const arrayvalues = computed({
+  get: () => props.modelValue,
+  set: (v: number) => emit('update:modelValue', v)
+})
+
+const options = computed(() => {
+  const pubid = parseInt(route.params.pubid as string)
+  const pub = pubsStore.getPub(pubid)
+  if (!pub) return []
+  const publookup = _.find(pub.publookups, _publookup => _publookup.id === props.publookupId)
+  if (publookup && publookup.values) {
+    publookup.values.forEach(v => {
+      v.value = v.id.toString()
+    })
+  }
+  return publookup.values
+})
+
+const plainvalues = computed(() => {
+  if (!props.modelValue) return ''
+  const atext = []
+  for (const option of options.value) {
+    if (option.id === props.modelValue) {
+      atext.push(option.text)
     }
   }
-}
+  return atext.join(' | ')
+})
 </script>

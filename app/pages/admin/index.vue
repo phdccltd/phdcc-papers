@@ -156,7 +156,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
@@ -165,210 +165,213 @@ import { useUsersStore } from '~/stores/users'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: 'authsuper',
-    })
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
-    const usersStore = useUsersStore()
+definePageMeta({
+  middleware: 'authsuper',
+})
 
-    return { authStore, miscStore, pubsStore, submitsStore, usersStore }
-  },
-  data() {
-    return {
-      error: '',
-      message: '',
-      pubname: '',
-      pubdescr: '',
-      pubdupusers: true,
-      pubduppubid: 0,
-      showdupwait: false,
-      confirmpub: null,
-      showAddModal: false,
-      showDuplicateModal: false,
-    }
-  },
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const usersStore = useUsersStore()
 
-  async mounted() {
-    this.error = ''
-    this.message = ''
-    await this.pubsStore.clearError()
-    await this.pubsStore.fetch()
-    await this.usersStore.clearError()
-    await this.usersStore.fetchallusers()
-    this.miscStore.set({ key: 'page-title', value: 'Site super admin' })
-  },
+const error = ref('')
+const message = ref('')
+const pubname = ref('')
+const pubdescr = ref('')
+const pubdupusers = ref(true)
+const pubduppubid = ref(0)
+const showdupwait = ref(false)
+const confirmpub = ref(null)
+const showAddModal = ref(false)
+const showDuplicateModal = ref(false)
 
-  computed: {
-    pubs() {
-      return this.pubsStore.pubs
-    },
-    allusersoptions() {
-      const allusers = this.usersStore.getall()
-      const allusersoptions = []
-      for (const user of allusers) {
-        allusersoptions.push({ value: user.id, text: user.username + ' - ' + user.email })
-      }
-      return allusersoptions
-    },
-    allrolesoptions() {
-      return (pubid) => {
-        const pubs = this.pubsStore.pubs
-        const allrolesoptions = []
-        for (const pub of Object.values(pubs)) {
-          if (pub.id === pubid) {
-            for (const pubrole of pub.pubroles) {
-              allrolesoptions.push({ value: pubrole.id, text: pubrole.name })
-            }
-            break
-          }
+onMounted(async () => {
+  error.value = ''
+  message.value = ''
+  await pubsStore.clearError()
+  await pubsStore.fetch()
+  await usersStore.clearError()
+  await usersStore.fetchallusers()
+  miscStore.set({ key: 'page-title', value: 'Site super admin' })
+})
+
+const pubs = computed(() => {
+  return pubsStore.pubs
+})
+
+const allusersoptions = computed(() => {
+  const allusers = usersStore.getall()
+  const allusersoptions = []
+  for (const user of allusers) {
+    allusersoptions.push({ value: user.id, text: user.username + ' - ' + user.email })
+  }
+  return allusersoptions
+})
+
+const allrolesoptions = computed(() => {
+  return (pubid: number) => {
+    const pubs = pubsStore.pubs
+    const allrolesoptions = []
+    for (const pub of Object.values(pubs)) {
+      if (pub.id === pubid) {
+        for (const pubrole of pub.pubroles) {
+          allrolesoptions.push({ value: pubrole.id, text: pubrole.name })
         }
-        return allrolesoptions
-      }
-    },
-    issuper() {
-      return this.authStore.super
-    },
-    isowner() {
-      return this.authStore.super
-    },
-  },
-
-  methods: {
-    addpub() {
-      this.pubname = ''
-      this.pubdescr = ''
-      this.showAddModal = true
-    },
-    async okAddPub() {
-      //console.log('okAddPub', this.pubname, this.pubdescr)
-      try {
-        this.pubname = this.pubname.trim()
-        this.pubdescr = this.pubdescr.trim()
-        if (this.pubname.length === 0) return msgBoxOk('Please give a publication name')
-        if (this.pubdescr.length === 0) return msgBoxOk('Please give a publication description')
-
-        const ok = await api.pubs.addPub(this.pubname, this.pubdescr)
-
-        if (ok) {
-          await this.pubsStore.fetch()
-          this.$nextTick(() => {
-            this.showAddModal = false
-            msgBoxOk('Publication added')
-          })
-        } else {
-          msgBoxFail('Add went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error adding publication: ' + e.message)
-      }
-    },
-    togglePubEdit(pub) {
-      pub.superedit = !pub.superedit
-    },
-    cancelModal() {
-      this.showAddModal = false
-      this.showDuplicateModal = false
-    },
-    togglePubEnable(pub) {
-      console.log('togglePubEnable')
-      this.confirmpub = pub
-      showConfirm(pub.name, 'Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?', this.confirmTogglePubEnable)
-    },
-    async confirmTogglePubEnable() {
-      try {
-        const ok = await api.pubs.toggleEnablePub(this.confirmpub.id, !this.confirmpub.enabled)
-        if (ok) {
-          this.confirmpub.enabled = !this.confirmpub.enabled
-          await this.pubsStore.fetch()
-        } else {
-          msgBoxFail('Toggling enable went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error toggling enable on publication: ' + e.message)
-      }
-    },
-    deletePub(pub) {
-      console.log('deletePub')
-      this.confirmpub = pub
-      showConfirm(pub.name, 'Are you sure you want to delete this publication?', this.confirmDeletePub, 'YES', 'NO', null, 'danger') // TODO CHECK THAT ALL TRACES REMOVED okVariant: 'danger'
-    },
-    async confirmDeletePub() {
-      try {
-        const ok = await api.pubs.deletePub(this.confirmpub.id)
-        if (ok) {
-          await this.pubsStore.fetch()
-          this.$nextTick(() => {
-            msgBoxOk('Publication deleted')
-          })
-        } else {
-          msgBoxFail('Delete went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error deleting publication: ' + e.message)
-      }
-    },
-    async addPubRoleOwner(pub) {
-      try {
-        const ok = await api.pubs.addPubRoleOwner(pub.id)
-        if (ok) {
-          await this.pubsStore.fetch()
-        } else {
-          msgBoxFail('Add owner role went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error adding owner role: ' + e.message)
-      }
-    },
-    async addPubRole(pub) {
-      try {
-        if (pub.adduserid === 0) return msgBoxOk('Please select a user to add')
-        if (pub.addroleid === 0) return msgBoxOk('Please select a role to add')
-        const ok = await api.pubs.addPubRole(pub.id, pub.adduserid, pub.addroleid)
-        if (ok) {
-          await this.pubsStore.fetch()
-        } else {
-          msgBoxFail('Add owner went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error adding owner: ' + e.message)
-      }
-    },
-    duplicatePub(pub) {
-      this.pubname = pub.name + ' COPY'
-      this.pubdupusers = true
-      this.pubduppubid = pub.id
-      this.showdupwait = false
-      this.showDuplicateModal = true
-    },
-    async okDupPub() {
-      try {
-        this.pubname = this.pubname.trim()
-        if (this.pubname.length === 0) return msgBoxOk('Please give a publication name')
-
-        this.showdupwait = true
-        const ok = await api.pubs.duplicatePub(this.pubduppubid, this.pubname, this.pubdupusers)
-
-        if (ok) {
-          await this.pubsStore.fetch()
-          this.$nextTick(() => {
-            this.showDuplicateModal = false
-            msgBoxOk('Publication duplicated')
-          })
-        } else {
-          this.showdupwait = false
-          msgBoxFail('Duplicate went wrong')
-        }
-      } catch (e) {
-        this.showdupwait = false
-        msgBoxError('Error duplicating publication: ' + e.message)
+        break
       }
     }
-  },
+    return allrolesoptions
+  }
+})
+
+const issuper = computed(() => {
+  return authStore.super
+})
+
+const isowner = computed(() => {
+  return authStore.super
+})
+
+function addpub() {
+  pubname.value = ''
+  pubdescr.value = ''
+  showAddModal.value = true
+}
+
+async function okAddPub() {
+  //console.log('okAddPub', pubname.value, pubdescr.value)
+  try {
+    pubname.value = pubname.value.trim()
+    pubdescr.value = pubdescr.value.trim()
+    if (pubname.value.length === 0) return msgBoxOk('Please give a publication name')
+    if (pubdescr.value.length === 0) return msgBoxOk('Please give a publication description')
+
+    const ok = await api.pubs.addPub(pubname.value, pubdescr.value)
+
+    if (ok) {
+      await pubsStore.fetch()
+      nextTick(() => {
+        showAddModal.value = false
+        msgBoxOk('Publication added')
+      })
+    } else {
+      msgBoxFail('Add went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding publication: ' + e.message)
+  }
+}
+
+function togglePubEdit(pub: any) {
+  pub.superedit = !pub.superedit
+}
+
+function cancelModal() {
+  showAddModal.value = false
+  showDuplicateModal.value = false
+}
+
+function togglePubEnable(pub: any) {
+  console.log('togglePubEnable')
+  confirmpub.value = pub
+  showConfirm(pub.name, 'Are you sure you want to ' + (pub.enabled ? 'disable' : 'enable') + ' this publication?', confirmTogglePubEnable)
+}
+
+async function confirmTogglePubEnable() {
+  try {
+    const ok = await api.pubs.toggleEnablePub(confirmpub.value.id, !confirmpub.value.enabled)
+    if (ok) {
+      confirmpub.value.enabled = !confirmpub.value.enabled
+      await pubsStore.fetch()
+    } else {
+      msgBoxFail('Toggling enable went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error toggling enable on publication: ' + e.message)
+  }
+}
+
+function deletePub(pub: any) {
+  console.log('deletePub')
+  confirmpub.value = pub
+  showConfirm(pub.name, 'Are you sure you want to delete this publication?', confirmDeletePub, 'YES', 'NO', null, 'danger') // TODO CHECK THAT ALL TRACES REMOVED okVariant: 'danger'
+}
+
+async function confirmDeletePub() {
+  try {
+    const ok = await api.pubs.deletePub(confirmpub.value.id)
+    if (ok) {
+      await pubsStore.fetch()
+      nextTick(() => {
+        msgBoxOk('Publication deleted')
+      })
+    } else {
+      msgBoxFail('Delete went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error deleting publication: ' + e.message)
+  }
+}
+
+async function addPubRoleOwner(pub: any) {
+  try {
+    const ok = await api.pubs.addPubRoleOwner(pub.id)
+    if (ok) {
+      await pubsStore.fetch()
+    } else {
+      msgBoxFail('Add owner role went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding owner role: ' + e.message)
+  }
+}
+
+async function addPubRole(pub: any) {
+  try {
+    if (pub.adduserid === 0) return msgBoxOk('Please select a user to add')
+    if (pub.addroleid === 0) return msgBoxOk('Please select a role to add')
+    const ok = await api.pubs.addPubRole(pub.id, pub.adduserid, pub.addroleid)
+    if (ok) {
+      await pubsStore.fetch()
+    } else {
+      msgBoxFail('Add owner went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding owner: ' + e.message)
+  }
+}
+
+function duplicatePub(pub: any) {
+  pubname.value = pub.name + ' COPY'
+  pubdupusers.value = true
+  pubduppubid.value = pub.id
+  showdupwait.value = false
+  showDuplicateModal.value = true
+}
+
+async function okDupPub() {
+  try {
+    pubname.value = pubname.value.trim()
+    if (pubname.value.length === 0) return msgBoxOk('Please give a publication name')
+
+    showdupwait.value = true
+    const ok = await api.pubs.duplicatePub(pubduppubid.value, pubname.value, pubdupusers.value)
+
+    if (ok) {
+      await pubsStore.fetch()
+      nextTick(() => {
+        showDuplicateModal.value = false
+        msgBoxOk('Publication duplicated')
+      })
+    } else {
+      showdupwait.value = false
+      msgBoxFail('Duplicate went wrong')
+    }
+  } catch (e: any) {
+    showdupwait.value = false
+    msgBoxError('Error duplicating publication: ' + e.message)
+  }
 }
 </script>
 

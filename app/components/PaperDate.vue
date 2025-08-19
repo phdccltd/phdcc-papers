@@ -3,20 +3,14 @@
     {{ date }}
   </span>
 </template>
-<script>
-export default {
-  props: {
-    dt: {
-      type: String
-    },
-  },
-  computed: {
-    date() {
-      if (this.dt === null) return ''
-      const dt = new Date(this.dt)
-      return dt.toLocaleString()
-    }
-  }
-}
+<script setup lang="ts">
+const props = defineProps({
+  dt: { type: String },
+})
+
+const date = computed(() => {
+  if (props.dt === null) return ''
+  const dt = new Date(props.dt)
+  return dt.toLocaleString()
+})
 </script>
-  

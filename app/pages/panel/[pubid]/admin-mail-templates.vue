@@ -88,7 +88,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useMailTemplatesStore } from '~/stores/mailtemplates'
 import { useMiscStore } from '~/stores/misc'
@@ -99,171 +100,175 @@ import { useUsersStore } from '~/stores/users'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: 'authuser',
-    })
-    const authStore = useAuthStore()
-    const mailTemplatesStore = useMailTemplatesStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
-    const sitepagesStore = useSitePagesStore()
-    const usersStore = useUsersStore()
+definePageMeta({
+  middleware: 'authuser',
+})
 
-    return {
-      authStore, mailTemplatesStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
-  },
-  data() {
-    return {
-      error: '',
-      message: '',
-      modaltitle: 'UNSET',
-      templateid: 0,
-      templatename: '',
-      templatesubject: '',
-      templatebody: '',
-      showsubstitutions: false,
-      showMailModal: false,
-      confirmtemplate: null,
+const authStore = useAuthStore()
+const mailTemplatesStore = useMailTemplatesStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const sitepagesStore = useSitePagesStore()
+const usersStore = useUsersStore()
+
+const error = ref('')
+const message = ref('')
+const modaltitle = ref('UNSET')
+const templateid = ref(0)
+const templatename = ref('')
+const templatesubject = ref('')
+const templatebody = ref('')
+const showsubstitutions = ref(false)
+const showMailModal = ref(false)
+const confirmtemplate = ref<any>(null)
+
+onMounted(async () => { // Client only
+  error.value = ''
+  message.value = ''
+  await mailTemplatesStore.clearError()
+  await mailTemplatesStore.fetch(pubid.value)
+  await submitsStore.fetchpub(pubid.value)
+  const flows = submitsStore.flows(pubid.value)
+  for (const flow of flows) {
+    for (const stage of flow.stages) {
+      await submitsStore.fetchformfields(stage.id)
     }
-  },
-  async mounted() { // Client only
-    this.error = ''
-    this.message = ''
-    await this.mailTemplatesStore.clearError()
-    await this.mailTemplatesStore.fetch(this.pubid)
-    await this.submitsStore.fetchpub(this.pubid)
-    const flows = this.submitsStore.flows(this.pubid)
-    for (const flow of flows) {
-      for (const stage of flow.stages) {
-        await this.submitsStore.fetchformfields(stage.id)
-      }
-    }
-  },
-  computed: {
-    pub() {
-      const pub = this.pubsStore.getPub(this.pubid)
-      if (!pub) {
-        this.setError('Invalid pubid')
-        return false
-      }
-      this.miscStore.set({ key: 'page-title', value: pub.name })
-      this.miscStore.set({ key: 'page-title-suffix', value: 'ADMIN MAIL' })
-      return pub
-    },
-    fatalerror() {
-      const error1 = this.usersStore.error
-      return error1
-    },
-    pubid() {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-    mailtemplates() {
-      return this.mailTemplatesStore.get(this.pubid)
-    },
-    substitutions() {
-      let substitutions = '{{site.name}}\r\n{{site.url}}\r\n{{pub.name}}\r\n{{submit.id}}\r\n{{submit.name}}\r\n{{user.username}}\r\n{{user.id}}\r\n{{now}}\r\n\r\n'
-      substitutions += '{{author.username}}\r\n{{author.id}}\r\n\r\n'
-      substitutions += '{{grading.score}}\r\n{{grading.comment}}\r\n{{grading.canreview}}\r\n\r\n'
-      substitutions += '{{entry.id}}\r\n'
-      const flows = this.submitsStore.flows(this.pubid)
-      for (const flow of flows) {
-        for (const stage of flow.stages) {
-          substitutions += '\r\n' + stage.name + ':\r\n'
-          const entry = this.submitsStore.stagefields(stage.id)
-          if (entry) {
-            for (const field of entry.fields) {
-              substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r\n'
-            }
-          }
+  }
+})
+
+const pub = computed(() => {
+  const pub = pubsStore.getPub(pubid.value)
+  if (!pub) {
+    setError('Invalid pubid')
+    return false
+  }
+  miscStore.set({ key: 'page-title', value: pub.name })
+  miscStore.set({ key: 'page-title-suffix', value: 'ADMIN MAIL' })
+  return pub
+})
+
+const fatalerror = computed(() => {
+  const error1 = usersStore.error
+  return error1
+})
+
+const pubid = computed(() => {
+  const route = useRoute()
+  return parseInt(route.params.pubid as string)
+})
+
+const mailtemplates = computed(() => {
+  return mailTemplatesStore.get(pubid.value)
+})
+
+const substitutions = computed(() => {
+  let substitutions = '{{site.name}}\r\n{{site.url}}\r\n{{pub.name}}\r\n{{submit.id}}\r\n{{submit.name}}\r\n{{user.username}}\r\n{{user.id}}\r\n{{now}}\r\n\r\n'
+  substitutions += '{{author.username}}\r\n{{author.id}}\r\n\r\n'
+  substitutions += '{{grading.score}}\r\n{{grading.comment}}\r\n{{grading.canreview}}\r\n\r\n'
+  substitutions += '{{entry.id}}\r\n'
+  const flows = submitsStore.flows(pubid.value)
+  for (const flow of flows) {
+    for (const stage of flow.stages) {
+      substitutions += '\r\n' + stage.name + ':\r\n'
+      const entry = submitsStore.stagefields(stage.id)
+      if (entry) {
+        for (const field of entry.fields) {
+          substitutions += '{{entry.field_' + field.id + '}} ' + field.label + '\r\n'
         }
       }
-      console.log("substitutions", substitutions)
-      return substitutions.split('\n')
-    },
-    issuper() {
-      return this.authStore.super
-    },
-  },
-  methods: {
-    cancelModal() {
-      this.showMailModal = false
-    },
-    setError(msg) {
-      this.error = msg
-    },
-    setMessage(msg) {
-      this.message = msg
-    },
-    toggleShowSubstitutions() {
-      this.showsubstitutions = !this.showsubstitutions
-    },
-    toggleTemplateShow(mailtemplate) {
-      mailtemplate.visible = !mailtemplate.visible
-    },
-    deleteMailTemplate(mailtemplate) {
-      this.confirmtemplate = mailtemplate
-      showConfirm(mailtemplate.name, 'Are you sure you want to delete this template?', this.confirmDeleteMailTemplate, null, null, null, 'danger')
-    },
-    async confirmDeleteMailTemplate() {
-      try {
-        const ok = await api.mail.deleteMailTemplate(this.pubid, this.confirmtemplate.id)
-        if (ok) {
-          await this.mailTemplatesStore.fetch(this.pubid)
-          this.$nextTick(() => {
-            this.showMailModal = false
-            msgBoxOk('Mail template removed')
-          })
-        } else {
-          msgBoxFail('Remove went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error adding template: ' + e.message)
-      }
-    },
-    startAddMailTemplate() {
-      this.modaltitle = 'Add mail template'
-      this.templateid = 0
-      this.templatename = ''
-      this.templatesubject = ''
-      this.templatebody = ''
-      this.showMailModal = true
-    },
-    startEditMailTemplate(mailtemplate) {
-      this.modaltitle = 'Edit mail template'
-      this.templateid = mailtemplate.id
-      this.templatename = mailtemplate.name
-      this.templatesubject = mailtemplate.subject
-      this.templatebody = mailtemplate.body
-      this.showMailModal = true
-    },
-    async okMailTemplate() {
-      try {
-        this.templatename = this.templatename.trim()
-        this.templatesubject = this.templatesubject.trim()
-        this.templatebody = this.templatebody.trim()
-        if (this.templatename.length === 0) return msgBoxOk('Please give a name')
-        if (this.templatesubject.length === 0) return msgBoxOk('Please give a subject')
-        if (this.templatebody.length === 0) return msgBoxOk('Please give a body')
-
-        const ok = await api.mail.addEditMailTemplate(this.pubid, this.templateid, this.templatename, this.templatesubject, this.templatebody)
-
-        if (ok) {
-          await this.mailTemplatesStore.fetch(this.pubid)
-          this.$nextTick(() => {
-            this.showMailModal = false
-            msgBoxOk('Mail template added/edited')
-          })
-        } else {
-          msgBoxFail('Add/Edit went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error adding template: ' + e.message)
-      }
     }
-  },
+  }
+  console.log("substitutions", substitutions)
+  return substitutions.split('\n')
+})
+
+const issuper = computed(() => {
+  return authStore.super
+})
+
+function cancelModal() {
+  showMailModal.value = false
+}
+
+function setError(msg: string) {
+  error.value = msg
+}
+
+function setMessage(msg: string) {
+  message.value = msg
+}
+
+function toggleShowSubstitutions() {
+  showsubstitutions.value = !showsubstitutions.value
+}
+
+function toggleTemplateShow(mailtemplate: any) {
+  mailtemplate.visible = !mailtemplate.visible
+}
+
+function deleteMailTemplate(mailtemplate: any) {
+  confirmtemplate.value = mailtemplate
+  showConfirm(mailtemplate.name, 'Are you sure you want to delete this template?', confirmDeleteMailTemplate, null, null, null, 'danger')
+}
+
+async function confirmDeleteMailTemplate() {
+  try {
+    const ok = await api.mail.deleteMailTemplate(pubid.value, confirmtemplate.value.id)
+    if (ok) {
+      await mailTemplatesStore.fetch(pubid.value)
+      nextTick(() => {
+        showMailModal.value = false
+        msgBoxOk('Mail template removed')
+      })
+    } else {
+      msgBoxFail('Remove went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding template: ' + e.message)
+  }
+}
+
+function startAddMailTemplate() {
+  modaltitle.value = 'Add mail template'
+  templateid.value = 0
+  templatename.value = ''
+  templatesubject.value = ''
+  templatebody.value = ''
+  showMailModal.value = true
+}
+
+function startEditMailTemplate(mailtemplate: any) {
+  modaltitle.value = 'Edit mail template'
+  templateid.value = mailtemplate.id
+  templatename.value = mailtemplate.name
+  templatesubject.value = mailtemplate.subject
+  templatebody.value = mailtemplate.body
+  showMailModal.value = true
+}
+
+async function okMailTemplate() {
+  try {
+    templatename.value = templatename.value.trim()
+    templatesubject.value = templatesubject.value.trim()
+    templatebody.value = templatebody.value.trim()
+    if (templatename.value.length === 0) return msgBoxOk('Please give a name')
+    if (templatesubject.value.length === 0) return msgBoxOk('Please give a subject')
+    if (templatebody.value.length === 0) return msgBoxOk('Please give a body')
+
+    const ok = await api.mail.addEditMailTemplate(pubid.value, templateid.value, templatename.value, templatesubject.value, templatebody.value)
+
+    if (ok) {
+      await mailTemplatesStore.fetch(pubid.value)
+      nextTick(() => {
+        showMailModal.value = false
+        msgBoxOk('Mail template added/edited')
+      })
+    } else {
+      msgBoxFail('Add/Edit went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding template: ' + e.message)
+  }
 }
 </script>

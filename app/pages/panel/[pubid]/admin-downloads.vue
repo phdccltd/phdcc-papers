@@ -38,7 +38,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useMailTemplatesStore } from '~/stores/mailtemplates'
 import { useMiscStore } from '~/stores/misc'
@@ -50,156 +51,159 @@ import _ from 'lodash/core'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: 'authuser',
-    })
-    const authStore = useAuthStore()
-    const mailTemplatesStore = useMailTemplatesStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
-    const sitepagesStore = useSitePagesStore()
-    const usersStore = useUsersStore()
+definePageMeta({
+  middleware: 'authuser',
+})
 
-    return { authStore, mailTemplatesStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
-  },
-  data() {
-    return {
-      error: '',
-      message: '',
-      selectedstage: 0,
-      selectedgrades: [],
+const authStore = useAuthStore()
+const mailTemplatesStore = useMailTemplatesStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const sitepagesStore = useSitePagesStore()
+const usersStore = useUsersStore()
+
+const error = ref('')
+const message = ref('')
+const selectedstage = ref(0)
+const selectedgrades = ref<any[]>([])
+
+onMounted(async () => { // Client only
+  error.value = ''
+  message.value = ''
+  await pubsStore.clearError()
+  await pubsStore.fetch()
+  await submitsStore.fetchpub(pubid.value)
+})
+
+const pub = computed(() => {
+  const pub = pubsStore.getPub(pubid.value)
+  if (!pub) {
+    setError('Invalid pubid')
+    return false
+  }
+  miscStore.set({ key: 'page-title', value: pub.name })
+  miscStore.set({ key: 'page-title-suffix', value: 'ADMIN SEND EMAIL' })
+  return pub
+})
+
+const fatalerror = computed(() => {
+  return false
+})
+
+const pubid = computed(() => {
+  const route = useRoute()
+  return parseInt(route.params.pubid as string)
+})
+
+const allstages = computed(() => {
+  const allstages: any[] = []
+  const flows = submitsStore.flows(pubid.value)
+  for (const flow of flows) {
+    for (const flowstage of flow.stages) {
+      allstages.push(flowstage)
     }
-  },
-  async mounted() { // Client only
-    this.error = ''
-    this.message = ''
-    await this.pubsStore.clearError()
-    await this.pubsStore.fetch()
-    await this.submitsStore.fetchpub(this.pubid)
-  },
-  computed: {
-    pub() {
-      const pub = this.pubsStore.getPub(this.pubid)
-      if (!pub) {
-        this.setError('Invalid pubid')
-        return false
-      }
-      this.miscStore.set({ key: 'page-title', value: pub.name })
-      this.miscStore.set({ key: 'page-title-suffix', value: 'ADMIN SEND EMAIL' })
-      return pub
-    },
-    fatalerror() {
-      return false
-    },
-    pubid() {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-    allstages() {
-      const allstages = []
-      const flows = this.submitsStore.flows(this.pubid)
-      for (const flow of flows) {
-        for (const flowstage of flow.stages) {
-          allstages.push(flowstage)
-        }
-      }
-      return allstages
-    },
-    allgrades() {
-      const allgrades = []
-      const flows = this.submitsStore.flows(this.pubid)
-      for (const flow of flows) {
-        for (const flowgrade of flow.flowgrades) {
-          allgrades.push(flowgrade)
-        }
-      }
-      return allgrades
-    },
-    issuper() {
-      return this.authStore.super
-    },
-  },
-  methods: {
-    setError(msg) {
-      this.error = msg
-    },
-    setMessage(msg) {
-      this.message = msg
-    },
-    async downloadAnonymousStageSubmissions() {
-      try {
-        if (this.selectedstage == 0) return msgBoxOk('No stage chosen!')
+  }
+  return allstages
+})
 
-        this.message = 'Please wait...'
-        const ret = await api.downloads.downloadAnonymousStageSubmissions(this.pubid, this.selectedstage)
-        this.handleDownloadReturn(ret)
-      } catch (e) {
-        msgBoxError('Error downloading: ' + e.message)
-      }
-    },
-    async downloadSummary() {
-      try {
-        if (this.selectedstage == 0) return msgBoxOk('No stage chosen!')
+const allgrades = computed(() => {
+  const allgrades: any[] = []
+  const flows = submitsStore.flows(pubid.value)
+  for (const flow of flows) {
+    for (const flowgrade of flow.flowgrades) {
+      allgrades.push(flowgrade)
+    }
+  }
+  return allgrades
+})
 
-        this.message = 'Please wait...'
-        const ret = await api.downloads.downloadSummary(this.pubid, this.selectedstage)
-        this.handleDownloadReturn(ret)
-      } catch (e) {
-        msgBoxError('Error downloading: ' + e.message)
-      }
-    },
-    async downloadAll() {
-      if (this.selectedstage == 0) return msgBoxOk('No stage chosen!')
+const issuper = computed(() => {
+  return authStore.super
+})
 
-      this.message = 'Please wait...'
-      const ret = await api.downloads.downloadAll(this.pubid, this.selectedstage)
-      this.handleDownloadReturn(ret)
-    },
-    async downloadReviewerPerformance() {
-      if (this.selectedgrades.length == 0) return msgBoxOk('No grade(s) chosen!')
+function setError(msg: string) {
+  error.value = msg
+}
 
-      this.message = 'Please wait...'
-      const ret = await api.downloads.downloadReviewerPerformance(this.pubid, this.selectedgrades)
-      this.handleDownloadReturn(ret)
-    },
-    basename(thepath?: string) {
-      if (thepath == null) return ''
-      const lastslash = thepath.lastIndexOf('/')
-      return lastslash === -1 ? thepath : thepath.substring(lastslash + 1)
-    },
-    handleDownloadReturn(ret) {
-      if (ret.data.type == 'application/json') {
-        const reader = new FileReader()
-        reader.addEventListener('loadend', async (e) => {
-          const text = e.srcElement.result
-          const rv = JSON.parse(text)
-          if ('status' in rv) {
-            msgBoxOk('Error: ' + rv.status)
-          }
-          this.message = ''
-        })
-        reader.readAsText(ret.data)
-        return
+function setMessage(msg: string) {
+  message.value = msg
+}
+
+async function downloadAnonymousStageSubmissions() {
+  try {
+    if (selectedstage.value == 0) return msgBoxOk('No stage chosen!')
+
+    message.value = 'Please wait...'
+    const ret = await api.downloads.downloadAnonymousStageSubmissions(pubid.value, selectedstage.value)
+    handleDownloadReturn(ret)
+  } catch (e: any) {
+    msgBoxError('Error downloading: ' + e.message)
+  }
+}
+
+async function downloadSummary() {
+  try {
+    if (selectedstage.value == 0) return msgBoxOk('No stage chosen!')
+
+    message.value = 'Please wait...'
+    const ret = await api.downloads.downloadSummary(pubid.value, selectedstage.value)
+    handleDownloadReturn(ret)
+  } catch (e: any) {
+    msgBoxError('Error downloading: ' + e.message)
+  }
+}
+
+async function downloadAll() {
+  if (selectedstage.value == 0) return msgBoxOk('No stage chosen!')
+
+  message.value = 'Please wait...'
+  const ret = await api.downloads.downloadAll(pubid.value, selectedstage.value)
+  handleDownloadReturn(ret)
+}
+
+async function downloadReviewerPerformance() {
+  if (selectedgrades.value.length == 0) return msgBoxOk('No grade(s) chosen!')
+
+  message.value = 'Please wait...'
+  const ret = await api.downloads.downloadReviewerPerformance(pubid.value, selectedgrades.value)
+  handleDownloadReturn(ret)
+}
+
+function basename(thepath?: string) {
+  if (thepath == null) return ''
+  const lastslash = thepath.lastIndexOf('/')
+  return lastslash === -1 ? thepath : thepath.substring(lastslash + 1)
+}
+
+function handleDownloadReturn(ret: any) {
+  if (ret.data.type == 'application/json') {
+    const reader = new FileReader()
+    reader.addEventListener('loadend', async (e: any) => {
+      const text = e.srcElement.result
+      const rv = JSON.parse(text)
+      if ('status' in rv) {
+        msgBoxOk('Error: ' + rv.status)
       }
-      let filename = 'anonymised.txt'
-      if ('content-disposition' in ret.headers) { // attachment; filename="thename.ext"
-        const cd = ret.headers['content-disposition']
-        const dqpos = cd.indexOf('"')
-        if (dqpos !== -1) {
-          filename = cd.substring(dqpos + 1, cd.length - 1)
-        }
-      }
-      const blob = new Blob([ret.data], { type: ret.data.type })
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(blob)
-      link.download = this.basename(filename)
-      link.click()
-      URL.revokeObjectURL(link.href)
-      this.message = ''
-    },
-  },
+      message.value = ''
+    })
+    reader.readAsText(ret.data)
+    return
+  }
+  let filename = 'anonymised.txt'
+  if ('content-disposition' in ret.headers) { // attachment; filename="thename.ext"
+    const cd = ret.headers['content-disposition']
+    const dqpos = cd.indexOf('"')
+    if (dqpos !== -1) {
+      filename = cd.substring(dqpos + 1, cd.length - 1)
+    }
+  }
+  const blob = new Blob([ret.data], { type: ret.data.type })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = basename(filename)
+  link.click()
+  URL.revokeObjectURL(link.href)
+  message.value = ''
 }
 </script>

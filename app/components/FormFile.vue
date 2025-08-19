@@ -31,75 +31,76 @@
     </b-row>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import api from '~/api'
 
-export default {
-  data() {
-    return {
-      newfilename: null,
-      downloaderror: ''
-    }
-  },
-  props: {
-    edit: { type: Boolean },
-    reqd: { type: Boolean },
-    label: { type: String },
-    sid: { type: String },
-    help: { type: String },
-    helplink: { type: String },
-    allowedfiletypes: { type: String },
-    existingfile: { type: String },
-    relpath: { type: String },
-    //modelValue: { type: File }, // field.val.newfile
-    message: { type: String },
-  },
-  computed: {
-    labelreqd() {
-      return this.reqd ? this.label + ' *' : this.label
-    },
-    filename() {
-      return this.basename(this.newfilename ? this.newfilename : this.existingfile)
-    },
-    placeholder(){
-      const ph = this.filename
-      if( ph.length>0) return ph
-      return this.reqd ? 'Required' : ''
-    },
-  },
-  methods: {
-    basename(thepath?: string) {
-      if (thepath == null) return ''
-      const lastslash = thepath.lastIndexOf('/')
-      return lastslash === -1 ? thepath : thepath.substring(lastslash + 1)
-    },
-    async downloadItem() {
-      //console.log('downloadItem', this.relpath)
-      this.downloaderror = ''
-      const ret = await api.submit.getFile(this.relpath)
-      const blob = new Blob([ret.data], { type: ret.data.type })
-      if (ret.data.type === 'application/json') { // Error eg {ret: 1, status: "Sorry: file not available /1/2/1/20/92/file.docx"}
-        this.downloaderror = 'Download error'
-        const reader = new FileReader()
-        reader.addEventListener('loadend', (e) => {
-          const data = JSON.parse(e.srcElement.result)
-          this.downloaderror = data.status
-        })
-        reader.readAsText(blob)
-        return
-      }
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(blob)
-      link.download = this.basename(this.existingfile)
-      link.click()
-      URL.revokeObjectURL(link.href)
-    },
-    onInput(file: File) {
-      if ('name' in file) {
-        this.newfilename = file.name
-        this.$emit('input', file)
-      }
-    }
+const props = defineProps({
+  edit: { type: Boolean },
+  reqd: { type: Boolean },
+  label: { type: String },
+  sid: { type: String },
+  help: { type: String },
+  helplink: { type: String },
+  allowedfiletypes: { type: String },
+  existingfile: { type: String },
+  relpath: { type: String },
+  //modelValue: { type: File }, // field.val.newfile
+  message: { type: String },
+})
+
+const emit = defineEmits<{
+  input: [file: File]
+}>()
+
+const newfilename = ref<string | null>(null)
+const downloaderror = ref('')
+
+const labelreqd = computed(() => {
+  return props.reqd ? props.label + ' *' : props.label
+})
+
+const filename = computed(() => {
+  return basename(newfilename.value ? newfilename.value : props.existingfile)
+})
+
+const placeholder = computed(() => {
+  const ph = filename.value
+  if (ph.length > 0) return ph
+  return props.reqd ? 'Required' : ''
+})
+
+function basename(thepath?: string) {
+  if (thepath == null) return ''
+  const lastslash = thepath.lastIndexOf('/')
+  return lastslash === -1 ? thepath : thepath.substring(lastslash + 1)
+}
+
+async function downloadItem() {
+  //console.log('downloadItem', props.relpath)
+  downloaderror.value = ''
+  const ret = await api.submit.getFile(props.relpath)
+  const blob = new Blob([ret.data], { type: ret.data.type })
+  if (ret.data.type === 'application/json') { // Error eg {ret: 1, status: "Sorry: file not available /1/2/1/20/92/file.docx"}
+    downloaderror.value = 'Download error'
+    const reader = new FileReader()
+    reader.addEventListener('loadend', (e) => {
+      const data = JSON.parse((e as any).srcElement.result)
+      downloaderror.value = data.status
+    })
+    reader.readAsText(blob)
+    return
+  }
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = basename(props.existingfile)
+  link.click()
+  URL.revokeObjectURL(link.href)
+}
+
+function onInput(file: File) {
+  if ('name' in file) {
+    newfilename.value = file.name
+    emit('input', file)
   }
 }
 </script>

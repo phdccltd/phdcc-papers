@@ -28,46 +28,40 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import _ from 'lodash/core'
 
-export default {
-  data() {
-    return {
-      options: [
-        { value: 1, text: 'Yes' },
-      ],
-    }
-  },
-  props: {
-    edit: { type: Boolean },
-    reqd: { type: Boolean },
-    label: { type: String },
-    sid: { type: String },
-    help: { type: String },
-    helplink: { type: String },
-    modelValue: { type: Number },
-    message: { type: String },
-  },
-  computed: {
-    labelreqd() {
-      return this.reqd ? this.label + ' *' : this.label
-    },
-    selection: {
-      get: function () {
-        return this.modelValue
-      },
-      set: function (v) {
-        this.$emit('update:modelValue', v)
-      },
-    },
-    yesno() {
-      const option = _.find(this.options, _option => { return _option.value === this.modelValue })
-      if (option) return option.text
-      return 'Unknown'
-    }
-  },
-  methods: {
-  }
-}
+const props = defineProps({
+  edit: { type: Boolean },
+  reqd: { type: Boolean },
+  label: { type: String },
+  sid: { type: String },
+  help: { type: String },
+  helplink: { type: String },
+  modelValue: { type: Number },
+  message: { type: String },
+})
+
+const emit = defineEmits<{
+  'update:modelValue': [value: number]
+}>()
+
+const options = [
+  { value: 1, text: 'Yes' },
+]
+
+const labelreqd = computed(() => {
+  return props.reqd ? props.label + ' *' : props.label
+})
+
+const selection = computed({
+  get: () => props.modelValue,
+  set: (v: number) => emit('update:modelValue', v)
+})
+
+const yesno = computed(() => {
+  const option = _.find(options, _option => _option.value === props.modelValue)
+  if (option) return option.text
+  return 'Unknown'
+})
 </script>

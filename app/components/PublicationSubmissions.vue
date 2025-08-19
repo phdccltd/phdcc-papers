@@ -6,14 +6,20 @@
       <strong>ADMIN</strong>
       <b-button variant="outline-danger" class="float-end" :to="'/panel/' + pubid + '/admin-setup'" data-cy="pubsub-admin-setup">Setup</b-button>
       <b-badge v-if="!pub.enabled" pill variant="danger" class="float-end m-2">DISABLED FOR USERS</b-badge>
-      <b-button variant="outline-warning" @click="toggleShowAdminOptions()" class="ms-2" data-cy="pubsub-admin-options">Show/Hide admin options</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-users'" class="ms-2" data-cy="pubsub-admin-users">Users</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-bulk'" class="ms-2" data-cy="pubsub-admin-bulk">Bulk</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail-templates'" class="ms-2" data-cy="pubsub-admin-mailtemplates">Mail
+      <b-button variant="outline-warning" @click="toggleShowAdminOptions()" class="ms-2" data-cy="pubsub-admin-options">Show/Hide admin
+        options</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-users'" class="ms-2"
+        data-cy="pubsub-admin-users">Users</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-bulk'" class="ms-2"
+        data-cy="pubsub-admin-bulk">Bulk</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail-templates'" class="ms-2"
+        data-cy="pubsub-admin-mailtemplates">Mail
         templates
       </b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail'" class="ms-2" data-cy="pubsub-admin-emails">Send email</b-button>
-      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-downloads'" class="ms-2" data-cy="pubsub-admin-downloads">Downloads
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-mail'" class="ms-2"
+        data-cy="pubsub-admin-emails">Send email</b-button>
+      <b-button v-if="showingadminoptions" variant="outline-success" :to="'/panel/' + pubid + '/admin-downloads'" class="ms-2"
+        data-cy="pubsub-admin-downloads">Downloads
       </b-button>
     </div>
     <div class="ps-1">
@@ -32,10 +38,11 @@
           </b-button>
           {{ flow.name }}
           <span v-for="flowaction in flow.actions">
-            <b-button class="float-end me-2" variant="outline-success" :to="flowaction.route" :data-cy="'pubsub-flow-action-'+flow.id">{{ flowaction.name }}</b-button>
+            <b-button class="float-end me-2" variant="outline-success" :to="flowaction.route" :data-cy="'pubsub-flow-action-' + flow.id">{{
+              flowaction.name }}</b-button>
           </span>
           <b-button class="float-end me-2" v-if="pub.isowner && showingadminoptions" variant="outline-success"
-            :to="'/panel/' + pubid + '/' + flow.id + '/admin-flow-acceptings'" :data-cy="'pubsub-flow-status-'+flow.id">Stage status</b-button>
+            :to="'/panel/' + pubid + '/' + flow.id + '/admin-flow-acceptings'" :data-cy="'pubsub-flow-status-' + flow.id">Stage status</b-button>
         </h2>
         <b-list-group v-if="flow.visible" class="flows">
           <p class="m-1">{{ flow.description }}</p>
@@ -53,13 +60,14 @@
       <strong>Nothing submitted yet</strong>
     </div>
 
-    <SubmitEditModal v-if="showSubmitEditModal" :newauthoroptions="newauthoroptions" :newtitle="newtitle" :newauthor="newauthor" @confirm="okEdited" @hidden="showSubmitEditModal = false" />
+    <SubmitEditModal v-if="showSubmitEditModal" :newauthoroptions="newauthoroptions" :newtitle="newtitle" :newauthor="newauthor" @confirm="okEdited"
+      @hidden="showSubmitEditModal = false" />
     <MessageBoxOK v-if="showMsgModal" />
     <ConfirmModal v-if="showConfirmModal" @confirm="confirmedOK" @cancel="cancelConfirm" />
   </div>
 </template>
-  
-<script lang="ts">
+
+<script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
@@ -68,144 +76,132 @@ import _ from 'lodash/core'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  props: {
-    flowid: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    setError: {
-      type: Function,
-      required: true,
-    },
-    setMessage: {
-      type: Function,
-      required: true,
-    },
-  },
-  setup() {
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
+const props = defineProps({
+  flowid: { type: Number, required: false, default: 0, },
+  setError: { type: Function, required: true, },
+  setMessage: { type: Function, required: true, },
+})
 
-    return { authStore, miscStore, pubsStore, submitsStore }
-  },
-  data: function () {
-    return {
-      noflows: false,
-      nowtavailable: false,
-      showingadminoptions: false,
-      submitbeingedited: false,
-      newtitle: '',
-      newauthor: 0,
-      newauthoroptions: [],
-      showSubmitEditModal: false,
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+
+const noflows = ref(false)
+const nowtavailable = ref(false)
+const showingadminoptions = ref(false)
+const submitbeingedited = ref<any>(false)
+const newtitle = ref('')
+const newauthor = ref(0)
+const newauthoroptions = ref([])
+const showSubmitEditModal = ref(false)
+
+const pubid = computed(() => {
+  const route = useRoute()
+  return parseInt(route.params.pubid as string)
+})
+
+const pub = computed(() => {
+  const pub = pubsStore.getPub(pubid.value)
+  if (!pub) {
+    props.setError('Invalid pubid')
+    return false
+  }
+  // pub.isowner = true // Do this when testing faked API access restriction
+  miscStore.set({ key: 'page-title', value: pub.name })
+  return pub
+})
+
+const flows = computed(() => {
+  //console.log('PUB flows', pubid.value)
+  // Get flows and work out follow-on properties
+  let flows = submitsStore.flows(pubid.value)
+  if (!flows) flows = []
+  // Set starter addtype and get countsubmits
+  const filteredflows = []
+  let countsubmits = 0
+  for (const flow of flows) {
+    //let anysubmithidden = false
+    if (!props.flowid || props.flowid === flow.id) filteredflows.push(flow)
+
+    flow.filteredsubmits = []
+    for (const fsubmit of flow.submits) {
+      const submit = submitsStore.submit(pubid.value, fsubmit.id)
+      flow.filteredsubmits.push(submit)
+      //if (!submit.visible) anysubmithidden = true
+
+      for (const entry of submit.entries) {
+        entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
+      }
     }
-  },
-  computed: {
-    pubid() {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-    pub() {
-      const pub = this.pubsStore.getPub(this.pubid)
-      if (!pub) {
-        this.setError('Invalid pubid')
-        return false
-      }
-      // pub.isowner = true // Do this when testing faked API access restriction
-      this.miscStore.set({ key: 'page-title', value: pub.name })
-      return pub
-    },
-    flows() {
-      //console.log('PUB flows', this.pubid)
-      // Get flows and work out follow-on properties
-      let flows = this.submitsStore.flows(this.pubid)
-      if (!flows) flows = []
-      // Set starter addtype and get countsubmits
-      const filteredflows = []
-      let countsubmits = 0
-      for (const flow of flows) {
-        //let anysubmithidden = false
-        if (!this.flowid || this.flowid === flow.id) filteredflows.push(flow)
+    countsubmits += flow.submits.length
+  }
+  noflows.value = flows.length === 0
+  nowtavailable.value = !noflows.value && countsubmits === 0
+  return filteredflows
+})
 
-        flow.filteredsubmits = []
-        for (const fsubmit of flow.submits) {
-          const submit = this.submitsStore.submit(this.pubid, fsubmit.id)
-          flow.filteredsubmits.push(submit)
-          //if (!submit.visible) anysubmithidden = true
+const issuper = computed(() => {
+  return authStore.super
+})
 
-          for (const entry of submit.entries) {
-            entry.stage = _.find(flow.stages, stage => { return stage.id === entry.flowstageId })
-          }
-        }
-        countsubmits += flow.submits.length
-      }
-      this.noflows = flows.length === 0
-      this.nowtavailable = !this.noflows && countsubmits === 0
-      return filteredflows
-    },
-    issuper() {
-      return this.authStore.super
-    },
-    isowner() {
-      return this.authStore.super
-    },
-  },
-  methods: {
-    toggleShowAdminOptions() {
-      this.showingadminoptions = !this.showingadminoptions
-    },
-    toggleFlowShow(flow: any) {
-      console.log('toggleFlowShow', flow.visible)
-      flow.visible = !flow.visible
-    },
-    async editSubmit(submit: any) { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
-      try {
-        this.newauthoroptions = []
-        const { pubusers } = await api.auth.getPubUsers(this.pubid)
-        for (const user of pubusers.users) {
-          this.newauthoroptions.push({ value: user.id, text: user.username })
-        }
-        this.submitbeingedited = submit
-        this.newtitle = submit.name
-        this.newauthor = submit.userId
-        this.showSubmitEditModal = true
-      } catch (e) {
-        console.log("editSubmit:", e.message)
-      }
-    },
-    okEdited(newtitle: String, newauthor: Number) {
-      try {
-        this.newtitle = newtitle.trim()
-        if (newtitle.length === 0) return msgBoxOk('No new title given!')
-        this.newauthor = newauthor
-        if (this.newauthor !== this.submitbeingedited.userId) {
-          const prev = _.find(this.newauthoroptions, option => { return option.value === this.submitbeingedited.userId })
-          const next = _.find(this.newauthoroptions, option => { return option.value === this.newauthor })
-          showConfirm('Are you sure you want to change the author?', `Change author from ${prev.text} to ${next.text}?`, this.confirmedAuthorChange)
-        } else {
-          this.confirmedAuthorChange()
-        }
-      } catch (e) {
-        msgBoxError('Error changing submit: ' + e.message)
-      }
-    },
-    async confirmedAuthorChange() {
-      const newtitle = this.newtitle.trim()
-      let newauthor = 0
-      if (this.newauthor !== this.submitbeingedited.userId) {
-        newauthor = this.newauthor
-      }
-      const amended = await api.submit.changeSubmitTitle(this.submitbeingedited, newtitle, newauthor)
-      if (!amended) return msgBoxOk('Error changing submit')
-      await this.submitsStore.fetchpub(this.pubid)
-      this.showSubmitEditModal = false
-      msgBoxOk('Submit changed')
-    },
-  },
+const isowner = computed(() => {
+  return authStore.super
+})
+
+const toggleShowAdminOptions = () => {
+  showingadminoptions.value = !showingadminoptions.value
+}
+
+const toggleFlowShow = (flow: any) => {
+  console.log('toggleFlowShow', flow.visible)
+  flow.visible = !flow.visible
+}
+
+const editSubmit = async (submit: any) => { // These three methods are also in \panel\_pubid\_flowid\_submitid\index.vue ie duplicated
+  try {
+    newauthoroptions.value = []
+    const { pubusers } = await api.auth.getPubUsers(pubid.value)
+    for (const user of pubusers.users) {
+      newauthoroptions.value.push({ value: user.id, text: user.username })
+    }
+    submitbeingedited.value = submit
+    newtitle.value = submit.name
+    newauthor.value = submit.userId
+    showSubmitEditModal.value = true
+  } catch (e: any) {
+    console.log("editSubmit:", e.message)
+  }
+}
+
+const okEdited = (newtitleParam: string, newauthorParam: number) => {
+  try {
+    newtitle.value = newtitleParam.trim()
+    if (newtitleParam.length === 0) return msgBoxOk('No new title given!')
+    newauthor.value = newauthorParam
+    if (newauthor.value !== submitbeingedited.value.userId) {
+      const prev = _.find(newauthoroptions.value, option => { return option.value === submitbeingedited.value.userId })
+      const next = _.find(newauthoroptions.value, option => { return option.value === newauthor.value })
+      showConfirm('Are you sure you want to change the author?', `Change author from ${prev.text} to ${next.text}?`, confirmedAuthorChange)
+    } else {
+      confirmedAuthorChange()
+    }
+  } catch (e: any) {
+    msgBoxError('Error changing submit: ' + e.message)
+  }
+}
+
+const confirmedAuthorChange = async () => {
+  const newtitleTrimmed = newtitle.value.trim()
+  let newauthorValue = 0
+  if (newauthor.value !== submitbeingedited.value.userId) {
+    newauthorValue = newauthor.value
+  }
+  const amended = await api.submit.changeSubmitTitle(submitbeingedited.value, newtitleTrimmed, newauthorValue)
+  if (!amended) return msgBoxOk('Error changing submit')
+  await submitsStore.fetchpub(pubid.value)
+  showSubmitEditModal.value = false
+  msgBoxOk('Submit changed')
 }
 </script>
 <style>
@@ -214,4 +210,3 @@ export default {
   color: green;
 }
 </style>
-  

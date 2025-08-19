@@ -84,7 +84,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
@@ -94,199 +95,207 @@ import _ from 'lodash/core'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: 'authuser',
-    })
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
-    const usersStore = useUsersStore()
+definePageMeta({
+  middleware: 'authuser',
+})
 
-    return { authStore, miscStore, pubsStore, submitsStore, usersStore }
-  },
-  data() {
-    //console.log('_id data')
-    return {
-      error: '',
-      message: '',
-      selectedrole: 0,
-      addroleuserid: 0,
-      addroleusername: '',
-      chosennewrole: 0,
-      availablenewroles: [],
-      showAddRoleModal: false,
-      confirmpubuser: null,
-      confirmrole: null,
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const usersStore = useUsersStore()
+
+const error = ref('')
+const message = ref('')
+const selectedrole = ref(0)
+const addroleuserid = ref(0)
+const addroleusername = ref('')
+const chosennewrole = ref(0)
+const availablenewroles = ref<any[]>([])
+const showAddRoleModal = ref(false)
+const confirmpubuser = ref<any>(null)
+const confirmrole = ref<any>(null)
+
+onMounted(async () => { // Client only
+  error.value = ''
+  message.value = ''
+  await pubsStore.clearError()
+  await pubsStore.fetch()
+  await usersStore.clearError()
+  await usersStore.fetchpubusers(pubid.value)
+})
+
+const pub = computed(() => {
+  const pub = pubsStore.getPub(pubid.value)
+  if (!pub) {
+    setError('Invalid pubid')
+    return false
+  }
+  miscStore.set({ key: 'page-title', value: pub.name })
+  miscStore.set({ key: 'page-title-suffix', value: 'ADMIN USERS' })
+  return pub
+})
+
+const fatalerror = computed(() => {
+  return usersStore.error
+})
+
+const pubid = computed(() => {
+  const route = useRoute()
+  return parseInt(route.params.pubid as string)
+})
+
+const pubusers = computed(() => {
+  const pu = usersStore.pubusers(pubid.value)
+  return pu ? pu : {}
+})
+
+const issuper = computed(() => {
+  return authStore.super
+})
+
+function canmasquerade(pubuser: any) {
+  return authStore.super && (authStore.id != pubuser.id)
+}
+
+function cancelModal() {
+  showAddRoleModal.value = false
+}
+
+function setError(msg: string) {
+  error.value = msg
+}
+
+function setMessage(msg: string) {
+  message.value = msg
+}
+
+function hasRole(pubuser: any) {
+  const selectedroleInt = parseInt(selectedrole.value as any)
+  if (selectedroleInt === 0) return true
+  const hasrole = _.find(pubuser.roles, role => { return role.id === selectedroleInt })
+  return hasrole
+}
+
+function deletePubUser(pubuser: any) {
+  confirmpubuser.value = pubuser
+  if (pubuser.id === authStore.id) {
+    showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', confirmDeletePubUser, null, null, null, 'danger')
+  } else {
+    confirmDeletePubUser()
+  }
+}
+
+function confirmDeletePubUser() {
+  showConfirm(confirmpubuser.value.name, 'Are you sure you want to stop this user accessing your publication/conference?  No submissions etc will be removed.', reallyDeletePubUser)
+}
+
+async function reallyDeletePubUser() {
+  try {
+    //console.log('deletePubUser', pubuser.id, authStore.id)
+    const ok = await api.auth.removePubUser(pubid.value, confirmpubuser.value.id)
+    if (ok) {
+      await usersStore.fetchpubusers(pubid.value)
+    } else {
+      msgBoxFail('User could not be removed')
     }
-  },
-  async mounted() { // Client only
-    this.error = ''
-    this.message = ''
-    await this.pubsStore.clearError()
-    await this.pubsStore.fetch()
-    await this.usersStore.clearError()
-    await this.usersStore.fetchpubusers(this.pubid)
-  },
-  computed: {
-    pub() {
-      const pub = this.pubsStore.getPub(this.pubid)
-      if (!pub) {
-        this.setError('Invalid pubid')
-        return false
-      }
-      this.miscStore.set({ key: 'page-title', value: pub.name })
-      this.miscStore.set({ key: 'page-title-suffix', value: 'ADMIN USERS' })
-      return pub
-    },
-    fatalerror() {
-      return this.usersStore.error
-    },
-    pubid() {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-    pubusers() {
-      const pu = this.usersStore.pubusers(this.pubid)
-      return pu ? pu : {}
-    },
-    issuper() {
-      return this.authStore.super
-    },
-  },
-  methods: {
-    canmasquerade(pubuser) {
-      return this.authStore.super && (this.authStore.id != pubuser.id)
-    },
-    cancelModal() {
-      this.showAddRoleModal = false
-    },
-    setError(msg) {
-      this.error = msg
-    },
-    setMessage(msg) {
-      this.message = msg
-    },
-    hasRole(pubuser) {
-      const selectedrole = parseInt(this.selectedrole)
-      if (selectedrole === 0) return true
-      const hasrole = _.find(pubuser.roles, role => { return role.id === selectedrole })
-      return hasrole
-    },
-    deletePubUser(pubuser) {
-      this.confirmpubuser = pubuser
-      if (pubuser.id === this.authStore.id) {
-        showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', this.confirmDeletePubUser, null, null, null, 'danger')
-      } else {
-        this.confirmDeletePubUser()
-      }
-    },
-    confirmDeletePubUser() {
-      showConfirm(this.confirmpubuser.name, 'Are you sure you want to stop this user accessing your publication/conference?  No submissions etc will be removed.', this.reallyDeletePubUser)
-    },
-    async reallyDeletePubUser() {
-      try {
-        //console.log('deletePubUser', pubuser.id, this.authStore.id)
-        const ok = await api.auth.removePubUser(this.pubid, this.confirmpubuser.id)
-        if (ok) {
-          await this.usersStore.fetchpubusers(this.pubid)
-        } else {
-          msgBoxFail('User could not be removed')
-        }
-      } catch (e) {
-        msgBoxError('Error removing user: ' + e.message)
-      }
-    },
-    async deleteUserRole(pubuser, role) {
-      this.confirmpubuser = pubuser
-      this.confirmrole = role
-      if (pubuser.id === this.authStore.id) {
-        showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', this.confirmDeleteUserRole, null, null, null, 'danger')
-      } else {
-        this.confirmDeleteUserRole()
-      }
-    },
-    async confirmDeleteUserRole() {
-      showConfirm(this.confirmpubuser.name + ': ' + this.confirmrole.name, 'Are you sure you want to delete this role?', this.reallyDeleteUserRole)
-    },
-    async reallyDeleteUserRole() {
-      try {
-        //console.log('deleteUserRole', pubuser.id, role.id)
-        const ok = await api.auth.deleteUserRole(this.pubid, this.confirmpubuser.id, this.confirmrole.id)
-        if (!ok) {
-          msgBoxFail('User role could not be deleted')
-        } else {
-          await this.usersStore.fetchpubusers(this.pubid)
-        }
-      } catch (e) {
-        msgBoxError('Error removing user role: ' + e.message)
-      }
-    },
-    async startAddUserRole(pubusers, pubuser) {
-      this.addroleuserid = pubuser.id
-      this.addroleusername = pubuser.name
-      this.chosennewrole = 0
-      this.availablenewroles = []
-      for (const pubrole of pubusers.pubroles) {
-        const hasrole = _.find(pubuser.roles, role => { return role.id === pubrole.id })
-        if (!hasrole) {
-          const opt = { value: pubrole.id, text: pubrole.name }
-          this.availablenewroles.push(opt)
-        }
-      }
-      if (this.availablenewroles.length === 0) {
-        return msgBoxOk('No more roles available!')
-      }
-      this.showAddRoleModal = true
-    },
-    addUserRole() {
-      if (this.chosennewrole == 0) return msgBoxOk('No new role chosen!')
-      const roletoadd = _.find(this.pubusers.pubroles, role => { return role.id == this.chosennewrole })
-      if (!roletoadd) return
-      if (roletoadd.isowner) {
-        showConfirm(this.addroleusername, 'This is an OWNER role. Do you want to continue?', this.confirmAddUserRole, null, null, null, 'danger')
-      } else {
-        this.confirmAddUserRole()
-      }
-    },
-    async confirmAddUserRole() {
-      //console.log('addUserRole', this.addroleuserid, this.chosennewrole)
-      try {
-        const ok = await api.auth.addUserRole(this.pubid, this.addroleuserid, this.chosennewrole)
-        if (ok) {
-          await this.usersStore.fetchpubusers(this.pubid)
-          this.$nextTick(() => {
-            this.showAddRoleModal = false
-          })
-        } else {
-          msgBoxFail('User role could not be added')
-        }
-      } catch (e) {
-        msgBoxError('Error adding role: ' + e.message)
-      }
-    },
-    async masquerade(pubuser) {
-      try {
-        const ok = await api.auth.masquerade(pubuser.id)
-        if (ok) {
-          this.authStore.id = pubuser.id
-          this.authStore.name = pubuser.name
-          this.authStore.super = false
-          this.authStore.masquerading = true
-          this.miscStore.clearAll()
-          this.pubsStore.clearAll()
-          this.submitsStore.clearAll()
-          this.usersStore.clearAll()
-          navigateTo('/panel')
-        } else {
-          msgBoxFail('Could not masquerade')
-        }
-      } catch (e) {
-        msgBoxError('Error masquerading: ' + e.message)
-      }
+  } catch (e: any) {
+    msgBoxError('Error removing user: ' + e.message)
+  }
+}
+
+async function deleteUserRole(pubuser: any, role: any) {
+  confirmpubuser.value = pubuser
+  confirmrole.value = role
+  if (pubuser.id === authStore.id) {
+    showConfirm(pubuser.name, 'THIS IS YOU. Do you want to continue?', confirmDeleteUserRole, null, null, null, 'danger')
+  } else {
+    confirmDeleteUserRole()
+  }
+}
+
+async function confirmDeleteUserRole() {
+  showConfirm(confirmpubuser.value.name + ': ' + confirmrole.value.name, 'Are you sure you want to delete this role?', reallyDeleteUserRole)
+}
+
+async function reallyDeleteUserRole() {
+  try {
+    //console.log('deleteUserRole', pubuser.id, role.id)
+    const ok = await api.auth.deleteUserRole(pubid.value, confirmpubuser.value.id, confirmrole.value.id)
+    if (!ok) {
+      msgBoxFail('User role could not be deleted')
+    } else {
+      await usersStore.fetchpubusers(pubid.value)
     }
-  },
+  } catch (e: any) {
+    msgBoxError('Error removing user role: ' + e.message)
+  }
+}
+
+async function startAddUserRole(pubusers: any, pubuser: any) {
+  addroleuserid.value = pubuser.id
+  addroleusername.value = pubuser.name
+  chosennewrole.value = 0
+  availablenewroles.value = []
+  for (const pubrole of pubusers.pubroles) {
+    const hasrole = _.find(pubuser.roles, role => { return role.id === pubrole.id })
+    if (!hasrole) {
+      const opt = { value: pubrole.id, text: pubrole.name }
+      availablenewroles.value.push(opt)
+    }
+  }
+  if (availablenewroles.value.length === 0) {
+    return msgBoxOk('No more roles available!')
+  }
+  showAddRoleModal.value = true
+}
+
+function addUserRole() {
+  if (chosennewrole.value == 0) return msgBoxOk('No new role chosen!')
+  const roletoadd = _.find(pubusers.value.pubroles, role => { return role.id == chosennewrole.value })
+  if (!roletoadd) return
+  if (roletoadd.isowner) {
+    showConfirm(addroleusername.value, 'This is an OWNER role. Do you want to continue?', confirmAddUserRole, null, null, null, 'danger')
+  } else {
+    confirmAddUserRole()
+  }
+}
+
+async function confirmAddUserRole() {
+  //console.log('addUserRole', addroleuserid.value, chosennewrole.value)
+  try {
+    const ok = await api.auth.addUserRole(pubid.value, addroleuserid.value, chosennewrole.value)
+    if (ok) {
+      await usersStore.fetchpubusers(pubid.value)
+      nextTick(() => {
+        showAddRoleModal.value = false
+      })
+    } else {
+      msgBoxFail('User role could not be added')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding role: ' + e.message)
+  }
+}
+
+async function masquerade(pubuser: any) {
+  try {
+    const ok = await api.auth.masquerade(pubuser.id)
+    if (ok) {
+      authStore.id = pubuser.id
+      authStore.name = pubuser.name
+      authStore.super = false
+      authStore.masquerading = true
+      miscStore.clearAll()
+      pubsStore.clearAll()
+      submitsStore.clearAll()
+      usersStore.clearAll()
+      navigateTo('/panel')
+    } else {
+      msgBoxFail('Could not masquerade')
+    }
+  } catch (e: any) {
+    msgBoxError('Error masquerading: ' + e.message)
+  }
 }
 </script>

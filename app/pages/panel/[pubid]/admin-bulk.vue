@@ -43,7 +43,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
@@ -53,121 +54,118 @@ import { useUsersStore } from '~/stores/users'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: 'authuser',
-    })
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
-    const sitepagesStore = useSitePagesStore()
-    const usersStore = useUsersStore()
+definePageMeta({
+  middleware: 'authuser',
+})
 
-    return { authStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
-  },
-  data() {
-    return {
-      error: '',
-      message: '',
-      fromstatus: 0,
-      tostatus: 0,
-      lastfrom: 0,
-      lastto: 0,
-      confirmed: ''
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const sitepagesStore = useSitePagesStore()
+const usersStore = useUsersStore()
+
+const error = ref('')
+const message = ref('')
+const fromstatus = ref(0)
+const tostatus = ref(0)
+const lastfrom = ref(0)
+const lastto = ref(0)
+const confirmed = ref('')
+
+onMounted(async () => { // Client only
+  error.value = ''
+  message.value = ''
+  await pubsStore.clearError()
+  await pubsStore.fetch()
+  await submitsStore.fetchpub(pubid.value)
+})
+
+const pub = computed(() => {
+  const pub = pubsStore.getPub(pubid.value)
+  if (!pub) {
+    setError('Invalid pubid')
+    return false
+  }
+  miscStore.set({ key: 'page-title', value: pub.name })
+  miscStore.set({ key: 'page-title-suffix', value: 'ADMIN BULK OPS' })
+  return pub
+})
+
+const fatalerror = computed(() => {
+  return false
+})
+
+const pubid = computed(() => {
+  const route = useRoute()
+  return parseInt(route.params.pubid as string)
+})
+
+const allstatuses = computed(() => {
+  const options: any[] = []
+  const flows = submitsStore.flows(pubid.value)
+  for (const flow of flows) {
+    for (const flowstatus of flow.statuses) {
+      options.push({ value: flowstatus.id, text: flowstatus.status })
     }
-  },
-  async mounted() { // Client only
-    this.error = ''
-    this.message = ''
-    await this.pubsStore.clearError()
-    await this.pubsStore.fetch()
-    await this.submitsStore.fetchpub(this.pubid)
-  },
-  computed: {
-    pub() {
-      const pub = this.pubsStore.getPub(this.pubid)
-      if (!pub) {
-        this.setError('Invalid pubid')
-        return false
-      }
-      this.miscStore.set({ key: 'page-title', value: pub.name })
-      this.miscStore.set({ key: 'page-title-suffix', value: 'ADMIN BULK OPS' })
-      return pub
-    },
-    fatalerror() {
-      return false
-    },
-    pubid() {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-    allstatuses() {
-      const options = []
-      const flows = this.submitsStore.flows(this.pubid)
-      for (const flow of flows) {
-        for (const flowstatus of flow.statuses) {
-          options.push({ value: flowstatus.id, text: flowstatus.status })
-        }
-      }
-      return options
-    },
-    issuper() {
-      return this.authStore.super
-    },
-  },
-  methods: {
-    setError(msg) {
-      this.error = msg
-    },
-    setMessage(msg) {
-      this.message = msg
-    },
-    async moveToNewStatus() {
-      try {
-        this.message = ''
-        this.error = ''
-        if (this.fromstatus === 0) return msgBoxOk('No FROM status chosen!')
-        if (this.tostatus === 0) return msgBoxOk('No TO status chosen!')
-        if (this.fromstatus === this.tostatus) return msgBoxOk('No change requested!')
+  }
+  return options
+})
 
-        if ((this.fromstatus !== this.lastfrom) || (this.tostatus !== this.lastto)) this.confirmed = ''
-        this.lastfrom = this.fromstatus
-        this.lastto = this.tostatus
+const issuper = computed(() => {
+  return authStore.super
+})
 
-        let countAtFromStatus = 0
-        const flows = this.submitsStore.flows(this.pubid)
-        for (const flow of flows) {
-          for (const submit of flow.submits) {
-            if (submit.statuses.length > 0) {
-              const status0 = submit.statuses[0]
-              if (status0.flowstatusId === this.fromstatus) {
-                countAtFromStatus++
-              }
-            }
+function setError(msg: string) {
+  error.value = msg
+}
+
+function setMessage(msg: string) {
+  message.value = msg
+}
+
+async function moveToNewStatus() {
+  try {
+    message.value = ''
+    error.value = ''
+    if (fromstatus.value === 0) return msgBoxOk('No FROM status chosen!')
+    if (tostatus.value === 0) return msgBoxOk('No TO status chosen!')
+    if (fromstatus.value === tostatus.value) return msgBoxOk('No change requested!')
+
+    if ((fromstatus.value !== lastfrom.value) || (tostatus.value !== lastto.value)) confirmed.value = ''
+    lastfrom.value = fromstatus.value
+    lastto.value = tostatus.value
+
+    let countAtFromStatus = 0
+    const flows = submitsStore.flows(pubid.value)
+    for (const flow of flows) {
+      for (const submit of flow.submits) {
+        if (submit.statuses.length > 0) {
+          const status0 = submit.statuses[0]
+          if (status0.flowstatusId === fromstatus.value) {
+            countAtFromStatus++
           }
         }
-        if (!this.confirmed) {
-          this.confirmed = 'Number to do: ' + countAtFromStatus
-          if (countAtFromStatus > 0) this.confirmed += '. Click again to confirm:'
-          return
-        }
-        if (countAtFromStatus === 0) return msgBoxOk('Nothing to do')
-        this.confirmed = 'Please wait...'
-
-        const status = await api.pubs.bulkSubmitStatusUpdate(this.pubid, this.fromstatus, this.tostatus)
-        if (status) {
-          this.message = status
-        } else {
-          this.error = 'Failed to add statuses'
-        }
-        this.confirmed = ''
-        await this.submitsStore.fetchpub(this.pubid)
-      } catch (e) {
-        msgBoxError('Error moving to status: ' + e.message)
       }
-    },
-  },
+    }
+    if (!confirmed.value) {
+      confirmed.value = 'Number to do: ' + countAtFromStatus
+      if (countAtFromStatus > 0) confirmed.value += '. Click again to confirm:'
+      return
+    }
+    if (countAtFromStatus === 0) return msgBoxOk('Nothing to do')
+    confirmed.value = 'Please wait...'
+
+    const status = await api.pubs.bulkSubmitStatusUpdate(pubid.value, fromstatus.value, tostatus.value)
+    if (status) {
+      message.value = status
+    } else {
+      error.value = 'Failed to add statuses'
+    }
+    confirmed.value = ''
+    await submitsStore.fetchpub(pubid.value)
+  } catch (e: any) {
+    msgBoxError('Error moving to status: ' + e.message)
+  }
 }
 </script>

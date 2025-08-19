@@ -8,8 +8,8 @@
         </a>
         <div v-else>{{ help }}</div>
       </div>
-      <b-form-textarea :id="sid" max-rows="100" v-model="modelValue2" style="overflow-y: auto;"
-        :placeholder="reqd ? 'Required' : ''" :data-cy="'formtext-' + sid" @update="update">
+      <b-form-textarea :id="sid" max-rows="100" v-model="modelValue2" style="overflow-y: auto;" :placeholder="reqd ? 'Required' : ''"
+        :data-cy="'formtext-' + sid" @update="update">
       </b-form-textarea>
       <div class="alert-warning">{{ message }}</div>
     </b-form-group>
@@ -29,37 +29,38 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      modelValue2: ''
-    }
-  },
-  props: {
-    edit: { type: Boolean },
-    reqd: { type: Boolean },
-    label: { type: String },
-    sid: { type: String },
-    help: { type: String },
-    helplink: { type: String },
-    modelValue: { type: String },
-    message: { type: String },
-  },
-  mounted() {
-    this.modelValue2 = this.modelValue
-  },
-  computed: {
-    labelreqd() {
-      return this.reqd ? this.label + ' *' : this.label
-    },
-    modelValueParas() {
-      if (this.modelValue == null) return []
-      return this.modelValue.split('\n')
-    },
-    update(event) {
-      this.$emit('update:modelValue', this.modelValue2)
-    }
-  }
+<script setup lang="ts">
+const props = defineProps({
+  edit: { type: Boolean },
+  reqd: { type: Boolean },
+  label: { type: String },
+  sid: { type: String },
+  help: { type: String },
+  helplink: { type: String },
+  modelValue: { type: String },
+  message: { type: String },
+})
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+}>()
+
+const modelValue2 = ref('')
+
+onMounted(() => {
+  modelValue2.value = props.modelValue
+})
+
+const labelreqd = computed(() => {
+  return props.reqd ? props.label + ' *' : props.label
+})
+
+const modelValueParas = computed(() => {
+  if (props.modelValue == null) return []
+  return props.modelValue.split('\n')
+})
+
+function update(event: any) {
+  emit('update:modelValue', modelValue2.value)
 }
 </script>

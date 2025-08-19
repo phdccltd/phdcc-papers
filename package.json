@@ -42,6 +42,7 @@
     "@pinia/nuxt": "^0.11.1",
     "@popperjs/core": "^2.11.6",
     "axios": "^1.2.3",
+    "globals": "^16.3.0",
     "jwt-decode": "^4.0.0",
     "path-browserify": "^1.0.1",
     "pinia": "^3.0.1",
@@ -51,6 +52,8 @@
   "devDependencies": {
     "@bootstrap-vue-next/nuxt": "^0.30.3",
     "@cypress/code-coverage": "^3.10.0",
+    "@eslint/js": "^9.33.0",
+    "@eslint/eslintrc": "^3.3.1",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.14.191",
     "@vue/compiler-sfc": "^3.2.45",

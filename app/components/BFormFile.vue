@@ -9,60 +9,53 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed } from 'vue'
+<script setup lang="ts">
+const props = defineProps({
+  id: { type: String, required: true },
+  accept: { type: String, required: true },
+  placeholder: { type: String, required: true },
+  chosenfilename: { type: String, required: false },
+})
 
-export default defineComponent({
-  props: {
-    id: { type: String, required: true },
-    accept: { type: String, required: true },
-    placeholder: { type: String, required: true },
-    chosenfilename: { type: String, required: false },
-  },
-  data() {
-    return {
-    }
-  },
-  setup(props) {
-    function getId(suffix = '') {
-      console.log("getId")
-      return `__BVID__${Math.random().toString().slice(2, 8)}___BV_${suffix}__`
-    }
+interface Emits {
+  (e: 'input', file: File | null): void
+}
 
-    function useId(id, suffix) { return computed(() => id?.value || getId(suffix)) }
+const emit = defineEmits<Emits>()
 
-    const computedId = useId(toRef(props, 'id'), 'file')
-    // const isHighlighted = ref(false)
+function getId(suffix = '') {
+  console.log("getId")
+  return `__BVID__${Math.random().toString().slice(2, 8)}___BV_${suffix}__`
+}
 
-    const computedClasses = computed(() => {
-      return {
-        'custom-file-input': true,
-        'is-valid': true,
-      }
-    })
-    return {
-      computedClasses,
-      computedId,
-    }
-  },
-  async mounted() {
-    // Already fetched: lookups, portals, teams
-  },
-  computed: {
-    displayedfilename() {
-      return this.chosenfilename || this.placeholder
-    }
-  },
-  methods: {
-    onInput(evt: any) { // Must use @input.stop above to stop propagation
-      // console.log("BFormFile onInput", evt.target.files)
-      let file = null
-      if (evt.target.files.length > 0) {
-        file = evt.target.files[0]
-      }
+function useId(id: string, suffix: string) {
+  return computed(() => id || getId(suffix))
+}
 
-      this.$emit('input', file) // onInput handler then sets this.chosenfilename
-    },
+const computedId = useId(props.id, 'file')
+
+const computedClasses = computed(() => {
+  return {
+    'custom-file-input': true,
+    'is-valid': true,
   }
 })
+
+const displayedfilename = computed(() => {
+  return props.chosenfilename || props.placeholder
+})
+
+onMounted(async () => {
+  // Already fetched: lookups, portals, teams
+})
+
+const onInput = (evt: any) => { // Must use @input.stop above to stop propagation
+  // console.log("BFormFile onInput", evt.target.files)
+  let file = null
+  if (evt.target.files.length > 0) {
+    file = evt.target.files[0]
+  }
+
+  emit('input', file) // onInput handler then sets this.chosenfilename
+}
 </script>

@@ -28,92 +28,91 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
 import _ from 'lodash/core'
 
-export default {
-  data() {
-    return {
-    }
-  },
-  props: {
-    edit: { type: Boolean },
-    reqd: { type: Boolean },
-    label: { type: String },
-    sid: { type: String },
-    help: { type: String },
-    helplink: { type: String },
-    value: { type: String },
-    pubroleId: { type: Number },
-    message: { type: String },
-  },
-  setup() {
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
+const props = defineProps({
+  edit: { type: Boolean },
+  reqd: { type: Boolean },
+  label: { type: String },
+  sid: { type: String },
+  help: { type: String },
+  helplink: { type: String },
+  value: { type: String },
+  pubroleId: { type: Number },
+  message: { type: String },
+})
 
-    return { authStore, miscStore, pubsStore, submitsStore }
+interface Emits {
+  (e: 'input', value: string | null): void
+}
+
+const emit = defineEmits<Emits>()
+
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+
+const labelreqd = computed(() => {
+  return props.reqd ? props.label + ' *' : props.label
+})
+
+const arrayvalues = computed({
+  get: () => {
+    //console.log('arrayvalues get')
+    if (!props.value) return []
+    return props.value.split(',')
   },
-    computed: {
-    labelreqd() {
-      return this.reqd ? this.label + ' *' : this.label
-    },
-    arrayvalues: {
-      get: function () {
-        //console.log('arrayvalues get')
-        if (!this.value) return []
-        return this.value.split(',')
-      },
-      set: function (v) {
-        //console.log('arrayvalues set', v.join(','))
-        this.$emit('input', v.length == 0 ? null : v.join(','))
-      },
-    },
-    plainvalues() {
-      if (!this.value) return ''
-      const avalues = this.value.split(',')
-      console.log(avalues)
-      const atext = []
-      console.log(this.options)
-      for (const option of this.options) {
-        for (const av of avalues) {
-          if (option.value === parseInt(av)) {
-            atext.push(option.text)
-          }
-        }
-      }
-      return atext.join(' | ')
-    },
-    options() {
-      const route = useRoute()
-      const pubid = parseInt(route.params.pubid)
-      const pub = this.pubsStore.getPub(pubid)
-      if (!pub) return []
+  set: (v: string[]) => {
+    //console.log('arrayvalues set', v.join(','))
+    emit('input', v.length == 0 ? null : v.join(','))
+  },
+})
 
-      let entry = false
-      if (route.params.stageid) {
-        const stageid = parseInt(route.params.stageid)
-        entry = this.submitsStore.stagefields(stageid)
+const plainvalues = computed(() => {
+  if (!props.value) return ''
+  const avalues = props.value.split(',')
+  console.log(avalues)
+  const atext = []
+  console.log(options.value)
+  for (const option of options.value) {
+    for (const av of avalues) {
+      if (option.value === parseInt(av)) {
+        atext.push(option.text)
       }
-      if (route.params.entryid) {
-        const entryid = parseInt(route.params.entryid)
-        entry = this.submitsStore.entry(entryid)
-      }
-      if (!entry) return []
-
-      console.log('FormRoleLookups this.pubroleId', this.pubroleId)
-      const pubrolelookup = _.find(entry.pubrolelookups, _pubrolelookup => { return _pubrolelookup.pubroleId === this.pubroleId })
-      if (!pubrolelookup) {
-        console.log('FormRoleLookups NOPE')
-        return []
-      }
-      return pubrolelookup.users
     }
   }
-}
+  return atext.join(' | ')
+})
+
+const options = computed(() => {
+  const route = useRoute()
+  const pubid = parseInt(route.params.pubid as string)
+  const pub = pubsStore.getPub(pubid)
+  if (!pub) return []
+
+  let entry: any = false
+  if (route.params.stageid) {
+    const stageid = parseInt(route.params.stageid as string)
+    entry = submitsStore.stagefields(stageid)
+  }
+  if (route.params.entryid) {
+    const entryid = parseInt(route.params.entryid as string)
+    entry = submitsStore.entry(entryid)
+  }
+  if (!entry) return []
+
+  console.log('FormRoleLookups this.pubroleId', props.pubroleId)
+  const pubrolelookup = _.find(entry.pubrolelookups, _pubrolelookup => { return _pubrolelookup.pubroleId === props.pubroleId })
+  if (!pubrolelookup) {
+    console.log('FormRoleLookups NOPE')
+    return []
+  }
+  return pubrolelookup.users
+})
 </script>

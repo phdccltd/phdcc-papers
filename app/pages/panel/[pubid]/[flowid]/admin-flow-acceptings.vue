@@ -70,7 +70,9 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted, nextTick } from 'vue'
+import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
 import { useSubmitsStore } from '~/stores/submits'
@@ -78,166 +80,170 @@ import _ from 'lodash/core'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: ["authuser"]
-    })
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
+definePageMeta({
+  middleware: ["authuser"]
+})
 
-    return { miscStore, pubsStore, submitsStore }
-  },
-  data() {
-    return {
-      error: '',
-      message: '',
-      showModal: false,
-      modaltitle: 'UNSET',
-      availablestages: [],
-      availablestatuses: [],
-      chosenstage: 0,
-      chosenopen: 0,
-      chosenstatus: 0,
-      accepting: null,
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+
+const error = ref('')
+const message = ref('')
+const showModal = ref(false)
+const modaltitle = ref('UNSET')
+const availablestages = ref<any[]>([])
+const availablestatuses = ref<any[]>([])
+const chosenstage = ref(0)
+const chosenopen = ref(0)
+const chosenstatus = ref(0)
+const accepting = ref<any>(null)
+const acceptingid = ref(0)
+
+onMounted(async () => { // Client only
+  error.value = ''
+  message.value = ''
+  await pubsStore.clearError()
+  await submitsStore.clearError()
+  await pubsStore.fetch()
+  await submitsStore.fetchpub(pubid.value)
+})
+
+const pubid = computed((): number => {
+  const route = useRoute()
+  return parseInt(route.params.pubid as string)
+})
+
+const flowid = computed(() => {
+  const route = useRoute()
+  return parseInt(route.params.flowid as string)
+})
+
+const pub = computed(() => {
+  const pub = pubsStore.getPub(pubid.value)
+  if (!pub) {
+    setError('Invalid pubid')
+    return false
+  }
+  miscStore.set({ key: 'page-title', value: pub.name })
+  miscStore.set({ key: 'page-title-suffix', value: 'ADMIN FLOW STATE' })
+  return pub
+})
+
+const fatalerror = computed(() => {
+  return ''
+})
+
+const flow = computed(() => {
+  // Get flows and work out follow-on properties
+  let flows = submitsStore.flows(pubid.value)
+  if (!flows) return false
+  const flow = _.find(flows, _flow => { return _flow.id === flowid.value })
+  return flow
+})
+
+const acceptings = computed(() => {
+  const flowValue = flow.value
+
+  // Not the best place, but fill availablestages here
+  availablestages.value = []
+  for (const stage of flowValue.stages) {
+    availablestages.value.push({ value: stage.id, text: stage.name })
+  }
+  // Not the best place, but fill availablestatuses here
+  availablestatuses.value = []
+  for (const status of flowValue.statuses) {
+    availablestatuses.value.push({ value: status.id, text: status.status })
+  }
+
+  const acceptings = flowValue.acceptings
+  for (const accepting of acceptings) {
+    accepting.opentext = accepting.open ? 'OPEN FOR SUBMISSIONS' : 'NOT OPEN FOR SUBMISSIONS'
+
+    accepting.flowstagename = 'NOT-FOUND'
+    const stage = _.find(flowValue.stages, _stage => { return _stage.id === accepting.flowstageId })
+    if (stage) accepting.flowstagename = stage.name
+
+    accepting.flowstatusname = ""
+    if (accepting.flowstatusId) {
+      const status = _.find(flowValue.statuses, _status => { return _status.id === accepting.flowstatusId })
+      if (status) accepting.flowstatusname = 'IF AT STATUS ' + status.status
+      else accepting.flowstatusname = 'IF AT: STATUS NOT FOUND: ' + accepting.flowstatusId
     }
-  },
-  async mounted() { // Client only
-    this.error = ''
-    this.message = ''
-    await this.pubsStore.clearError()
-    await this.submitsStore.clearError()
-    await this.pubsStore.fetch()
-    await this.submitsStore.fetchpub(this.pubid)
-  },
-  computed: {
-    pubid(): number {
-      const route = useRoute()
-      return parseInt(route.params.pubid)
-    },
-    flowid() {
-      const route = useRoute()
-      return parseInt(route.params.flowid)
-    },
-    pub() {
-      const pub = this.pubsStore.getPub(this.pubid)
-      if (!pub) {
-        this.setError('Invalid pubid')
-        return false
-      }
-      this.miscStore.set({ key: 'page-title', value: pub.name })
-      this.miscStore.set({ key: 'page-title-suffix', value: 'ADMIN FLOW STATE' })
-      return pub
-    },
-    fatalerror() {
-      return ''
-    },
-    flow() {
-      // Get flows and work out follow-on properties
-      let flows = this.submitsStore.flows(this.pubid)
-      if (!flows) return false
-      const flow = _.find(flows, _flow => { return _flow.id === this.flowid })
-      return flow
-    },
-    acceptings() {
-      const flow = this.flow
+  }
+  return acceptings
+})
 
-      // Not the best place, but fill availablestages here
-      this.availablestages = []
-      for (const stage of flow.stages) {
-        this.availablestages.push({ value: stage.id, text: stage.name })
-      }
-      // Not the best place, but fill availablestatuses here
-      this.availablestatuses = []
-      for (const status of flow.statuses) {
-        this.availablestatuses.push({ value: status.id, text: status.status })
-      }
+function setError(msg: string) {
+  error.value = msg
+}
 
-      const acceptings = flow.acceptings
-      for (const accepting of acceptings) {
-        accepting.opentext = accepting.open ? 'OPEN FOR SUBMISSIONS' : 'NOT OPEN FOR SUBMISSIONS'
+function setMessage(msg: string) {
+  message.value = msg
+}
 
-        accepting.flowstagename = 'NOT-FOUND'
-        const stage = _.find(flow.stages, _stage => { return _stage.id === accepting.flowstageId })
-        if (stage) accepting.flowstagename = stage.name
+function startAddAccepting() {
+  modaltitle.value = 'Add accepting'
+  acceptingid.value = 0
+  chosenstage.value = 0
+  chosenopen.value = false
+  chosenstatus.value = 0
+  showModal.value = true
+}
 
-        accepting.flowstatusname = ""
-        if (accepting.flowstatusId) {
-          const status = _.find(flow.statuses, _status => { return _status.id === accepting.flowstatusId })
-          if (status) accepting.flowstatusname = 'IF AT STATUS ' + status.status
-          else accepting.flowstatusname = 'IF AT: STATUS NOT FOUND: ' + accepting.flowstatusId
-        }
-      }
-      return acceptings
-    },
-  },
-  methods: {
-    setError(msg) {
-      this.error = msg
-    },
-    setMessage(msg) {
-      this.message = msg
-    },
-    startAddAccepting() {
-      this.modaltitle = 'Add accepting'
-      this.acceptingid = 0
-      this.chosenstage = 0
-      this.chosenopen = false
-      this.chosenstatus = 0
-      this.showModal = true
-    },
-    startEditAccepting(accepting) {
-      this.modaltitle = 'Edit accepting'
-      this.acceptingid = accepting.id
-      this.chosenstage = accepting.flowstageId
-      this.chosenopen = accepting.open
-      this.chosenstatus = accepting.flowstatusId || 0
-      this.showModal = true
-    },
-    hideModal() {
-      this.showModal = false
-    },
-    async okAccepting() {
-      try {
-        //console.log('okAccepting', this.chosenstage, this.chosenopen, this.chosenstatus)
+function startEditAccepting(acceptingParam: any) {
+  modaltitle.value = 'Edit accepting'
+  acceptingid.value = acceptingParam.id
+  chosenstage.value = acceptingParam.flowstageId
+  chosenopen.value = acceptingParam.open
+  chosenstatus.value = acceptingParam.flowstatusId || 0
+  showModal.value = true
+}
 
-        if (this.chosenstage === 0) return msgBoxOk('Please choose a stage')
+function hideModal() {
+  showModal.value = false
+}
 
-        const ok = await api.acceptings.addEditAccepting(this.flowid, this.acceptingid, this.chosenstage, this.chosenopen, this.chosenstatus)
-        if (ok) {
-          await this.submitsStore.fetchpub(this.pubid)
-          this.$nextTick(() => {
-            this.showModal = false
-            msgBoxOk('Accepting added/edited')
-          })
-        } else {
-          msgBoxFail('Accepting could not be added/edited')
-        }
-      } catch (e) {
-        msgBoxError('Error adding/editing accepting: ' + e.message)
-      }
-    },
-    async deleteAccepting(accepting: any) {
-      this.accepting = accepting
-      showConfirm(accepting.flowstagename, "Are you sure you want to delete this accepting?", this.confirmedDeleteAccepting)
-    },
+async function okAccepting() {
+  try {
+    //console.log('okAccepting', chosenstage.value, chosenopen.value, chosenstatus.value)
 
-    async confirmedDeleteAccepting() {
-      try {
-        const ok = await api.acceptings.deleteAccepting(this.flowid, this.accepting.id)
-        if (ok) {
-          await this.submitsStore.fetchpub(this.pubid)
-          this.$nextTick(() => {
-            msgBoxOk('Accepting deleted')
-          })
-        } else {
-          msgBoxFail('Accepting could not be deleted')
-        }
-      } catch (e) {
-        msgBoxError('Error deleting accepting: ' + e.message)
-      }
-    },
-  },
+    if (chosenstage.value === 0) return msgBoxOk('Please choose a stage')
+
+    const ok = await api.acceptings.addEditAccepting(flowid.value, acceptingid.value, chosenstage.value, chosenopen.value, chosenstatus.value)
+    if (ok) {
+      await submitsStore.fetchpub(pubid.value)
+      nextTick(() => {
+        showModal.value = false
+        msgBoxOk('Accepting added/edited')
+      })
+    } else {
+      msgBoxFail('Accepting could not be added/edited')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding/editing accepting: ' + e.message)
+  }
+}
+
+async function deleteAccepting(acceptingParam: any) {
+  accepting.value = acceptingParam
+  showConfirm(acceptingParam.flowstagename, "Are you sure you want to delete this accepting?", confirmedDeleteAccepting)
+}
+
+async function confirmedDeleteAccepting() {
+  try {
+    const ok = await api.acceptings.deleteAccepting(flowid.value, accepting.value.id)
+    if (ok) {
+      await submitsStore.fetchpub(pubid.value)
+      nextTick(() => {
+        msgBoxOk('Accepting deleted')
+      })
+    } else {
+      msgBoxFail('Accepting could not be deleted')
+    }
+  } catch (e: any) {
+    msgBoxError('Error deleting accepting: ' + e.message)
+  }
 }
 </script>

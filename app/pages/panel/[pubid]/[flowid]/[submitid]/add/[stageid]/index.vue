@@ -5,18 +5,8 @@
   </div>
 </template>
 
-<script>
-
-export default {
-  setup() {
-    definePageMeta({
-      middleware: ["authuser"]
-    })
-    return {}
-  },
-  data() {
-    return {
-    }
-  },
-}
+<script setup lang="ts">
+definePageMeta({
+  middleware: ["authuser"]
+})
 </script>

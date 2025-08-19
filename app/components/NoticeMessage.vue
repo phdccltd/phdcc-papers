@@ -3,20 +3,13 @@
     <slot />
   </div>
 </template>
-  
-<script>
-export default {
-  name: 'NoticeMessage',
-  props: {
-    variant: {
-      type: String,
-      required: false,
-      default: 'info'
-    }
-  }
-}
+
+<script setup lang="ts">
+const props = defineProps({
+  variant: { type: String, required: false, default: 'info' }
+})
 </script>
-  
+
 <style scoped lang="scss">
 @use '../assets/css/_color-vars' as colors;
 
@@ -49,4 +42,3 @@ export default {
   color: colors.$color-red--dark;
 }
 </style>
-  

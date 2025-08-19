@@ -12,23 +12,10 @@
     </b-alert>
   </div>
 </template>
-<script lang="ts">
-export default {
-  props: {
-    error: {
-      type: String,
-      default: '',
-    },
-    message: {
-      type: String,
-      default: '',
-    },
-    warning: {
-      type: String,
-      default: '',
-    },
-  },
-  setup(props) {
-  }
-}
+<script setup lang="ts">
+const props = defineProps({
+  error: { type: String, default: '' },
+  message: { type: String, default: '' },
+  warning: { type: String, default: '' },
+})
 </script>

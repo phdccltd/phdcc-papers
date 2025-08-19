@@ -91,7 +91,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { usePubsStore } from '~/stores/pubs'
@@ -101,122 +102,121 @@ import { useUsersStore } from '~/stores/users'
 import api from '~/api'
 import { showMsgModal, msgBoxOk, msgBoxFail, msgBoxError, showConfirmModal, showConfirm, confirmedOK, cancelConfirm } from '~/composables/useModalBoxes'
 
-export default {
-  setup() {
-    definePageMeta({
-      middleware: 'authsuper',
-    })
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const pubsStore = usePubsStore()
-    const submitsStore = useSubmitsStore()
-    const sitepagesStore = useSitePagesStore()
-    const usersStore = useUsersStore()
+definePageMeta({
+  middleware: 'authsuper',
+})
 
-    return { authStore, miscStore, pubsStore, sitepagesStore, submitsStore, usersStore }
-  },
-  data() {
-    //console.log('_id data')
-    return {
-      error: '',
-      message: '',
-      modaltitle: 'UNSET',
-      pageid: 0,
-      pagepath: '',
-      pagetitle: '',
-      pagecontent: '',
-      confirmsitepage: null,
-      showSitePageModal: false,
-    }
-  },
-  async mounted() { // Client only
-    this.error = ''
-    this.message = ''
-    this.sitepagesStore.error = false
-    await this.sitepagesStore.fetch()
-    this.miscStore.set({ key: 'page-title', value: 'Site pages' })
-  },
-  computed: {
-    fatalerror() {
-      return this.sitepagesStore.error
-    },
-    sitepages() {
-      return this.sitepagesStore.list
-    }
-  },
-  methods: {
-    setError(msg) {
-      this.error = msg
-    },
-    setMessage(msg) {
-      this.message = msg
-    },
-    cancelModal() {
-      this.showSitePageModal = false
-    },
-    toggleSitePageShow(sitepage) {
-      sitepage.visible = !sitepage.visible
-    },
-    deleteSitePage(sitepage) {
-      this.confirmsitepage = sitepage
-      showConfirm(sitepage.path + ' - ' + sitepage.title, 'Are you sure you want to delete this site page?', this.confirmDeleteSitePage)
-    },
-    async confirmDeleteSitePage() {
-      try {
-        const ok = await api.sitepages.deleteSitePage(this.confirmsitepage.id)
-        if (ok) {
-          await this.sitepagesStore.fetch()
-          this.$nextTick(() => {
-            msgBoxOk('Site page removed')
-          })
-        } else {
-          msgBoxOk('FAIL', 'Remove went wrong', 'warning')
-        }
-      } catch (e) {
-        msgBoxError('Error adding site page: ' + e.message)
-      }
-    },
-    startAddSitePage() {
-      this.modaltitle = 'Add site page'
-      this.pageid = 0
-      this.pagepath = ''
-      this.pagetitle = ''
-      this.pagecontent = ''
-      this.showSitePageModal = true
-    },
-    startEditSitePage(sitepage) {
-      this.modaltitle = 'Edit site page'
-      this.pageid = sitepage.id
-      this.pagepath = sitepage.path
-      this.pagetitle = sitepage.title
-      this.pagecontent = sitepage.content
-      this.showSitePageModal = true
-    },
-    async okSitePage() {
-      //console.log('okSitePage', this.pageid, this.pagepath, this.pagetitle, this.pagecontent)
-      try {
-        this.pagepath = this.pagepath.trim()
-        this.pagetitle = this.pagetitle.trim()
-        this.pagecontent = this.pagecontent.trim()
-        if (this.pagepath.length === 0) return msgBoxOk('Please give a path')
-        if (this.pagetitle.length === 0) return msgBoxOk('Please give a page title')
-        if (this.pagecontent.length === 0) return msgBoxOk('Please give some page content')
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const pubsStore = usePubsStore()
+const submitsStore = useSubmitsStore()
+const sitepagesStore = useSitePagesStore()
+const usersStore = useUsersStore()
 
-        const ok = await api.sitepages.addEditSitePage(this.pageid, this.pagepath, this.pagetitle, this.pagecontent)
+const error = ref('')
+const message = ref('')
+const modaltitle = ref('UNSET')
+const pageid = ref(0)
+const pagepath = ref('')
+const pagetitle = ref('')
+const pagecontent = ref('')
+const confirmsitepage = ref<any>(null)
+const showSitePageModal = ref(false)
 
-        if (ok) {
-          await this.sitepagesStore.fetch()
-          this.$nextTick(() => {
-            this.showSitePageModal = false
-            msgBoxOk('Site page added/edited')
-          })
-        } else {
-          msgBoxFail('Add/Edit went wrong')
-        }
-      } catch (e) {
-        msgBoxError('Error adding site page: ' + e.message)
-      }
+onMounted(async () => { // Client only
+  error.value = ''
+  message.value = ''
+  sitepagesStore.error = false
+  await sitepagesStore.fetch()
+  miscStore.set({ key: 'page-title', value: 'Site pages' })
+})
+
+const fatalerror = computed(() => {
+  return sitepagesStore.error
+})
+
+const sitepages = computed(() => {
+  return sitepagesStore.list
+})
+
+function setError(msg: string) {
+  error.value = msg
+}
+
+function setMessage(msg: string) {
+  message.value = msg
+}
+
+function cancelModal() {
+  showSitePageModal.value = false
+}
+
+function toggleSitePageShow(sitepage: any) {
+  sitepage.visible = !sitepage.visible
+}
+
+function deleteSitePage(sitepage: any) {
+  confirmsitepage.value = sitepage
+  showConfirm(sitepage.path + ' - ' + sitepage.title, 'Are you sure you want to delete this site page?', confirmDeleteSitePage)
+}
+
+async function confirmDeleteSitePage() {
+  try {
+    const ok = await api.sitepages.deleteSitePage(confirmsitepage.value.id)
+    if (ok) {
+      await sitepagesStore.fetch()
+      nextTick(() => {
+        msgBoxOk('Site page removed')
+      })
+    } else {
+      msgBoxOk('FAIL', 'Remove went wrong', 'warning')
     }
-  },
+  } catch (e: any) {
+    msgBoxError('Error adding site page: ' + e.message)
+  }
+}
+
+function startAddSitePage() {
+  modaltitle.value = 'Add site page'
+  pageid.value = 0
+  pagepath.value = ''
+  pagetitle.value = ''
+  pagecontent.value = ''
+  showSitePageModal.value = true
+}
+
+function startEditSitePage(sitepage: any) {
+  modaltitle.value = 'Edit site page'
+  pageid.value = sitepage.id
+  pagepath.value = sitepage.path
+  pagetitle.value = sitepage.title
+  pagecontent.value = sitepage.content
+  showSitePageModal.value = true
+}
+
+async function okSitePage() {
+  //console.log('okSitePage', pageid.value, pagepath.value, pagetitle.value, pagecontent.value)
+  try {
+    pagepath.value = pagepath.value.trim()
+    pagetitle.value = pagetitle.value.trim()
+    pagecontent.value = pagecontent.value.trim()
+    if (pagepath.value.length === 0) return msgBoxOk('Please give a path')
+    if (pagetitle.value.length === 0) return msgBoxOk('Please give a page title')
+    if (pagecontent.value.length === 0) return msgBoxOk('Please give some page content')
+
+    const ok = await api.sitepages.addEditSitePage(pageid.value, pagepath.value, pagetitle.value, pagecontent.value)
+
+    if (ok) {
+      await sitepagesStore.fetch()
+      nextTick(() => {
+        showSitePageModal.value = false
+        msgBoxOk('Site page added/edited')
+      })
+    } else {
+      msgBoxFail('Add/Edit went wrong')
+    }
+  } catch (e: any) {
+    msgBoxError('Error adding site page: ' + e.message)
+  }
 }
 </script>

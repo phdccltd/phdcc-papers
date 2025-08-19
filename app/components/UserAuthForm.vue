@@ -28,33 +28,21 @@
   </b-form>
 </template>
 
-<script lang="ts">
-export default {
-  data() {
-    return {
-      form: {
-        username: '',
-        email: '',
-        password: '',
-        agreed: false
-      },
-    }
-  },
-  props: {
-    submitForm: {
-      type: Function,
-      required: true,
-    },
-    buttonText: {
-      type: String,
-      required: true,
-    },
-    isRegister: Boolean,
-  },
-  methods: {
-    onSubmit(_evt: any) {
-      this.submitForm(this.form)
-    }
-  },
+<script setup lang="ts">
+const props = defineProps({
+  submitForm: { type: Function, required: true, },
+  buttonText: { type: String, required: true, },
+  isRegister: Boolean,
+})
+
+const form = reactive<FormData>({
+  username: '',
+  email: '',
+  password: '',
+  agreed: false
+})
+
+const onSubmit = (_evt: any) => {
+  props.submitForm(form)
 }
 </script>

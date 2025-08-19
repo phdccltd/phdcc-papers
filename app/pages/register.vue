@@ -7,88 +7,77 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useMiscStore } from '~/stores/misc'
 import { useSitePagesStore } from "~/stores/sitepages"
 import api from '~/api'
 
-export default {
-  setup() {
-    const authStore = useAuthStore()
-    const miscStore = useMiscStore()
-    const sitePagesStore = useSitePagesStore()
+const authStore = useAuthStore()
+const miscStore = useMiscStore()
+const sitePagesStore = useSitePagesStore()
 
-    return { authStore, miscStore, sitePagesStore }
-  },
-  data() {
-    return {
-      error: '',
-      message: '',
-      executeRecaptcha: null,
+const error = ref('')
+const message = ref('')
+const executeRecaptcha = ref(null)
+
+const content = computed(() => {
+  const sitepage = sitePagesStore.get('/register')
+  return sitepage ? sitepage.content : ''
+})
+
+onMounted(async () => {
+  const runtimeConfig = useRuntimeConfig()
+  if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+    message.value = 'Recaptcha bypass'
+  } else {
+    executeRecaptcha.value = await useVueRecaptcha() // needs to be done before other await calls
+  }
+
+  await sitePagesStore.fetch()
+  if (authStore.loggedin) {
+    navigateTo('/panel')
+  }
+  miscStore.set({ key: 'page-title', value: 'Register' })
+})
+
+const registerUser = async (registrationInfo: any) => {
+  error.value = ''
+  message.value = ''
+  const runtimeConfig = useRuntimeConfig()
+  let grecaptcha = ''
+  if (runtimeConfig.public.RECAPTCHA_BYPASS) {
+    grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
+  } else {
+    if (executeRecaptcha.value) {
+      grecaptcha = await executeRecaptcha.value('login')
     }
-  },
-  async mounted() {
-    const runtimeConfig = useRuntimeConfig()
-    if (runtimeConfig.public.RECAPTCHA_BYPASS) {
-      this.message = 'Recaptcha bypass'
-    } else {
-      this.executeRecaptcha = await useVueRecaptcha() // needs to be done before other await calls
+  }
+  if (grecaptcha == '') {
+    error.value = 'Captcha not set'
+    return
+  }
+  registrationInfo.grecaptcharesponse = grecaptcha
+  try {
+    let res = await api.auth.register(registrationInfo)
+    if (res.ret !== 0) {
+      error.value = res.status
+      return
     }
 
-    await this.sitePagesStore.fetch()
-    if (this.authStore.loggedin) {
-      navigateTo('/panel')
-    }
-    this.miscStore.set({ key: 'page-title', value: 'Register' })
-},
+    // Pass token to loginWith to stop duplicate recatcha validate
+    registrationInfo.token = res.user.token
+    res = await api.auth.login(registrationInfo)
+    authStore.setToken(res.token)
 
-  computed: {
-    content() {
-      const sitepage = this.sitePagesStore.get('/register')
-      return sitepage ? sitepage.content : ''
-    },
-  },
-  methods: {
-    async registerUser(registrationInfo: any) {
-      this.error = ''
-      this.message = ''
-      const runtimeConfig = useRuntimeConfig()
-      let grecaptcha = ''
-      if (runtimeConfig.public.RECAPTCHA_BYPASS) {
-        grecaptcha = runtimeConfig.public.RECAPTCHA_BYPASS
-      } else {
-        if (this.executeRecaptcha) {
-          grecaptcha = await this.executeRecaptcha('login')
-        }
-      }
-      if (grecaptcha == '') {
-        this.error = 'Captcha not set'
-        return
-      }
-      registrationInfo.grecaptcharesponse = grecaptcha
-      try {
-        let res = await api.auth.register(registrationInfo)
-        if (res.ret !== 0) {
-          this.error = res.status
-          return
-        }
+    const user = await api.auth.getuser()
+    authStore.setUser(user.user)
 
-        // Pass token to loginWith to stop duplicate recatcha validate
-        registrationInfo.token = res.user.token
-        res = await api.auth.login(registrationInfo)
-        this.authStore.setToken(res.token)
-
-        const user = await api.auth.getuser()
-        this.authStore.setUser(user.user)
-
-        navigateTo('/panel')
-      }
-      catch (err: any) {
-        console.log("REGISTER FAIL", err.message)
-        this.error = err.message
-      }
-    }
+    navigateTo('/panel')
+  }
+  catch (err: any) {
+    console.log("REGISTER FAIL", err.message)
+    error.value = err.message
   }
 }
 </script>
