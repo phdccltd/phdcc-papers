@@ -65,7 +65,7 @@
             <b-form-input id="addroleusername" disabled v-model="addroleusername"></b-form-input>
           </b-form-group>
           <b-form-group label="Role" label-for="new-role" label-cols-sm="4" :state="true">
-            <b-form-select :options="this.availablenewroles" size="sm" v-model="chosennewrole" style="width:auto;">
+            <b-form-select :options="availablenewroles" size="sm" v-model="chosennewrole" style="width:auto;">
               <template v-slot:first>
                 <b-form-select-option disabled value="0">Select a role</b-form-select-option>
               </template>
