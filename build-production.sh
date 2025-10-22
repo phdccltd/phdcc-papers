@@ -6,11 +6,9 @@ set -e  # Exit on any error
 
 echo "🔒 Starting secure production build..."
 
-# Check for .env files that could leak secrets
+# Stash .env file during build to prevent dev secrets from being baked into static files
 if [ -f .env ]; then
-  echo "⚠️  WARNING: .env file exists!"
-  echo "   This file contains RECAPTCHA_BYPASS which should NOT be in production builds."
-  echo "   Temporarily renaming .env to .env.backup for this build..."
+  echo "📦 Stashing .env file during build (will restore after)..."
   mv .env .env.backup
   ENV_BACKED_UP=true
 fi
@@ -37,9 +35,8 @@ nvm use 22.21.0
 # Set production environment variables
 echo "🔧 Setting production environment variables..."
 export NUXT_PUBLIC_API="https://ircobi-papers-api-192399026075.europe-west2.run.app"
-# Add other production variables here as needed:
-# export NUXT_PUBLIC_RECAPTCHA_SITE_KEY="your-production-key"
-# export NUXT_PUBLIC_SITE="https://your-domain.web.app"
+export NUXT_PUBLIC_RECAPTCHA_SITE_KEY="6LcPQfMrAAAAALQdIBjvVytVvE3m8kCETXg0a86m"
+export NUXT_PUBLIC_SITE="https://ircobi-papers-api.web.app"
 
 # Build the application
 echo "🏗️  Building application..."
