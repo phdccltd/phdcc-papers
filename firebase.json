@@ -10,6 +10,10 @@
     ],
     "rewrites": [
       {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico|css|js|woff|woff2|ttf|eot|json|xml|txt|pdf)",
+        "destination": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico|css|js|woff|woff2|ttf|eot|json|xml|txt|pdf)"
+      },
+      {
         "source": "**",
         "destination": "/200.html"
       }
