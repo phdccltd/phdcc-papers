@@ -10,6 +10,13 @@
     ],
     "rewrites": [
       {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "ircobi-papers-api",
+          "region": "europe-west2"
+        }
+      },
+      {
         "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico|css|js|woff|woff2|ttf|eot|json|xml|txt|pdf)",
         "destination": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico|css|js|woff|woff2|ttf|eot|json|xml|txt|pdf)"
       },
@@ -19,6 +26,15 @@
       }
     ],
     "headers": [
+      {
+        "source": "/api/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate, max-age=0"
+          }
+        ]
+      },
       {
         "source": "**",
         "headers": [
